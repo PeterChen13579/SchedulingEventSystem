@@ -7,10 +7,10 @@ import Entities.Organizer;
 import Entities.Speaker;
 
 /**
- * An abstract class UseCase class that manages the
- * functionalities of User class.
+ * A UseCase class that manages the functionalities of User class.
+ *
  */
-public abstract class UserManager {
+public class UserManager {
     private List <Attendee> allAttendee;
     private List <Organizer> allOrganizer;
     private List <Speaker> allSpeaker;
@@ -35,11 +35,11 @@ public abstract class UserManager {
     /**
      * Signs up attendee for a particular event
      *
-     * @param user The user we want to check if it's signed up for an event
-     * @param event  The event to see if user is attending
+     * @param user The user we wants to sign up for an event
+     * @param event  The event the user wants to sign up for
      * @return      true if user successfully booked his/her event. false otherwise
      */
-    public boolean signUpEvent(Attendee user, Event event){
+    public boolean signUpEventAttendee(Attendee user, Event event){
         if (user.isAttendingEvent(event.getTitle())){
             System.out.println("You already booked this event. Please book another event.");
             return false;
@@ -49,7 +49,14 @@ public abstract class UserManager {
         return true;
     }
 
-    public boolean cancelSpot(Attendee user, Event event){
+    /**
+     * Cancels an event that the attendee has already signed up for
+     *
+     * @param user   The user wants to cancel their event
+     * @param event  The event the user wants to cancel
+     * @return       true if user successfully cancelled his/her event. false otherwise.
+     */
+    public boolean cancelSpotAttendee(Attendee user, Event event){
         if (user.isAttendingEvent(event.getTitle())){
             user.cancelEvent(event);
             return true;
@@ -58,6 +65,13 @@ public abstract class UserManager {
     }
 
 
+    /**
+     * Creates an Attendee Account
+     *
+     * @param userName  Username for an Attendee Account
+     * @param password  Password for an Attendee Account
+     * @return          true if successfully created an attendee account. False otherwise.
+     */
     public boolean createAttendeeAccount(String userName, String password){
         for (User user: allAttendee){
             if (user.getUsername().equals(userName)) {
@@ -65,8 +79,85 @@ public abstract class UserManager {
                 return false;
             }
         }
-       allAttendee.add(new Attendee(userName, password));
+        allAttendee.add(new Attendee(userName, password));
         return true;
+    }
+
+
+    /**
+     * Creates an Orgainzer Account
+     *
+     * @param userName  Username for an Organizer Account
+     * @param password  Password for an Organizer Account
+     * @return          true if successfully created an organizer account. False otherwise
+     */
+    public boolean createOrganizerAccount(String userName, String password){
+        for (User user: allOrganizer){
+            if (user.getUsername().equals(userName)) {
+                System.out.println("This Username has already been taken. Please enter another Username.");
+                return false;
+            }
+        }
+        allOrganizer.add(new Organizer(userName, password));
+        return true;
+    }
+
+
+    /**
+     * Creates a Speaker Account
+     *
+     * @param userName    Username for a speaker Account
+     * @param password    Password for a speaker Account
+     * @return            true if successfully created a speaker account. False otherwise
+     */
+    public boolean createSpeakerAccount(String userName, String password){
+        for (User user: allSpeaker){
+            if (user.getUsername().equals(userName)) {
+                System.out.println("This Username has already been taken. Please enter another Username.");
+                return false;
+            }
+        }
+        allSpeaker.add(new Speaker(userName, password));
+        return true;
+    }
+
+
+    /**
+     * Precondition: Username exists in database
+     * Returns a User object that corresponds to Username
+     *
+     * @param Username Username that wants to be searched for
+     * @return         User object that matches with Username
+     */
+    public User stringtoUser(String Username){
+        for (Attendee a: allAttendee){
+            if (a.getUsername().equals(Username)){
+                return a;
+            }
+        }
+        for (Organizer b: allOrganizer){
+            if (b.getUsername().equals(Username)){
+                return b;
+            }
+        }
+        for (Speaker c: allSpeaker) {
+            if (c.getUsername().equals(Username)) {
+                return c;
+            }
+        }
+        System.out.println("Username not found in database.");
+        return null;
+    }
+
+    /**
+     * Method to add user to friend's list
+     *
+     * @param a  user wants to add user b
+     * @param b  user that is being added
+     * @return   true if successfully added, false otherwise
+     */
+    public boolean addFriend(User a, User b){
+        return a.addFriend(b);
     }
 
 

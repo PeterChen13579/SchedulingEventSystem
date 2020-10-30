@@ -6,7 +6,6 @@ import java.util.List;
  */
 public class Attendee extends User {
     private List <String> eventNames;
-    private List <String> friends;
 
     public Attendee(String username, String password){
         super(username, password);
@@ -30,39 +29,30 @@ public class Attendee extends User {
     }
 
     /**
+     * Precondition: User has not signed up for this event.
      * Adds the event title to a list of eventNames this attendee wants to attend
      *
      * @param event the event an attendee wants to attend
      */
     public void addEvent(Event event){
-        boolean flag = true;
-        for (String e: eventNames){
-            if (e.equals(event.getTitle())) {
-                flag = false;
-
-                break;
-            }
-        }
-        if (flag){
-            eventNames.add(event.getTitle());
-        }
+        eventNames.add(event.getTitle());
     }
 
     /**
+     * Precondition: User has already signed up for this event.
      * Cancels the event a user wants to attend.
      *
      * @param  event the event an atttendee wants to cancel
-     * @return true if successfully cancelled event. False otherwise.
      */
-    public boolean cancelEvent(Event event){
+    public void cancelEvent(Event event){
         for (String e: eventNames) {
             if (e.equals(event.getTitle())) {
                 eventNames.remove(e);
                 System.out.println("Successfully cancelled event.");
-                return true;
             }
         }
-        System.out.println("This user is not attending this event.");
-        return false;
     }
+
+
+
 }

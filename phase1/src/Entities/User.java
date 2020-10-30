@@ -7,7 +7,7 @@ import java.util.List;
 public abstract class User {
     private final String username;
     private String password;
-    
+    private List <String> friends;
 
 
     public User(String username, String password){
@@ -43,6 +43,22 @@ public abstract class User {
     }
 
 
+    /**
+     * Adding a user to user's friend list
+     *
+     * @param user to add into friends list
+     * @return     true if sucessfully added user to friends list. False otherwise.
+     */
+    public boolean addFriend(User user){
+        for (String attendee: friends){
+            if (user.getUsername().equals(attendee)){
+                System.out.println("This user is already in your friend's list.");
+                return false;
+            }
+        }
+        friends.add(user.getUsername());
+        return true;
+    }
 
 
 }
