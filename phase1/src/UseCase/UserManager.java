@@ -3,13 +3,17 @@ import java.util.List;
 import Entities.User;
 import Entities.Event;
 import Entities.Attendee;
+import Entities.Organizer;
+import Entities.Speaker;
 
 /**
  * An abstract class UseCase class that manages the
  * functionalities of User class.
  */
 public abstract class UserManager {
-    private List <User> allUser;
+    private List <Attendee> allAttendee;
+    private List <Organizer> allOrganizer;
+    private List <Speaker> allSpeaker;
 
     /**
      * Authorization of a user trying to log into their account
@@ -19,7 +23,7 @@ public abstract class UserManager {
      * @return a boolean value if the user successfully logged into the system of not.
      */
     public boolean credentialAuthorization(String enteredUsername, String enteredPassword){
-        for (User user : allUser) {
+        for (User user : allAttendee) {
             if (user.getUsername().equals(enteredUsername)) {
                 return user.getPassword().equals(enteredPassword);
             }
@@ -55,13 +59,13 @@ public abstract class UserManager {
 
 
     public boolean createAttendeeAccount(String userName, String password){
-        for (User user: allUser){
+        for (User user: allAttendee){
             if (user.getUsername().equals(userName)) {
                 System.out.println("This Username has already been taken. Please enter another Username.");
                 return false;
             }
         }
-        allUser.add(new Attendee(userName, password));
+       allAttendee.add(new Attendee(userName, password));
         return true;
     }
 

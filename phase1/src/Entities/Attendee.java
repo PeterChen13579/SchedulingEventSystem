@@ -39,6 +39,7 @@ public class Attendee extends User {
         for (String e: eventNames){
             if (e.equals(event.getTitle())) {
                 flag = false;
+
                 break;
             }
         }
