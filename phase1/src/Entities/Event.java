@@ -16,7 +16,7 @@ public class Event {
     this.time = eventTime;
     this.room = room;
     this.speaker = speaker;
-    this.attendeeList = new ArrayList<Attendee>(2);
+    this.attendeeList = new ArrayList<>(room.getCapacity());
     }
 
     /**
@@ -52,7 +52,16 @@ public class Event {
     }
 
     /**
+     * Setter the List of Attendee of the Event
+     * @param attendeeList the List of Attendee of the Event
+     */
+    public void setAttendeeList(List<Attendee> attendeeList) {
+        this.attendeeList = attendeeList;
+    }
+
+    /**
      * Getter for title of the Event
+     * @return the title of the Event
      */
     public String getTitle() {
         return title;
@@ -60,6 +69,7 @@ public class Event {
 
     /**
      * Getter for room of the Event
+     * @return the room of the Event
      */
     public Room getRoom() {
         return room;
@@ -67,6 +77,7 @@ public class Event {
 
     /**
      * Getter for speaker of the Event
+     * @return the speaker of the Event
      */
     public Speaker getSpeaker() {
         return speaker;
@@ -74,6 +85,7 @@ public class Event {
 
     /**
      * Getter for time of the Event
+     * @return the time of the Event
      */
     public LocalDateTime getTime() {
         return time;
@@ -81,6 +93,7 @@ public class Event {
 
     /**
      * Getter for the List of Attendee of the Event
+     * @return the List of Attendee of the Event
      */
     public List<Attendee> getAttendeeList() {
         return attendeeList;
