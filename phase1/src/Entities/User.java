@@ -5,10 +5,15 @@ import java.util.List;
  * every user of this program should have
  */
 public abstract class User {
-    private String username;
+    private final String username;
     private String password;
-    private List<User> friends;
-    private List<Event> eventsAttending;
+
+
+
+    public User(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
 
     /**
      * Getter for this <User></User>'s username.

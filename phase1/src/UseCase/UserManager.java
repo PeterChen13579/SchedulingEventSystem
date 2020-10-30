@@ -28,14 +28,40 @@ public abstract class UserManager {
         return false;
     }
 
-
+    /**
+     * Signs up attendee for a particular event
+     *
+     * @param user The user we want to check if it's signed up for an event
+     * @param event  The event to see if user is attending
+     * @return      true if user successfully booked his/her event. false otherwise
+     */
     public boolean signUpEvent(Attendee user, Event event){
-        if (user.isAttendingEvent(event)){
-            System.out.println("You already booked this event.");
+        if (user.isAttendingEvent(event.getTitle())){
+            System.out.println("You already booked this event. Please book another event.");
             return false;
         }
-        //Need to ask if it's fine for user class to have an add event method.
-        //Need to ask if it's fine having userName as naming variables.
+        user.addEvent(event);
+        System.out.println("You have successfully booked this event.");
+        return true;
+    }
+
+    public boolean cancelSpot(Attendee user, Event event){
+        if (user.isAttendingEvent(event.getTitle())){
+            user.cancelEvent(event);
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean createAttendeeAccount(String userName, String password){
+        for (User user: allUser){
+            if (user.getUsername().equals(userName)) {
+                System.out.println("This Username has already been taken. Please enter another Username.");
+                return false;
+            }
+        }
+        allUser.add(new Attendee(userName, password));
         return true;
     }
 

@@ -7,6 +7,10 @@ public class Speaker extends User {
     // list of talks the speaker gives
     private List<Event> EventAttending;
 
+
+    public Speaker(String username, String password){
+        super(username, password);
+    }
     /**
      * Getter for the list of EventAttending.
      * @return the EventAttending of this Speaker.
