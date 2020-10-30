@@ -4,7 +4,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 public class Speaker extends User {
-
+    // list of talks the speaker gives
     private List<Event> EventAttending;
 
     /**
