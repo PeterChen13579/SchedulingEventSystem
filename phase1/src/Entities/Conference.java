@@ -1,4 +1,6 @@
 package Entities;
 
-public class Conference {
+import java.io.Serializable;
+
+public class Conference implements Serializable {
 }
