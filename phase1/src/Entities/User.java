@@ -1,10 +1,11 @@
 package Entities;
+import java.io.Serializable;
 import java.util.List;
 /**
  * <User> is an abstract class that contains basic information
  * every user of this program should have
  */
-public abstract class User {
+public abstract class User implements Serializable {
     private final String username;
     private String password;
     private List <String> friends;

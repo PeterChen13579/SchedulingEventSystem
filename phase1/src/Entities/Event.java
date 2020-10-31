@@ -1,10 +1,11 @@
 package Entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Event {
+public class Event implements Serializable {
     private String title;
     private LocalDateTime time;
     private Room room;

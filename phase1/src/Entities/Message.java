@@ -1,4 +1,5 @@
 package Entities;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -7,7 +8,7 @@ import java.time.LocalDateTime;
  * All info stored is final and cannot be modified.
  * @author William Wang
  */
-public class Message {
+public class Message implements Serializable {
     private final String senderUsername;
     // I removed the reciever since if we have chats, the chat will include all members of the chat
     private final LocalDateTime time;

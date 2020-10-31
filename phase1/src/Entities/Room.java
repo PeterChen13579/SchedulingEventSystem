@@ -1,4 +1,5 @@
 package Entities;
+import java.io.Serializable;
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -6,7 +7,7 @@ import java.time.LocalDateTime;
  * A room is the location that an event will be held.
  */
 
-public class Room {
+public class Room implements Serializable {
     private String roomNum;
     private Integer capacity = 2;
     private List<Event> events;

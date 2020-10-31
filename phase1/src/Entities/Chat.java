@@ -1,4 +1,5 @@
 package Entities;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Hashtable;
 import java.util.List;
@@ -12,7 +13,7 @@ import Entities.Message;
  * This object also stores Messages since they are a part of chats.
  * @author William Wang
  */
-public class Chat {
+public class Chat implements Serializable {
     private List<Message> chatMessages;  //stores all messages. should be sorted by time
     private Dictionary<String, Message> lastViewedMessage; //pairs username with a message. If chatMessages/memberUsernames is changed, this must be changed as well.
     private List<String> memberUsernames;  //users in the chat
