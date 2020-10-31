@@ -1,97 +1,48 @@
 package Controllers;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 /**
  * A class that deals with the output of data into separate .txt files
  */
 public class Writer {
-    private PrintWriter writer;
+    // users, conferences, events, messages, rooms
 
     /**
-     * Saves all the values of every user in the program to a file named users.txt
-     * @param allUsers all the users in the program
+     * A method that saves all the information in a session to a .txt file
+     * @param filename name of the file to save to
+     * @param allThings all the information needed to save
+     * @throws IOException
      */
-    public void writeUsersToFile(List<Entities.User> allUsers) {
+    public void writeToFile(String filename, List allThings) throws IOException {
         try {
-            PrintWriter writer = new PrintWriter(new File("users.txt"));
-        } catch(IOException e) {
-            System.out.println("rip");
-        }
+            OutputStream file = new FileOutputStream(filename);
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
 
-        for (int i = 0; i < allUsers.size(); i++) {
-            // Update when all variables for users are created
-            writer.println(allUsers.get(i).getUsername() + "," + allUsers.get(i).getPassword());
+//            for (int i = 0; i < 5; i++) {
+                writeHelper("attendees.txt", allThings);
+//            }
+
+            output.close();
+        } catch (Exception e) {
+            System.out.println(":((");
         }
     }
 
-    /**
-     * Saves all the values of every event in the program to a file named events.txt
-     * @param allEvents all the events in the program
-     */
-    public void writeEventsToFile(List<Entities.Event> allEvents) {
+    private void writeHelper(String filename, List<List> allThings) throws IOException {
         try {
-            writer = new PrintWriter(new File("events.txt"));
-        } catch(IOException e) {
-            System.out.println("rip");
-        }
+            OutputStream file = new FileOutputStream(filename);
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
 
-        for (int i = 0; i < allEvents.size(); i++) {
-            // Update when all variables for events are created
-            writer.println(allEvents.get(i));
-        }
-    }
-
-    /**
-     * Saves all the values of every event in the program to a file named events.txt
-     * @param allConferences all the events in the program
-     */
-    public void writeConferencesToFile(List<Entities.Conference> allConferences) {
-        try {
-            writer = new PrintWriter(new File("conferences.txt"));
-        } catch(IOException e) {
-            System.out.println("rip");
-        }
-
-        for (int i = 0; i < allConferences.size(); i++) {
-            // Update when all variables for conferences are created
-            writer.println(allConferences.get(i));
-        }
-    }
-
-    /**
-     * Saves all the values of every event in the program to a file named events.txt
-     * @param allMessages all the events in the program
-     */
-    public void writeMessagesToFile(List<Entities.Message> allMessages) {
-        try {
-            writer = new PrintWriter(new File("messages.txt"));
-        } catch(IOException e) {
-            System.out.println("rip");
-        }
-
-        for (int i = 0; i < allMessages.size(); i++) {
-            // Update when all variables for messages are created
-            writer.println(allMessages.get(i));
-        }
-    }
-
-    /**
-     * Saves all the values of every event in the program to a file named events.txt
-     * @param allRooms all the events in the program
-     */
-    public void writeRoomsToFile(List<Entities.Room> allRooms) {
-        try {
-            writer = new PrintWriter(new File("rooms.txt"));
-        } catch(IOException e) {
-            System.out.println("rip");
-        }
-
-        for (int i = 0; i < allRooms.size(); i++) {
-            // Update when all variables for messages are created
-            writer.println(allRooms.get(i));
+            for (int k = 0; k < allThings.size(); k++) {
+                output.writeObject(allThings.get(k));
+                System.out.println("printed");
+            }
+            output.close();
+        } catch (Exception e) {
+            System.out.println("writeerror");
         }
     }
 
