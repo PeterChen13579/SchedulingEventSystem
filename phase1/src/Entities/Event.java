@@ -7,16 +7,16 @@ import java.util.List;
 public class Event {
     private String title;
     private LocalDateTime time;
-    private Room room;
-    private Speaker speaker;
-    private List<Attendee> attendeeList;
+    private String roomNum;
+    private String speakerUserName;
+    private List<String> attendeeList;
 
-    public Event(String eventTitle, LocalDateTime eventTime, Room room, Speaker speaker){
+    public Event(String eventTitle, LocalDateTime eventTime, String roomNum, String speakerUserName){
     this.title = eventTitle;
     this.time = eventTime;
-    this.room = room;
-    this.speaker = speaker;
-    this.attendeeList = new ArrayList<>(room.getCapacity());
+    this.roomNum = roomNum;
+    this.speakerUserName = speakerUserName;
+    this.attendeeList = new ArrayList<>(new Room(roomNum).getCapacity());
     }
 
     /**
@@ -36,26 +36,26 @@ public class Event {
     }
 
     /**
-     * Setter for room of the Event
-     * @param room  The room that this event take place
+     * Setter for the room number of the Event
+     * @param roomNum  The room that this event take place
      */
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setRoomNum(String roomNum) {
+        this.roomNum = roomNum;
     }
 
     /**
-     * Setter speaker of the Event
-     * @param speaker  The speaker of this event
+     * Setter for speaker username of the Event
+     * @param speakerUserName  The speaker of this event
      */
-    public void setSpeaker(Speaker speaker) {
-        this.speaker = speaker;
+    public void setSpeakerUserName(String speakerUserName) {
+        this.speakerUserName = speakerUserName;
     }
 
     /**
-     * Setter the List of Attendee of the Event
+     * Setter for the List of Attendee usernames of the Event
      * @param attendeeList the List of Attendee of the Event
      */
-    public void setAttendeeList(List<Attendee> attendeeList) {
+    public void setAttendeeList(List<String> attendeeList) {
         this.attendeeList = attendeeList;
     }
 
@@ -68,19 +68,19 @@ public class Event {
     }
 
     /**
-     * Getter for room of the Event
-     * @return the room of the Event
+     * Getter for the room number of the Event
+     * @return the room number of the Event
      */
-    public Room getRoom() {
-        return room;
+    public String getRoomNum() {
+        return roomNum;
     }
 
     /**
-     * Getter for speaker of the Event
-     * @return the speaker of the Event
+     * Getter for speaker username of the Event
+     * @return the speaker username for the Event
      */
-    public Speaker getSpeaker() {
-        return speaker;
+    public String getSpeakerUserName() {
+        return speakerUserName;
     }
 
     /**
@@ -92,10 +92,10 @@ public class Event {
     }
 
     /**
-     * Getter for the List of Attendee of the Event
-     * @return the List of Attendee of the Event
+     * Getter for the List of attendee who attend the Event
+     * @return the List of Strings of attendee usernames
      */
-    public List<Attendee> getAttendeeList() {
+    public List<String> getAttendeeList() {
         return attendeeList;
     }
 }
