@@ -7,14 +7,16 @@ import java.util.List;
 
 public class Event implements Serializable {
     private String title;
-    private LocalDateTime time;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private String roomNum;
     private String speakerUserName;
     private List<String> attendeeList;
 
-    public Event(String eventTitle, LocalDateTime eventTime, String roomNum, String speakerUserName){
+    public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime, String roomNum, String speakerUserName){
     this.title = eventTitle;
-    this.time = eventTime;
+    this.startTime = startTime;
+    this.endTime = endTime;
     this.roomNum = roomNum;
     this.speakerUserName = speakerUserName;
     this.attendeeList = new ArrayList<>(new Room(roomNum).getCapacity());
@@ -22,18 +24,20 @@ public class Event implements Serializable {
 
     /**
      * Setter for title of the Event
-     * @param title  The title of this event
+     * @param title The title of this event
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * Setter for time of the Event
-     * @param time  The time of this event
+     * Setter for the start and end time of the Event
+     * @param startTime the start time of this event
+     * @param endTime the end time of this event
      */
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setTime(LocalDateTime startTime, LocalDateTime endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     /**
@@ -85,11 +89,11 @@ public class Event implements Serializable {
     }
 
     /**
-     * Getter for time of the Event
-     * @return the time of the Event
+     * Getter for the start time of the Event
+     * @return the start time of the Event
      */
-    public LocalDateTime getTime() {
-        return time;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     /**

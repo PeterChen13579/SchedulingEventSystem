@@ -4,6 +4,7 @@ import Entities.Event;
 import Entities.Room;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
@@ -23,27 +24,90 @@ public class EventManager {
      * @param speakerUserName the name of the speaker for the event
      */
     public void createEvent(String title, String date, String startTime, String rmNum, String speakerUserName){
+        List<LocalDateTime> time = parseStringToLocalDateTime(date, startTime);
+        //create event & add to list
+        Event event = new Event(title, time.get(0), time.get(1), rmNum, speakerUserName);
+        allEvents.add(event);
+    }
+    /**
+     * Returns a list of 2 LocalDateTime object representating the start time and end time of a potential event
+     * @param date the date for the potential event (YYYYMMDD)
+     * @param startTime the start time for the event (HH:mm:ss)
+     * @return a list of LocalDateTime objects parsed from the date and startTime parameters
+     */
+    public List<LocalDateTime> parseStringToLocalDateTime (String date, String startTime){
         //parse date to LocalDate format
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         LocalDate localDate = LocalDate.parse(date, formatter);
-        //parse startTime and endTime to LocalTime format
-        LocalTime localStartTime = LocalTime.parse(startTime);
-        //create LocalDateTime object
-        LocalDateTime time = LocalDateTime.of(localDate, localStartTime);
 
-        //create event & add to list
-        Event event = new Event(title, time, rmNum, speakerUserName);
-        allEvents.add(event);
+        //parse startTime and endTime to LocalTime format (end time will be 1 hour later)
+        LocalTime localStartTime = LocalTime.parse(startTime);
+        LocalTime localEndTime = localStartTime.plusHours(1);
+
+        //create LocalDateTime objects for start time and end time
+        LocalDateTime sTime = LocalDateTime.of(localDate, localStartTime);
+        LocalDateTime eTime = LocalDateTime.of(localDate, localEndTime);
+
+        return Arrays.asList(sTime, eTime);
     }
 
-    public boolean isTimeAvaliable();
+    /**
+     * Returns whether or not the given date and time already has an event booked in that interval
+     * @param date the date for the potential event (YYYYMMDD)
+     * @param startTime the start time for the potential event (HH:mm:ss)
+     * @return true iff there is no date or time conflict with the already scheduled events and the new time
+     */
+    public boolean isTimeAvaliable(String date, String startTime){
+        //create LocalDateTime object for potential start time
+        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
+        for (Event e : allEvents){
+            if (e.getStartTime().isEqual(time)){
+                return false;
+            }
+        }
+        return true;
+    }
+    //get a list of all the rooms that were booked
+    public List<String> getListOfRooms(){
+        List<String> rooms = new ArrayList<>();
+        for (Event e : allEvents){
+            if(!rooms.contains(e.getRoomNum())){
+                rooms.add(e.getRoomNum());
+            }
+        }
+        return rooms;
+    }
+
+    //checks if room exists
+    public boolean doesRoomExist(String roomNum){
+        for(String room: getListOfRooms()){
+            if(room.equals(roomNum)) return true;
+        }
+        return false;
+    }
+
+    public boolean isRoomAvaliableAtTime(String roomNum, String date, String startTime){
+        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
+        //check if room exists
+        if (!doesRoomExist(roomNum)){
+            return false;
+        }
+        //check if room is booked at the time
+        for(Event e: allEvents){
+            if (e.getStartTime().isEqual(time) && e.getRoomNum().equals(roomNum)){
+                return false;
+            }
+        }
+        return true;
+    }
 
     public boolean isSpeakerAvaliable();
 
-    public boolean isRoomAvaliable();
 
-    //returns true if can add event, calls the above 3 helper methods
-    public boolean canAddEvent();
+    //returns true iff can add event, calls the above helper methods
+    public boolean canAddEvent(String date, String startTime, String rmNum, String speakerUserName){
+        return isTimeAvaliable(date, startTime) && isRoomAvaliableAtTime(rmNum, date, startTime) && isSpeakerAvaliable();
+    }
 
     /**
      * Getter for List of all Events
