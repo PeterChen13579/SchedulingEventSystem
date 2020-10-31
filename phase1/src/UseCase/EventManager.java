@@ -117,31 +117,59 @@ public class EventManager {
         return allEvents;
     }
 
-    /**
-     * Add attendee to the attendeelist stored in Event
-     * @param attendeeUserName the username of attendee that is added to the attendeeList
-     * @param eventTitle the event that this attendee sign up to
-     * @return true iff attendee added successfully, false otherwise.
-     */
-    public boolean addAttendee(String attendeeUserName, String eventTitle){
+
+    //return true if the event is in allEvents
+    private boolean isEventExist(String eventTitle){
+        for(Event event:allEvents){
+            if (event.getTitle().equals(eventTitle)){return true;}
+        }
+        return false;
+    }
+
+    //return true if the attendee is already in attendeeList stored in this event
+    private boolean isAttendeeAdded(String userName, String eventTitle){
         Event event = helperEventTitle(eventTitle);
-        List<String> currAttendee = event.getAttendeeList();
-        currAttendee.add(attendeeUserName);
-        event.setAttendeeList(currAttendee);
-        return true;
+        return event.getAttendeeList().contains(userName);
+    }
+
+    //return true if can add attendee. calls the above helper methods
+    public boolean canAddAttendee(String userName, String eventTitle){
+        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle);
+    }
+
+
+    //return true if can delete attendee. calls the above helper methods
+    public boolean canDeleteAttendee(String userName, String eventTitle){
+        return isEventExist(eventTitle) && isAttendeeAdded(userName, eventTitle);
     }
 
     /**
      * private helper method for finding corresponding Event base on eventTitle
+     * Precondition: eventTitle correspond to a event in event List
      * @param eventTitle the eventTitle of the Event
+     * @throws IllegalArgumentException if eventTitle does not correspond to any event in event List
      * @return the event that has this eventTitle
      */
-    private Event helperEventTitle(String eventTitle){
-        for(Event event:allEvents){
-                if(event.getTitle().equals(eventTitle)){
+    private Event helperEventTitle(String eventTitle) {
+        assert isEventExist(eventTitle);
+        for (Event event : allEvents) {
+            if (event.getTitle().equals(eventTitle)) {
                 return event;
             }
         }
+        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
+    }
+
+    /**
+     * Add attendee to the attendeelist stored in Event
+     * @param attendeeUserName the username of attendee that is added to the attendeeList
+     * @param eventTitle the event that this attendee sign up to
+     */
+    public void addAttendee(String attendeeUserName, String eventTitle){
+        Event event = helperEventTitle(eventTitle);
+        List<String> currAttendee = event.getAttendeeList();
+        currAttendee.add(attendeeUserName);
+        event.setAttendeeList(currAttendee);
     }
 
     /**
