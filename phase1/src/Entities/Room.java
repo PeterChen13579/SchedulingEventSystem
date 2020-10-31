@@ -1,7 +1,6 @@
 package Entities;
 import java.io.Serializable;
 import java.util.List;
-import java.time.LocalDateTime;
 
 /**
  * A room is the location that an event will be held.
@@ -10,7 +9,7 @@ import java.time.LocalDateTime;
 public class Room implements Serializable {
     private String roomNum;
     private Integer capacity = 2;
-    private List<Event> events;
+    private List<String> eventTitles;
 
     public Room(String roomNum){
         this.roomNum = roomNum;
@@ -43,23 +42,11 @@ public class Room implements Serializable {
      * Getter for a list of events held in this room.
      * @return a list of events held in this room.
      */
-    public List<Event> getEvents(){return events;}
+    public List<String> getEvents(){return eventTitles;}
 
     /**
      * Setter for a list of events held in this room.
-     * @param events the new list of events that you want to set.
+     * @param eventTitles the new list of events that you want to set.
      */
-    public void setEvents(List<Event> events){this.events = events;}
-
-    /**
-     * Check whether this room is available for this time.
-     * @param time the time that you want to check.
-     * @return true iff the room is available. Otherwise, return false.
-     */
-    public boolean isRoomAvailable(LocalDateTime time){
-        for(Event event: events){
-            return !event.getTime().isEqual(time);
-        }
-        return true;
-    }
+    public void setEvents(List<String> eventTitles){this.eventTitles = eventTitles;}
 }
