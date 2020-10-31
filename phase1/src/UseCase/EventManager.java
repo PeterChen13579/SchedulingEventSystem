@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public class EventManager {
     private List<Event> allEvents;
@@ -55,20 +56,37 @@ public class EventManager {
     /**
      * Add attendee to the attendeelist stored in Event
      * @param attendeeUserName the username of attendee that is added to the attendeeList
-     * @param event the event that this attendee sign up to
+     * @param eventTitle the event that this attendee sign up to
+     * @return true iff attendee added successfully, false otherwise.
      */
-    public void addAttendee(String attendeeUserName, Event event){
+    public boolean addAttendee(String attendeeUserName, String eventTitle){
+        Event event = helperEventTitle(eventTitle);
         List<String> currAttendee = event.getAttendeeList();
         currAttendee.add(attendeeUserName);
         event.setAttendeeList(currAttendee);
+        return true;
+    }
+
+    /**
+     * private helper method for finding corresponding Event base on eventTitle
+     * @param eventTitle the eventTitle of the Event
+     * @return the event that has this eventTitle
+     */
+    private Event helperEventTitle(String eventTitle){
+        for(Event event:allEvents){
+                if(event.getTitle().equals(eventTitle)){
+                return event;
+            }
+        }
     }
 
     /**
      * Delete attendee from the attendeelist stored in Event
      * @param attendeeUserName the username of attendee that is is deleted from the attendeeList
-     * @param event the event that this attendee want to cancel spot from
+     * @param eventTitle the event that this attendee want to cancel spot from
      */
-    public void deleteAttendee(String attendeeUserName, Event event){
+    public void deleteAttendee(String attendeeUserName, String eventTitle){
+        Event event = helperEventTitle(eventTitle);
         List<String> currAttendee = event.getAttendeeList();
         currAttendee.remove(attendeeUserName);
         event.setAttendeeList(currAttendee);
