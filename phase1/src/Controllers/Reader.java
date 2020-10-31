@@ -1,7 +1,7 @@
 package Controllers;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,22 +10,38 @@ import java.util.List;
 public class Reader {
 
     /**
-     * Loads all the data and returns an array of lists.
-     * @return a list of arrays containing data
+     * A method that loads all the information from a previous session from a .txt file
+     * @param filename the name of the file to open
+     * @return a list of lists that contains all the data needed
+     * @throws ClassNotFoundException
      */
-    public List[] loadData() {
-        List[] results = new List[5];
+    public List<List> loadData(String filename) throws ClassNotFoundException {
+        List<List> results = new ArrayList<>(5);
         try {
-            File file = new File("users.txt");
-            Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
-                // Fill this in once I finish writer
-                System.out.println(".");
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("file not found :(");
+            results.add(loadHelper("attendees.txt"));
+        } catch(ClassNotFoundException e) {
+            System.out.println("loadData");
         }
         return results;
+    }
+
+    private List loadHelper(String filename) throws ClassNotFoundException {
+        ArrayList helper = new ArrayList();
+        try {
+            InputStream file = new FileInputStream("attendees.txt");
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream(buffer);
+
+            //Repeat this 5 times?? to read all 5 lists that are stored
+            List temp = (List) input.readObject();
+            helper.add(temp);
+            input.close();
+        } catch (IOException e) {
+            System.out.println(":(");
+        } catch (ClassNotFoundException h) {
+            System.out.println(":(((");
+        }
+        return helper;
     }
 
 }
