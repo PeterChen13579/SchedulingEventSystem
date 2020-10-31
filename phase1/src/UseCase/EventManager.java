@@ -1,4 +1,4 @@
-package Controllers;
+package UseCase;
 
 import Entities.Event;
 import Entities.Room;
@@ -44,4 +44,8 @@ public class EventManager {
     //returns true if can add event, calls the above 3 helper methods
     public boolean canAddEvent();
 
+    /**
+     * Add attendee to the List of attendee stored in Event
+     */
+    public boolean addAttendee(String attendeeUserName, Event event){};
 }
