@@ -45,8 +45,8 @@ public class Chat implements Serializable {
      * @return The new messages in the chat
      */
     public List<Message> getNewMessages(String username){
-        // Precondition : Username is in this chat
-        // Precondition : chatMessages is sorted by date/time
+        // Preconditions : Username is in this chat, chatMessages is sorted by date/time,
+        // and the chat has at least 1 message.
         Message seenMessage = lastViewedMessage.get(username);
         int newMessageIndex = chatMessages.indexOf(seenMessage) + 1;
         return chatMessages.subList(newMessageIndex, chatMessages.size()); // the use case needs to update the last viewed message after calling this
