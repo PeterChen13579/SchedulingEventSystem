@@ -45,6 +45,14 @@ public class EventManager {
     public boolean canAddEvent();
 
     /**
+     * Getter for List of all Events
+     * @return List of all Events
+     */
+    public List<Event> getAllEvents() {
+        return allEvents;
+    }
+
+    /**
      * Add attendee to the List of attendee stored in Event
      */
     public boolean addAttendee(String attendeeUserName, Event event){};
