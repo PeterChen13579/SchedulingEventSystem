@@ -53,7 +53,24 @@ public class EventManager {
     }
 
     /**
-     * Add attendee to the List of attendee stored in Event
+     * Add attendee to the attendeelist stored in Event
+     * @param attendeeUserName the username of attendee that is added to the attendeeList
+     * @param event the event that this attendee sign up to
      */
-    public boolean addAttendee(String attendeeUserName, Event event){};
+    public void addAttendee(String attendeeUserName, Event event){
+        List<String> currAttendee = event.getAttendeeList();
+        currAttendee.add(attendeeUserName);
+        event.setAttendeeList(currAttendee);
+    }
+
+    /**
+     * Delete attendee from the attendeelist stored in Event
+     * @param attendeeUserName the username of attendee that is is deleted from the attendeeList
+     * @param event the event that this attendee want to cancel spot from
+     */
+    public void deleteAttendee(String attendeeUserName, Event event){
+        List<String> currAttendee = event.getAttendeeList();
+        currAttendee.remove(attendeeUserName);
+        event.setAttendeeList(currAttendee);
+    }
 }
