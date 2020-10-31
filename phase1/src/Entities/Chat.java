@@ -28,7 +28,7 @@ public class Chat implements Serializable {
         this.chatMessages = new ArrayList<Message>();
         this.lastViewedMessage = new Hashtable<>();
         this.memberUsernames = memberUsernames;
-        this.chatName = String.join("", this.memberUsernames); //we can overload and create another constructor to accept a chat name
+        this.chatName = String.join(", ", this.memberUsernames); //we can overload and create another constructor to accept a chat name
         }
 
     /**
@@ -40,17 +40,28 @@ public class Chat implements Serializable {
     }
 
     /**
-     * getter for new messages for a user
-     * @param username The username of the user who has not seen the new messages
-     * @return The new messages in the chat
+     * getter for last viewed message for the user
+     * @param username The user who we are referencing
+     * @return The last viewed message of the user
      */
-    public List<Message> getNewMessages(String username){
-        // Preconditions : Username is in this chat, chatMessages is sorted by date/time,
-        // and the chat has at least 1 message.
-        Message seenMessage = lastViewedMessage.get(username);
-        int newMessageIndex = chatMessages.indexOf(seenMessage) + 1;
-        return chatMessages.subList(newMessageIndex, chatMessages.size()); // the use case needs to update the last viewed message after calling this
+    public Message getLastViewedMessage(String username){
+        // Preconditions : Username is in this chat
+        return lastViewedMessage.get(username);   //If there are no messages in this chat, this will return null
     }
+
+    //Method moved to use case
+//    /**
+//     * getter for new messages for a user
+//     * @param username The username of the user who has not seen the new messages
+//     * @return The new messages in the chat
+//     */
+//    public List<Message> getNewMessages(String username){
+//        // Preconditions : Username is in this chat, chatMessages is sorted by date/time,
+//        // and the chat has at least 1 message.
+//        Message seenMessage = lastViewedMessage.get(username);
+//        int newMessageIndex = chatMessages.indexOf(seenMessage) + 1;
+//        return chatMessages.subList(newMessageIndex, chatMessages.size()); // the use case needs to update the last viewed message after calling this
+//    }
 
     /**
      * getter for members in the chat
