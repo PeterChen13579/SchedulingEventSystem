@@ -80,17 +80,12 @@ public class Chat implements Serializable {
     }
 
     /**
-     * add a message to the chat by giving message constructors
-     * @param senderUsername The username of the sender of the message
-     * @param timestamp The timestamp of the message
-     * @param content The content of the message
-     * @return The new message created
+     * Add a message to the chat
+     * @param newMessage The message being added to the chat
      */
-    public Message addChatMessage(String senderUsername, LocalDateTime timestamp, String content) {
-        // Precondition : Added message has a timestamp after the last message in the chat
-        Message newMessage = new Message(senderUsername, timestamp, content);
+    public void addChatMessage(Message newMessage) {
+        // Preconditions : Added message has a timestamp after the last message in the chat, Message does not already exist in another chat
         chatMessages.add(newMessage); // maybe the use case needs to update the last viewed message (since sending a message probably means they view the previous ones)
-        return newMessage;
     }
 
     /**
