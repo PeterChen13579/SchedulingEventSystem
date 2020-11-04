@@ -38,8 +38,10 @@ public class ChatManager {
      * @param content The content of the message
      */
     public void sendMessageToChat(Chat chat, String senderUsername, LocalDateTime time, String content) {
+        // Precondition: senderUsername is in this chat
         Message message = new Message(senderUsername, time, content);
-        chat.getAllMessages().add(message);
+        chat.addChatMessage((message));
+        chat.setLastViewedMessage(senderUsername, message);
     }
 
     /**
