@@ -1,11 +1,9 @@
 package Entities;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Dictionary;
-import Entities.Message;
 
 /**
  * A chat in our program. It stores info related to chats and preforms operations on chats (ex. sending messages).
