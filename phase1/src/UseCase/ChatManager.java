@@ -51,13 +51,17 @@ public class ChatManager {
      * @param time The time the message was sent
      * @param content The content of the message
      */
-    public void sendMessageToUsers(String[] usernames, String senderUsername, LocalDateTime time, String content) {
+    public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content) {
 
-        for (int i=0; i<usernames.length; i++) {
-            String[] thisChatUsernames = new String[] {senderUsername, usernames[i]};
+        for (int i=0; i<usernames.size(); i++) {
+
+            List<String> thisChatUsernames = new ArrayList<String>();
+            thisChatUsernames.add(senderUsername);
+            thisChatUsernames.add(usernames.get(i));
+
             Chat chat = this.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
             if (chat == null) {
-                chat = this.createChat(Arrays.asList(thisChatUsernames)); // If no such chat exists, create it
+                chat = this.createChat(thisChatUsernames); // If no such chat exists, create it
             }
             this.sendMessageToChat(chat, senderUsername, time, content);
         }
@@ -68,16 +72,18 @@ public class ChatManager {
      * @param usernames A list of the usernames of the users in the chat
      * @return The chat containing all of the given users if it exists, or null otherwise
      */
-    public Chat getChatContainingUsers(String[] usernames) {
+    public Chat getChatContainingUsers(List<String> usernames) {
+        // Precondition: There is only one chat between all the users in usernames
+
         for (int i=0; i<this.allChats.size(); i++) {
             Chat chat = this.allChats.get(i);
             boolean rightChat = true;
-            for (int j=0; j<usernames.length; j++) {
-                if (!chat.getMemberUsernames().contains(usernames[j])) {
+            for (int j=0; j<usernames.size(); j++) {
+                if (!chat.getMemberUsernames().contains(usernames.get(j))) {
                     rightChat = false;
                 }
             }
-            if (rightChat && chat.getMemberUsernames().size() == usernames.length) {
+            if (rightChat && chat.getMemberUsernames().size() == usernames.size()) {
                 return chat;
             }
         }
