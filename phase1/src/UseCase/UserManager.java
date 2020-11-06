@@ -15,6 +15,14 @@ public class UserManager {
     private List <Organizer> allOrganizer;
     private List <Speaker> allSpeaker;
 
+    public List<Attendee> getAllAttendee() {
+        return this.allAttendee;
+    }
+
+    public List<Speaker> getAllSpeaker() {
+        return this.allSpeaker;
+    }
+
     /**
      * Authorization of a user trying to log into their account
      *
