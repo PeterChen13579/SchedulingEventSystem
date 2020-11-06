@@ -15,7 +15,7 @@ import java.util.Optional;
 public class EventManager {
     private List<Event> allEvents;
 
-    /**---ask lisa if have concerns
+    /**
      * Create an Event object based on the parameters and add it into the list of allEvents variable.
      * @param title the title for the event
      * @param date the date for the event (YYYYMMDD)
@@ -57,7 +57,7 @@ public class EventManager {
      * @param startTime the start time for the potential event (HH:mm:ss)
      * @return true iff there is no date or time conflict with the already scheduled events and the new time
      */
-    public boolean isTimeAvaliable(String date, String startTime){
+    public boolean isTimeAvailable(String date, String startTime){
         //create LocalDateTime object for potential start time
         LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
         for (Event e : allEvents){
@@ -85,8 +85,8 @@ public class EventManager {
         }
         return false;
     }
-
-    public boolean isRoomAvaliableAtTime(String roomNum, String date, String startTime){
+    //checks if room exists and is available at the given time
+    public boolean isRoomAvailableAtTime(String roomNum, String date, String startTime){
         LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
         //check if room exists
         if (!doesRoomExist(roomNum)){
@@ -100,13 +100,55 @@ public class EventManager {
         }
         return true;
     }
+    //get a list of all the speakers that were going to perform
+    public List<String> getListOfSpeakers(){
+        List<String> speakers = new ArrayList<>();
+        for (Event e : allEvents){
+            if(!speakers.contains(e.getSpeakerUserName())){
+                speakers.add(e.getSpeakerUserName());
+            }
+        }
+        return speakers;
+    }
 
-    public boolean isSpeakerAvaliable();
+    //checks if speaker exists
+    public boolean doesSpeakerExist(String speakerUserName){
+        for(String speaker: getListOfSpeakers()){
+            if(speaker.equals(speakerUserName)) return true;
+        }
+        return false;
+    }
 
+    //checks if speaker is available at the given time
+    public boolean isSpeakerAvailableAtTime(String date, String startTime, String speakerUserName){
+        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
+        //checks if speaker exists
+        if (!doesSpeakerExist(speakerUserName)){
+            return false; //throw exception???
+        }
+        //check if speaker is booked at the time
+        for(Event e: allEvents){
+            if (e.getStartTime().isEqual(time) && e.getSpeakerUserName().equals(speakerUserName)){
+                return false;
+            }
+        }
+        return true;
+    }
 
     //returns true iff can add event, calls the above helper methods
     public boolean canAddEvent(String date, String startTime, String rmNum, String speakerUserName){
-        return isTimeAvaliable(date, startTime) && isRoomAvaliableAtTime(rmNum, date, startTime) && isSpeakerAvaliable();
+        return isTimeAvailable(date, startTime) && isRoomAvailableAtTime(rmNum, date, startTime) &&
+                isSpeakerAvailableAtTime(date, startTime, speakerUserName);
+    }
+
+    //checks if the event title is unique
+    public boolean isEventTitleUnique(String title){
+        for (Event e: allEvents){
+            if (e.getTitle() == title){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

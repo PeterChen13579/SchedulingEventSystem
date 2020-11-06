@@ -36,6 +36,17 @@ public class UserManager {
                 return user.getPassword().equals(enteredPassword);
             }
         }
+        for (User user : allOrganizer) {
+            if (user.getUsername().equals(enteredUsername)) {
+                return user.getPassword().equals(enteredPassword);
+            }
+        }
+        for (User user : allSpeaker) {
+            if (user.getUsername().equals(enteredUsername)) {
+                return user.getPassword().equals(enteredPassword);
+            }
+        }
+
         System.out.println("This user is not signed up into the system.");
         return false;
     }
