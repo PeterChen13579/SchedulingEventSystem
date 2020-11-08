@@ -58,7 +58,7 @@ public abstract class MessagingSystem {
             chatUsers.add(senderUsername);
             chatUsers.add(recipientUsername);
             Chat chat = this.userChatManager.getChatContainingUsers(chatUsers);
-            if (chat != null && chat.getAllMessages().size() != 0) {
+            if (chat != null && !this.userChatManager.isChatEmpty(chat)) {
                 this.sendMessageToUsers(recipients, senderUsername, time, content);
             } else {
                 MessagingPresenter.error("Speakers may only reply to a user that has already started the chat.");
@@ -131,7 +131,7 @@ public abstract class MessagingSystem {
 
     public void viewMessagesInChat(List<String> allUsers){      //allUsers is a list of usernames
         Chat userChats = userChatManager.getChatContainingUsers(allUsers);
-        MessagingPresenter.format(userChats.getAllMessages());
+        MessagingPresenter.format(userChatManager.getChatMessages(userChats));
     }
 
     public void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat

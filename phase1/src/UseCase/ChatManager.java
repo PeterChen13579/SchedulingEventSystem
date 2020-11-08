@@ -106,4 +106,22 @@ public class ChatManager {
     public List<Chat> getAllChats() {
         return this.allChats;
     }
+
+    /**
+     * Checks if a chat has no messages
+     * @param chat The chat being checked
+     * @return A boolean to represent whether or not the chat is empty
+     */
+    public boolean isChatEmpty(Chat chat) {
+        return chat.getAllMessages().size() == 0;
+    }
+
+    /**
+     * Get all messages of a chat
+     * @param chat The chat being looked at
+     * @return A list of all the messages in the chat
+     */
+    public List<Message> getChatMessages(Chat chat) {
+        return chat.getAllMessages();
+    }
 }
