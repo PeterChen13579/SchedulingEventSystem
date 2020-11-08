@@ -9,4 +9,8 @@ public class MessagePresenter {
     public void format(Object anything){
         //idk
     }
+
+    public void error(String errorMessage) {
+        //lol
+    }
 }

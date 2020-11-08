@@ -15,7 +15,7 @@ public class Reader {
      * @return a list of lists that contains all the data needed
      * @throws ClassNotFoundException
      */
-    public List<List> loadData(String filename) throws ClassNotFoundException {
+    public List<List> loadData(String filename) {
         List<List> results = new ArrayList<>(5);
         try {
             results.add(loadHelper("attendees.txt"));
