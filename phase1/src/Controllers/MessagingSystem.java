@@ -60,6 +60,8 @@ public abstract class MessagingSystem {
             Chat chat = this.userChatManager.getChatContainingUsers(chatUsers);
             if (chat != null && chat.getAllMessages().size() != 0) {
                 this.sendMessageToUsers(recipients, senderUsername, time, content);
+            } else {
+                MessagingPresenter.error("Speakers may only reply to a user that has already started the chat.");
             }
         } else {
             if (!(userManager.stringtoUser(recipientUsername) instanceof Organizer)) {
@@ -70,7 +72,7 @@ public abstract class MessagingSystem {
 
     public void organizerMessageAllAttendees(String senderUsername, LocalDateTime time, String content, UserManager userManager) {
         if (! (userManager.stringtoUser(senderUsername) instanceof Organizer)) {
-            return;
+            MessagingPresenter.error("Only organizers may perform this action.");
         }
 
         List<Attendee> allAttendees = userManager.getAllAttendee();
@@ -85,7 +87,7 @@ public abstract class MessagingSystem {
 
     public void organizerMessageAllSpeakers(String senderUsername, LocalDateTime time, String content, UserManager userManager) {
         if (! (userManager.stringtoUser(senderUsername) instanceof Organizer)) {
-            return;
+            MessagingPresenter.error("Only organizers may perform this action.");
         }
 
         List<Speaker> allSpeakers = userManager.getAllSpeaker();
@@ -100,7 +102,7 @@ public abstract class MessagingSystem {
 
     public void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content, UserManager userManager, EventManager eventManager) {
         if (! (userManager.stringtoUser(senderUsername) instanceof Speaker)) {
-            return;
+            MessagingPresenter.error("Only speakers may perform this action.");
         }
 
         List<Event> allEvents = eventManager.getAllEvents();
