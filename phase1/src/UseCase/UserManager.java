@@ -179,5 +179,17 @@ public class UserManager {
         return a.addFriend(b);
     }
 
+    /**
+     * Return whether a Speaker object with the given username has been created
+     * @param speakerUserName the username of the speaker
+     * @return true iff speaker exists; false otherwise
+     */
+    public boolean doesSpeakerExist(String speakerUserName){
+        for(Speaker speaker: allSpeaker){
+            if(speaker.getUsername().equals(speakerUserName)) return true;
+        }
+        return false;
+    }
+
 
 }
