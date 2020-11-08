@@ -4,16 +4,22 @@ import Entities.Message;
 import UseCase.ChatManager;
 import UseCase.UserManager;
 import Presenters.MessagePresenter;
-
 import java.time.LocalDateTime;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Dictionary;
 
+/**
+ * Abstract class for the Messaging system. It can message users and view chats/messages.
+ * @author William Wang
+ */
 public abstract class MessagingSystem {
     ChatManager userChatManager;
     MessagePresenter MessagingPresenter;
 
+    /**
+     * Creates the Messaging System
+     */
     public MessagingSystem(){
         this.userChatManager = new ChatManager();
         this.MessagingPresenter = new MessagePresenter();
@@ -31,7 +37,7 @@ public abstract class MessagingSystem {
         MessagingPresenter.format(userChats.getAllMessages());
     }
 
-    public void viewAllNewMessages(String userName){   //Will probably be formatted to be seperate the messages by chat
+    public void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
         List<Chat> userChats = userChatManager.getUserChats(userName);
         Dictionary<Chat, List<Message>> newMessages = new Hashtable<>();
         for (Chat i: userChats){
