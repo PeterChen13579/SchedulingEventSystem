@@ -1,9 +1,7 @@
 package UseCase;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import Entities.Event;
 import Entities.Room;
 
 /**
@@ -12,14 +10,8 @@ import Entities.Room;
 public class RoomManager {
     private List<Room> allRoom;
 
-    public boolean createRoom(String roomNum){
-        if(!doesRoomExist(roomNum)){
-            allRoom.add(new Room(roomNum));
-            return true;
-        }
-        else{
-            return false;
-        }
+    public void createRoom(String roomNum){
+        allRoom.add(new Room(roomNum));
     }
 
     public boolean doesRoomExist(String roomNum){
