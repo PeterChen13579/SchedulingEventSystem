@@ -15,6 +15,14 @@ public class UserManager {
     private List <Organizer> allOrganizer;
     private List <Speaker> allSpeaker;
 
+    public List<Attendee> getAllAttendee() {
+        return this.allAttendee;
+    }
+
+    public List<Speaker> getAllSpeaker() {
+        return this.allSpeaker;
+    }
+
     /**
      * Authorization of a user trying to log into their account
      *
@@ -28,6 +36,17 @@ public class UserManager {
                 return user.getPassword().equals(enteredPassword);
             }
         }
+        for (User user : allOrganizer) {
+            if (user.getUsername().equals(enteredUsername)) {
+                return user.getPassword().equals(enteredPassword);
+            }
+        }
+        for (User user : allSpeaker) {
+            if (user.getUsername().equals(enteredUsername)) {
+                return user.getPassword().equals(enteredPassword);
+            }
+        }
+
         System.out.println("This user is not signed up into the system.");
         return false;
     }

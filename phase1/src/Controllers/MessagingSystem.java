@@ -2,8 +2,10 @@ package Controllers;
 import Entities.Chat;
 import Entities.Message;
 import UseCase.ChatManager;
+import UseCase.UserManager;
 import Presenters.MessagePresenter;
 
+import java.time.LocalDateTime;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Dictionary;
@@ -17,7 +19,7 @@ public abstract class MessagingSystem {
         this.MessagingPresenter = new MessagePresenter();
     }
 
-    abstract void MessageUsers(); // subclasses should implement this method in a way that enforces the program's rules
+    abstract void messageUsers(String senderUsername, List<String> recipientUsernames, LocalDateTime time, String content, ChatManager manager, UserManager userManager); // subclasses should implement this method in a way that enforces the program's rules
 
     public void viewChats(String userName){
         List<Chat> userChats = userChatManager.getUserChats(userName); //might change the method since it might be redundant in the use case
