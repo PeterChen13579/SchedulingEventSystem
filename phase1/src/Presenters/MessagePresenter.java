@@ -1,4 +1,5 @@
 package Presenters;
+import java.util.List;
 
 public class MessagePresenter {
 
@@ -12,5 +13,9 @@ public class MessagePresenter {
 
     public void error(String errorMessage) {
         //lol
+    }
+
+    public void displayOptions(List<String> options){
+        //idk
     }
 }
