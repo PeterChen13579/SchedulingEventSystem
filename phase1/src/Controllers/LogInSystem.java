@@ -2,6 +2,7 @@ package Controllers;
 
 import java.io.Serializable;
 import UseCase.UserManager;
+import Entities.User;
 
 /**
  * How Users or any type are able to login into the app.
@@ -26,5 +27,14 @@ public class LogInSystem implements Serializable {
             }
         }
         return verified; //Not sure what to return right now, need to see how the UI menu looks.
+    }
+
+    /**
+     * When a User logs in, the system should recognize what kind of User they are and provide the appropriate menu
+     * @return
+     */
+    public User verifyUserType(String enteredUsername) {
+        return null;
+        }
     }
 }
