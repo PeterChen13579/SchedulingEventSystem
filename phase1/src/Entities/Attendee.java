@@ -7,6 +7,12 @@ import java.util.List;
 public class Attendee extends User {
     private List <String> eventNames;
 
+
+    public List<String> getEventNames(){
+        return eventNames;
+    }
+
+
     public Attendee(String username, String password){
         super(username, password);
     }
