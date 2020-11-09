@@ -1,6 +1,7 @@
 package UseCase;
 
 import Entities.Event;
+import Entities.Room;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -137,7 +138,7 @@ public class EventManager {
 
 
     //return true if the event is in allEvents
-    private boolean isEventExist(String eventTitle){
+    public boolean isEventExist(String eventTitle){
         for(Event event:allEvents){
             if (event.getTitle().equals(eventTitle)){return true;}
         }
@@ -145,14 +146,14 @@ public class EventManager {
     }
 
     //return true if the attendee is already in attendeeList stored in this event
-    private boolean isAttendeeAdded(String userName, String eventTitle){
+    public boolean isAttendeeAdded(String userName, String eventTitle){
         Event event = helperEventTitle(eventTitle);
         return event.getAttendeeList().contains(userName);
     }
 
     //return true if can add attendee. calls the above helper methods
     public boolean canAddAttendee(String userName, String eventTitle){
-        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle);
+        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle) && roomNotFull(eventTitle);
     }
 
 
@@ -176,6 +177,13 @@ public class EventManager {
             }
         }
         throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
+    }
+
+    public boolean roomNotFull(String eventTitle){
+        Event event = helperEventTitle(eventTitle);
+        int attendeeNum = event.getAttendeeList().size();
+        Room exampleRoom = new Room("exampleRoom");
+        return exampleRoom.getCapacity() > attendeeNum;
     }
 
     /**

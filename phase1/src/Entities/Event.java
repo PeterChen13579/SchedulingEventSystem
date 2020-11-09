@@ -19,7 +19,7 @@ public class Event implements Serializable {
     this.endTime = endTime;
     this.roomNum = roomNum;
     this.speakerUserName = speakerUserName;
-    this.attendeeList = new ArrayList<>(new Room(roomNum).getCapacity());
+    this.attendeeList = new ArrayList<>();
     }
 
     /**
