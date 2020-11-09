@@ -121,7 +121,33 @@ public class ChatManager {
      * @param chat The chat being looked at
      * @return A list of all the messages in the chat
      */
-    public List<Message> getChatMessages(Chat chat) {
+    public List<Message> getChatMessages(String username, Chat chat) {
+        List<Message> allMessages = chat.getAllMessages();
+        chat.setLastViewedMessage(username, allMessages.get(allMessages.size()-1));
         return chat.getAllMessages();
+    }
+
+    public String getChatName(Chat chat) {
+        return chat.getChatName();
+    }
+
+    public void setChatName(Chat chat, String newName) {
+        chat.setChatName(newName);
+    }
+
+    public void addUserToChat(Chat chat, String user) {
+        chat.addUser(user);
+    }
+
+    public String getMessageSenderUsername(Message message) {
+        return message.getSenderUsername();
+    }
+
+    public LocalDateTime getMessageTimeStamp(Message message) {
+        return message.getTimeStamp();
+    }
+
+    public String getMessageContent(Message message) {
+        return message.getContent();
     }
 }

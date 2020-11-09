@@ -129,9 +129,9 @@ public abstract class MessagingSystem {
         MessagingPresenter.format(userChats);
     }
 
-    public void viewMessagesInChat(List<String> allUsers){      //allUsers is a list of usernames
+    public void viewMessagesInChat(String username, List<String> allUsers) {      //allUsers is a list of usernames
         Chat userChats = userChatManager.getChatContainingUsers(allUsers);
-        MessagingPresenter.format(userChatManager.getChatMessages(userChats));
+        MessagingPresenter.format(userChatManager.getChatMessages(username, userChats));
     }
 
     public void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
@@ -143,8 +143,5 @@ public abstract class MessagingSystem {
         }
         MessagingPresenter.format(newMessages);
     }
-
-
-
 
 }
