@@ -18,4 +18,8 @@ public class MessagePresenter {
     public void displayOptions(List<String> options){
         //idk
     }
+
+    public void displayMessage(String message) {
+
+    }
 }

@@ -20,13 +20,17 @@ import java.util.Arrays;
 public class MessagingSystem {
     ChatManager userChatManager;
     MessagePresenter MessagingPresenter;
+    UserManager userManager;
+    EventManager eventManager;
 
     /**
      * Creates the Messaging System
      */
-    public MessagingSystem(){
+    public MessagingSystem(UserManager userManager, EventManager eventManager) {
         this.userChatManager = new ChatManager();
         this.MessagingPresenter = new MessagePresenter();
+        this.userManager = userManager;
+        this.eventManager = eventManager;
     }
 
     /**
@@ -35,63 +39,72 @@ public class MessagingSystem {
      * @param userName The username of the current user
      */
     public void run(String userType, String userName){
-        if (userType.equals("Attendee")){
-            runAttendee(userName);
-        } else if (userType.equals("Organizer")){
-            runOrganizer(userName);
-        } else if (userType.equals("Speaker")){
-            runSpeaker(userName);
-        } else {
-            MessagingPresenter.error("User type doesn't exist. User treated as Attendee.");
-            runAttendee(userName);
-        }
-    }
 
-    /**
-     * Helper method for the run method. Runs the messaging features availible for only attendees
-     * @param userName
-     */
-    private void runAttendee(String userName){
         List<String> options = new ArrayList<String>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit"));
         MessagingPresenter.displayOptions(options);
 
         Scanner input = new Scanner(System.in); // used for getting input from keyboard
-        String choice = input.nextLine(); //get input from keyboard
+        String choice = ""; //get input from keyboard
         while (!choice.equals("4")){
+            choice = input.nextLine();
             if (choice.equals("1")){
                 String newChoice;
                 do {
+                    this.MessagingPresenter.displayMessage("Press q to go go back.");
                     viewChatNames(userName);
                     chatInteraction(userName);  //this will lead to a new menu where the user can interact with the chats
                     newChoice = input.nextLine();
-                } while (!newChoice.equals("back")); //will probably change this
-            } else if (choice.equals("2")) {
-                // do some shit
-                // think this should prompt the user for a username and it will find the corresponding chat and show it to the user before sending
-                // this might be unnecessary since view chats already shows an option to send
+                } while (!newChoice.equals("0"));
+            } else if (choice.equals("q")) {
+                String choice2 = "";
+                boolean completed = false;
+                List<String> options2 = new ArrayList<String>(Arrays.asList("1.Message one user", "2.Message all attendees", "3.Message all speakers", "4.Messge all attendees of your events", "5.Cancel"));
+                MessagingPresenter.displayOptions(options2);
+                while (!completed && !choice2.equals("5")) {
+                    choice2 = input.nextLine();
+                    if (choice2.equals("1")) {
+                        MessagingPresenter.displayMessage("Please enter the username of the user you'd like to message.");
+                        String recipient = input.nextLine();
+                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        String content = input.nextLine();
+                        this.messageOneUser(userName, recipient, LocalDateTime.now(),content);
+                        completed = true;
+                    } else if (choice2.equals("2")) {
+                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        String content = input.nextLine();
+                        this.organizerMessageAllAttendees(userName, LocalDateTime.now(), content);
+                        completed = true;
+                    } else if (choice2.equals("3")) {
+                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        String content = input.nextLine();
+                        this.organizerMessageAllSpeakers(userName, LocalDateTime.now(), content);
+                        completed = true;
+                    } else if (choice2.equals("4")) {
+                        MessagingPresenter.displayMessage("Please enter a list of titles of the events, each title separated by one space.");
+                        List<String> titles = Arrays.asList(input.nextLine().split(" "));
+                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        String content = input.nextLine();
+                        this.speakerMessageEventAttendees(userName, titles, LocalDateTime.now(), content);
+                        completed = true;
+                    } else {
+                        MessagingPresenter.error("Please enter a number from 1 to 5.");
+                    }
+                }
             } else if (choice.equals("3")){
                 viewAllNewMessages(userName);
                 String goBack = input.nextLine();  //Press any key to go back (have to click enter after keypress), probably will need to call presenter
             } else{
-                MessagingPresenter.error("Please enter a number from 1 to 4");
+                MessagingPresenter.error("Please enter a number from 1 to 4.");
             }
             MessagingPresenter.displayOptions(options);
             choice = input.nextLine();
         }
         input.close();
-
     }
 
-    private void runOrganizer(String userName){
-
-    }
-
-    private void runSpeaker(String userName){
-
-    }
 
     /**
-     * Helper method for viewing chats in RunAttendee
+     * Helper method for viewing chats in run
      * @param userName The username of the current user
      */
     private void chatInteraction(String userName) {
@@ -99,10 +112,10 @@ public class MessagingSystem {
         List<Chat> userChats = userChatManager.getUserChats(userName);
         int numChats = userChats.size();
 
-        //Will probably have to ask the user which chat they want to go to first
+        this.MessagingPresenter.displayMessage("Please enter the number of the chat that you would like to view.");
         String chatChoice = input.nextLine();  //choose a number for which chat to go to
         Chat chosenChat = userChats.get(Integer.parseInt(chatChoice) - 1);
-        viewMessagesInChat(userName, chosenChat.getMemberUsernames()); // will probably change so it calls use case method
+        viewMessagesInChat(userName, this.userChatManager.getChatMemberUsernames(chosenChat));
 
 //        List<String> options = new ArrayList<String>(Arrays.asList("1.Send Message", "2.Go back"));
 //        MessagingPresenter.displayOptions(options);
@@ -174,13 +187,20 @@ public class MessagingSystem {
             }
             this.userChatManager.sendMessageToChat(chat, senderUsername, time, content);
         }
+        this.MessagingPresenter.displayMessage("Message sent!");
     }
 
-    public void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content, UserManager userManager) {
+    public void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content) {
         List<String> recipients = new ArrayList<String>();
         recipients.add(recipientUsername);
+        User sender = this.userManager.stringtoUser(senderUsername);
 
-        if (userManager.stringtoUser(senderUsername) instanceof Speaker) {
+        if (this.userManager.stringtoUser(recipientUsername) == null) {
+            MessagingPresenter.error("Invalid recipient.");
+            return;
+        }
+
+        if (sender instanceof Speaker) {
             List<String> chatUsers = new ArrayList<String>();
             chatUsers.add(senderUsername);
             chatUsers.add(recipientUsername);
@@ -190,19 +210,23 @@ public class MessagingSystem {
             } else {
                 MessagingPresenter.error("Speakers may only reply to a user that has already started the chat.");
             }
-        } else {
-            if (!(userManager.stringtoUser(recipientUsername) instanceof Organizer)) {
+        } else if (sender instanceof Attendee || sender instanceof Organizer) {
+            if (!(this.userManager.stringtoUser(recipientUsername) instanceof Organizer)) {
                 this.sendMessageToUsers(recipients, senderUsername, time, content);
+            } else {
+                MessagingPresenter.error("You may not message an organizer.");
             }
+        } else {
+            MessagingPresenter.error("Invalid sender username.");
         }
     }
 
-    public void organizerMessageAllAttendees(String senderUsername, LocalDateTime time, String content, UserManager userManager) {
-        if (! (userManager.stringtoUser(senderUsername) instanceof Organizer)) {
+    public void organizerMessageAllAttendees(String senderUsername, LocalDateTime time, String content) {
+        if (! (this.userManager.stringtoUser(senderUsername) instanceof Organizer)) {
             MessagingPresenter.error("Only organizers may perform this action.");
         }
 
-        List<Attendee> allAttendees = userManager.getAllAttendee();
+        List<Attendee> allAttendees = this.userManager.getAllAttendee();
         List<String> recipients = new ArrayList<String>();
 
         for (Attendee attendee: allAttendees) {
@@ -212,12 +236,12 @@ public class MessagingSystem {
         this.sendMessageToUsers(recipients, senderUsername, time, content);
     }
 
-    public void organizerMessageAllSpeakers(String senderUsername, LocalDateTime time, String content, UserManager userManager) {
-        if (! (userManager.stringtoUser(senderUsername) instanceof Organizer)) {
+    public void organizerMessageAllSpeakers(String senderUsername, LocalDateTime time, String content) {
+        if (! (this.userManager.stringtoUser(senderUsername) instanceof Organizer)) {
             MessagingPresenter.error("Only organizers may perform this action.");
         }
 
-        List<Speaker> allSpeakers = userManager.getAllSpeaker();
+        List<Speaker> allSpeakers = this.userManager.getAllSpeaker();
         List<String> recipients = new ArrayList<String>();
 
         for (Speaker speaker: allSpeakers) {
@@ -227,23 +251,32 @@ public class MessagingSystem {
         this.sendMessageToUsers(recipients, senderUsername, time, content);
     }
 
-    public void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content, UserManager userManager, EventManager eventManager) {
-        if (! (userManager.stringtoUser(senderUsername) instanceof Speaker)) {
+    public void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content) {
+        if (! (this.userManager.stringtoUser(senderUsername) instanceof Speaker)) {
             MessagingPresenter.error("Only speakers may perform this action.");
         }
 
-        List<Event> allEvents = eventManager.getAllEvents();
+        List<Event> allEvents = this.eventManager.getAllEvents();
         List<String> recipients = new ArrayList<String>();
 
         for (String title: eventTitles) {
+            boolean found = false;
             for (Event event : allEvents) {
                 if (event.getTitle().equals(title)) {
-                    for (String recipient: event.getAttendeeList()) {
-                        if (!recipients.contains(recipient)) {
-                            recipients.add(recipient);
+                    if (event.getSpeakerUserName().equals(senderUsername)) {
+                        found = true;
+                        for (String recipient: event.getAttendeeList()) {
+                            if (!recipients.contains(recipient)) {
+                                recipients.add(recipient);
+                            }
                         }
+                    } else {
+                        this.MessagingPresenter.error("Sender is not the speaker of " + title);
                     }
                 }
+            }
+            if (!found) {
+                this.MessagingPresenter.error("No event with title " + title + " found.");
             }
         }
 

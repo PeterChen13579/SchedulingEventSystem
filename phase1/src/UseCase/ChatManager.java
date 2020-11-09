@@ -131,9 +131,14 @@ public class ChatManager {
         return chat.getChatName();
     }
 
+    public List<String> getChatMemberUsernames(Chat chat) {
+        return chat.getMemberUsernames();
+    }
+
     public void setChatName(Chat chat, String newName) {
         chat.setChatName(newName);
     }
+
 
     public void addUserToChat(Chat chat, String user) {
         chat.addUser(user);
