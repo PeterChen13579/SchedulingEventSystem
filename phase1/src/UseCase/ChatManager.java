@@ -38,27 +38,10 @@ public class ChatManager {
      * @param content The content of the message
      */
     public void sendMessageToChat(Chat chat, String senderUsername, LocalDateTime time, String content) {
+        // Precondition: senderUsername is in this chat
         Message message = new Message(senderUsername, time, content);
-        chat.getAllMessages().add(message);
-    }
-
-    /**
-     * Send a message to a list of users
-     * @param usernames The usernames that the message is being sent to
-     * @param senderUsername The username of the sender
-     * @param time The time the message was sent
-     * @param content The content of the message
-     */
-    public void sendMessageToUsers(String[] usernames, String senderUsername, LocalDateTime time, String content) {
-
-        for (int i=0; i<usernames.length; i++) {
-            String[] thisChatUsernames = new String[] {senderUsername, usernames[i]};
-            Chat chat = this.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
-            if (chat == null) {
-                chat = this.createChat(Arrays.asList(thisChatUsernames)); // If no such chat exists, create it
-            }
-            this.sendMessageToChat(chat, senderUsername, time, content);
-        }
+        chat.addChatMessage((message));
+        chat.setLastViewedMessage(senderUsername, message);
     }
 
     /**
@@ -66,16 +49,18 @@ public class ChatManager {
      * @param usernames A list of the usernames of the users in the chat
      * @return The chat containing all of the given users if it exists, or null otherwise
      */
-    public Chat getChatContainingUsers(String[] usernames) {
+    public Chat getChatContainingUsers(List<String> usernames) {
+        // Precondition: There is only one chat between all the users in usernames
+
         for (int i=0; i<this.allChats.size(); i++) {
             Chat chat = this.allChats.get(i);
             boolean rightChat = true;
-            for (int j=0; j<usernames.length; j++) {
-                if (!chat.getMemberUsernames().contains(usernames[j])) {
+            for (int j=0; j<usernames.size(); j++) {
+                if (!chat.getMemberUsernames().contains(usernames.get(j))) {
                     rightChat = false;
                 }
             }
-            if (rightChat && chat.getMemberUsernames().size() == usernames.length) {
+            if (rightChat && chat.getMemberUsernames().size() == usernames.size()) {
                 return chat;
             }
         }
@@ -120,5 +105,54 @@ public class ChatManager {
      */
     public List<Chat> getAllChats() {
         return this.allChats;
+    }
+
+    /**
+     * Checks if a chat has no messages
+     * @param chat The chat being checked
+     * @return A boolean to represent whether or not the chat is empty
+     */
+    public boolean isChatEmpty(Chat chat) {
+        return chat.getAllMessages().size() == 0;
+    }
+
+    /**
+     * Get all messages of a chat
+     * @param chat The chat being looked at
+     * @return A list of all the messages in the chat
+     */
+    public List<Message> getChatMessages(String username, Chat chat) {
+        List<Message> allMessages = chat.getAllMessages();
+        chat.setLastViewedMessage(username, allMessages.get(allMessages.size()-1));
+        return chat.getAllMessages();
+    }
+
+    public String getChatName(Chat chat) {
+        return chat.getChatName();
+    }
+
+    public List<String> getChatMemberUsernames(Chat chat) {
+        return chat.getMemberUsernames();
+    }
+
+    public void setChatName(Chat chat, String newName) {
+        chat.setChatName(newName);
+    }
+
+
+    public void addUserToChat(Chat chat, String user) {
+        chat.addUser(user);
+    }
+
+    public String getMessageSenderUsername(Message message) {
+        return message.getSenderUsername();
+    }
+
+    public LocalDateTime getMessageTimeStamp(Message message) {
+        return message.getTimeStamp();
+    }
+
+    public String getMessageContent(Message message) {
+        return message.getContent();
     }
 }

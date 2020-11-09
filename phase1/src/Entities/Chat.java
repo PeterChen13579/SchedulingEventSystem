@@ -1,11 +1,9 @@
 package Entities;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Dictionary;
-import Entities.Message;
 
 /**
  * A chat in our program. It stores info related to chats and preforms operations on chats (ex. sending messages).
@@ -48,20 +46,6 @@ public class Chat implements Serializable {
         // Preconditions : Username is in this chat
         return lastViewedMessage.get(username);   //If there are no messages in this chat, this will return null
     }
-
-    //Method moved to use case
-//    /**
-//     * getter for new messages for a user
-//     * @param username The username of the user who has not seen the new messages
-//     * @return The new messages in the chat
-//     */
-//    public List<Message> getNewMessages(String username){
-//        // Preconditions : Username is in this chat, chatMessages is sorted by date/time,
-//        // and the chat has at least 1 message.
-//        Message seenMessage = lastViewedMessage.get(username);
-//        int newMessageIndex = chatMessages.indexOf(seenMessage) + 1;
-//        return chatMessages.subList(newMessageIndex, chatMessages.size()); // the use case needs to update the last viewed message after calling this
-//    }
 
     /**
      * getter for members in the chat

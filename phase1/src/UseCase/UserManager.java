@@ -1,4 +1,5 @@
 package UseCase;
+import java.util.ArrayList;
 import java.util.List;
 import Entities.User;
 import Entities.Event;
@@ -11,9 +12,17 @@ import Entities.Speaker;
  *
  */
 public class UserManager {
-    private List <Attendee> allAttendee;
-    private List <Organizer> allOrganizer;
-    private List <Speaker> allSpeaker;
+    private List <Attendee> allAttendee = new ArrayList<Attendee>();
+    private List <Organizer> allOrganizer = new ArrayList<Organizer>();
+    private List <Speaker> allSpeaker = new ArrayList<Speaker>();
+
+    public List<Attendee> getAllAttendee() {
+        return this.allAttendee;
+    }
+
+    public List<Speaker> getAllSpeaker() {
+        return this.allSpeaker;
+    }
 
     /**
      * Authorization of a user trying to log into their account
@@ -28,6 +37,17 @@ public class UserManager {
                 return user.getPassword().equals(enteredPassword);
             }
         }
+        for (User user : allOrganizer) {
+            if (user.getUsername().equals(enteredUsername)) {
+                return user.getPassword().equals(enteredPassword);
+            }
+        }
+        for (User user : allSpeaker) {
+            if (user.getUsername().equals(enteredUsername)) {
+                return user.getPassword().equals(enteredPassword);
+            }
+        }
+
         System.out.println("This user is not signed up into the system.");
         return false;
     }
@@ -73,6 +93,10 @@ public class UserManager {
      * @return          true if successfully created an attendee account. False otherwise.
      */
     public boolean createAttendeeAccount(String userName, String password){
+        if (allAttendee.size() == 0){
+            allAttendee.add(new Attendee(userName, password));
+            return true;
+        }
         for (User user: allAttendee){
             if (user.getUsername().equals(userName)) {
                 System.out.println("This Username has already been taken. Please enter another Username.");
@@ -92,6 +116,10 @@ public class UserManager {
      * @return          true if successfully created an organizer account. False otherwise
      */
     public boolean createOrganizerAccount(String userName, String password){
+        if (allOrganizer.size() == 0){
+            allOrganizer.add(new Organizer(userName, password));
+            return true;
+        }
         for (User user: allOrganizer){
             if (user.getUsername().equals(userName)) {
                 System.out.println("This Username has already been taken. Please enter another Username.");
@@ -111,6 +139,10 @@ public class UserManager {
      * @return            true if successfully created a speaker account. False otherwise
      */
     public boolean createSpeakerAccount(String userName, String password){
+        if (allSpeaker.size() == 0){
+            allSpeaker.add(new Speaker(userName, password));
+            return true;
+        }
         for (User user: allSpeaker){
             if (user.getUsername().equals(userName)) {
                 System.out.println("This Username has already been taken. Please enter another Username.");
@@ -158,6 +190,18 @@ public class UserManager {
      */
     public boolean addFriend(User a, User b){
         return a.addFriend(b);
+    }
+
+    /**
+     * Return whether a Speaker object with the given username has been created
+     * @param speakerUserName the username of the speaker
+     * @return true iff speaker exists; false otherwise
+     */
+    public boolean doesSpeakerExist(String speakerUserName){
+        for(Speaker speaker: allSpeaker){
+            if(speaker.getUsername().equals(speakerUserName)) return true;
+        }
+        return false;
     }
 
 
