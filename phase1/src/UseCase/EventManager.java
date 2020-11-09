@@ -28,6 +28,7 @@ public class EventManager {
         //create event & add to list
         Event event = new Event(title, time.get(0), time.get(1), rmNum, speakerUserName);
         allEvents.add(event);
+        //update speaker's list of events?
     }
 
     /**
@@ -53,22 +54,22 @@ public class EventManager {
         return Arrays.asList(sTime, eTime);
     }
 
-    /**
-     * Returns whether or not the given date and time already has an event booked in that interval
-     * @param date the date for the potential event (YYYYMMDD)
-     * @param startTime the start time for the potential event (HH:mm:ss)
-     * @return true iff there is no date or time conflict with the already scheduled events and the new time
-     */
-    public boolean isTimeAvailable(String date, String startTime){
-        //create LocalDateTime object for potential start time
-        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
-        for (Event e : allEvents){
-            if (e.getStartTime().isEqual(time)){
-                return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * Returns whether or not the given date and time already has an event booked in that interval
+//     * @param date the date for the potential event (YYYYMMDD)
+//     * @param startTime the start time for the potential event (HH:mm:ss)
+//     * @return true iff there is no date or time conflict with the already scheduled events and the new time
+//     */
+//    public boolean isTimeAvailable(String date, String startTime){
+//        //create LocalDateTime object for potential start time
+//        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
+//        for (Event e : allEvents){
+//            if (e.getStartTime().isEqual(time)){
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     /**
      * Returns whether or not the given start time is between 9am and 4pm
