@@ -7,14 +7,13 @@ import Presenters.MessagePresenter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Dictionary;
 import java.util.Scanner;
 import java.util.Arrays;
 
 /**
- * Class for the Messaging system. It can message users and view chats/messages.
+ * Messaging system for the program. It can message users and view chats/messages.
  * @author William Wang and Kailas Moon
  */
 public class MessagingSystem {
@@ -28,7 +27,14 @@ public class MessagingSystem {
      */
     public MessagingSystem(UserManager userManager, EventManager eventManager) {
         this.userChatManager = new ChatManager();
-        this.MessagingPresenter = new MessagePresenter();
+        this.MessagingPresenter = new MessagePresenter(userChatManager);
+        this.userManager = userManager;
+        this.eventManager = eventManager;
+    }
+
+    public MessagingSystem(ChatManager chatManager, UserManager userManager, EventManager eventManager) {
+        this.userChatManager = chatManager;
+        this.MessagingPresenter = new MessagePresenter(userChatManager);
         this.userManager = userManager;
         this.eventManager = eventManager;
     }
@@ -40,7 +46,7 @@ public class MessagingSystem {
      */
     public void run(String userType, String userName){
 
-        List<String> options = new ArrayList<String>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit"));
+        List<String> options = new ArrayList<>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit"));
         MessagingPresenter.displayOptions(options);
 
         Scanner input = new Scanner(System.in); // used for getting input from keyboard
@@ -50,7 +56,7 @@ public class MessagingSystem {
             if (choice.equals("1")){
                 String newChoice;
                 do {
-                    this.MessagingPresenter.displayMessage("Press q to go go back.");
+                    this.MessagingPresenter.displayConsoleMessage("Press q to go go back.");
                     viewChatNames(userName);
                     chatInteraction(userName);  //this will lead to a new menu where the user can interact with the chats
                     newChoice = input.nextLine();
@@ -63,26 +69,26 @@ public class MessagingSystem {
                 while (!completed && !choice2.equals("5")) {
                     choice2 = input.nextLine();
                     if (choice2.equals("1")) {
-                        MessagingPresenter.displayMessage("Please enter the username of the user you'd like to message.");
+                        MessagingPresenter.displayConsoleMessage("Please enter the username of the user you'd like to message.");
                         String recipient = input.nextLine();
-                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        MessagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
                         String content = input.nextLine();
                         this.messageOneUser(userName, recipient, LocalDateTime.now(),content);
                         completed = true;
                     } else if (choice2.equals("2")) {
-                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        MessagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
                         String content = input.nextLine();
                         this.organizerMessageAllAttendees(userName, LocalDateTime.now(), content);
                         completed = true;
                     } else if (choice2.equals("3")) {
-                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        MessagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
                         String content = input.nextLine();
                         this.organizerMessageAllSpeakers(userName, LocalDateTime.now(), content);
                         completed = true;
                     } else if (choice2.equals("4")) {
-                        MessagingPresenter.displayMessage("Please enter a list of titles of the events, each title separated by one space.");
+                        MessagingPresenter.displayConsoleMessage("Please enter a list of titles of the events, each title separated by one space.");
                         List<String> titles = Arrays.asList(input.nextLine().split(" "));
-                        MessagingPresenter.displayMessage("Please enter the message you'd like to send.");
+                        MessagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
                         String content = input.nextLine();
                         this.speakerMessageEventAttendees(userName, titles, LocalDateTime.now(), content);
                         completed = true;
@@ -112,7 +118,7 @@ public class MessagingSystem {
         List<Chat> userChats = userChatManager.getUserChats(userName);
         int numChats = userChats.size();
 
-        this.MessagingPresenter.displayMessage("Please enter the number of the chat that you would like to view.");
+        this.MessagingPresenter.displayConsoleMessage("Please enter the number of the chat that you would like to view.");
         String chatChoice = input.nextLine();  //choose a number for which chat to go to
         Chat chosenChat = userChats.get(Integer.parseInt(chatChoice) - 1);
         viewMessagesInChat(userName, this.userChatManager.getChatMemberUsernames(chosenChat));
@@ -158,7 +164,7 @@ public class MessagingSystem {
      */
     public void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
         List<Chat> userChats = userChatManager.getUserChats(userName);
-        Dictionary<Chat, List<Message>> newMessages = new Hashtable<>();
+        HashMap<Chat, List<Message>> newMessages = new HashMap<>();
         for (Chat i: userChats){
             List<Message> chatNewMessages = userChatManager.getNewMessages(userName, i);
             newMessages.put(i, chatNewMessages);
@@ -187,7 +193,7 @@ public class MessagingSystem {
             }
             this.userChatManager.sendMessageToChat(chat, senderUsername, time, content);
         }
-        this.MessagingPresenter.displayMessage("Message sent!");
+        this.MessagingPresenter.displayConsoleMessage("Message sent!");
     }
 
     public void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content) {

@@ -1,5 +1,12 @@
 package Controllers;
 
+import Entities.Attendee;
+import Entities.Chat;
+import Entities.Event;
+import Entities.Organizer;
+import Entities.Room;
+import Entities.Speaker;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,32 +22,47 @@ public class Reader {
      * @return a list of lists that contains all the data needed
      * @throws ClassNotFoundException
      */
-    public List<List> loadData(String filename) {
-        List<List> results = new ArrayList<>(5);
-        try {
-            results.add(loadHelper("attendees.txt"));
-        } catch(ClassNotFoundException e) {
-            System.out.println("loadData");
+    public List loadData(String filename) {
+        List results = new ArrayList<>(5);
+        if (verifySave("file")) {
+            try {
+                results.add(loadHelper(filename));
+            } catch (ClassNotFoundException e) {
+                System.out.println("loadData");
+            }
         }
         return results;
     }
 
+    private boolean verifySave(String filename) {
+        File attendee = new File("attendees.txt");
+        File organizer = new File("organizers.txt");
+        File speaker = new File("speakers.txt");
+        File room = new File("rooms.txt");
+        File event = new File("events.txt");
+        File chat = new File("chats.txt");
+        return (attendee.exists() && organizer.exists() && speaker.exists() && room.exists() &&
+                event.exists() && chat.exists());
+    }
+
     private List loadHelper(String filename) throws ClassNotFoundException {
+        File file = new File(filename);
         ArrayList helper = new ArrayList();
         try {
-            InputStream file = new FileInputStream("attendees.txt");
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
+            if (file.length() != 0) {
+                InputStream inputFile = new FileInputStream(file);
+                InputStream buffer = new BufferedInputStream(inputFile);
+                ObjectInput input = new ObjectInputStream(buffer);
 
-            //Repeat this 5 times?? to read all 5 lists that are stored
-            List temp = (List) input.readObject();
-            helper.add(temp);
-            input.close();
+                helper = (ArrayList) input.readObject();
+                input.close();
+            }
         } catch (IOException e) {
             System.out.println(":(");
         } catch (ClassNotFoundException h) {
             System.out.println(":(((");
         }
+        System.out.println(helper);
         return helper;
     }
 

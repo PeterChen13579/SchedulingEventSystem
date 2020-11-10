@@ -15,6 +15,10 @@ public class LogInSystem implements Serializable {
     UserManager um;
     private boolean verified = false;
 
+    public LogInSystem(UserManager userManager) {
+        um =userManager;
+    }
+
     public void run() {
         InputStreamReader r = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(r);

@@ -1,55 +1,53 @@
 package Presenters;
-import UseCase.UserManager;
-
-import java.util.Scanner;
+import Controllers.UserMenuOptions;
 
 public class UserMenu {
-    private Scanner input;
-    private String temp;
-    private boolean terminate;
+    private static UserMenuOptions userMenuOptions;
+    private int currentState;
 
     public UserMenu() {
-        input = new Scanner(System.in);
-        temp = new String("0");
-        terminate = false;
-
-        System.out.println("(1) Log In \n (2) Create Attendee Account \n (3) Create Organizer Account" +
-                "\n (4) Quit");
-        while (!terminate) {
-            temp = input.nextLine();
-            if (temp.equals("1")) {
-                //add login method here
-                System.out.println("log in");
-                terminate = true;
-            } else if (temp.equals("2")) {
-                //add create attendee account here
-                System.out.println("Please enter a Username:");
-                String userName = input.nextLine();
-                System.out.println("Please enter a Password.");
-                String password = input.nextLine();
-
-                UserManager manage = new UserManager();
-                if (manage.createAttendeeAccount(userName, password)){
-                    //Created successfully
-                    System.out.println("You successfully created your account.");
-                }else{
-                    System.out.println("This Username is already registered.");
-                    System.out.println("Please try again");
-                }
-                terminate = true;
-            } else if (temp.equals("3")) {
-                System.out.println("organizer account");
-                terminate = true;
-            } else if (temp.equals("4")) {
-                System.out.println("quit");
-                terminate = true;
-            } else {
-                System.out.println("try again");
-            }
-        }
-        new UserMenu();
+        userMenuOptions = new UserMenuOptions();
+        currentState = 2;
+        loadOrNot();
     }
 
+    private void loadOrNot() {
+        System.out.println("(1) Load Existing Conference \n (2) Create New Conference");
+        userMenuOptions.load();
+        signInMenu();
+    }
 
+    private void signInMenu() {
+            System.out.println("""
+                    (1) Log In
+                    (2) Create Attendee Account
+                    (3) Create Organizer Account
+                    (4) Quit""");
+            currentState = userMenuOptions.logInSignUp();
+        if (currentState == 1) {
+            System.out.println("temp log in");
+            loggedInMenu();
+        }
+        if (currentState == 3) {
+            System.out.println("saved");
+            userMenuOptions.saveProgram();
+        }
+    }
+
+    private void loggedInMenu() {
+        //all options for attendees/organizers/speakers
+    }
+
+    private void messageMenu() {
+        //all options for messaging
+    }
+
+    private void schedulingMenu() {
+        //all options for scheduling
+    }
+
+    private void signUpMenu() {
+        //all options for signing up
+    }
 
 }
