@@ -6,13 +6,11 @@ import UseCase.RoomManager;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
+import java.time.format.FormatStyle;
+import java.util.*;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 
 public class EventManager {
     private List<Event> allEvents;
@@ -240,5 +238,25 @@ public class EventManager {
         List<String> currAttendee = event.getAttendeeList();
         currAttendee.remove(attendeeUserName);
         event.setAttendeeList(currAttendee);
+    }
+
+
+    public List<String> getAllEventTitle(){
+        List<String> eventList = new ArrayList<>();
+        for(Event event: allEvents){
+            eventList.add(event.getTitle());
+        }
+        return eventList;
+    }
+
+    public String getEventInfo(String eventTitle){
+        Event event = helperEventTitle(eventTitle);
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
+        String startTime = event.getStartTime().format(formatter);
+        String endTime = event.getEndTime().format(formatter);
+        String speaker = event.getSpeakerUserName();
+        String roomNum = event.getRoomNum();
+        return eventTitle + ": start at" + startTime + "and end at" + endTime + "take place in room" + roomNum +
+                "with" + speaker +"who give the speech.";
     }
 }
