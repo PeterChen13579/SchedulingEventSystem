@@ -10,6 +10,7 @@ public class UserMenu {
         input = new Scanner(System.in);
         temp = new String("0");
         terminate = false;
+        run();
     }
 
     public void run() {
