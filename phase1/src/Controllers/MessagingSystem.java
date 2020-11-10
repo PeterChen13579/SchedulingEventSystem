@@ -64,7 +64,7 @@ public class MessagingSystem {
             } else if (choice.equals("q")) {
                 String choice2 = "";
                 boolean completed = false;
-                List<String> options2 = new ArrayList<String>(Arrays.asList("1.Message one user", "2.Message all attendees", "3.Message all speakers", "4.Messge all attendees of your events", "5.Cancel"));
+                List<String> options2 = new ArrayList<String>(Arrays.asList("1.Message one user", "2.Message all attendees", "3.Message all speakers", "4.Message all attendees of your events", "5.Cancel"));
                 MessagingPresenter.displayOptions(options2);
                 while (!completed && !choice2.equals("5")) {
                     choice2 = input.nextLine();
@@ -116,12 +116,12 @@ public class MessagingSystem {
     private void chatInteraction(String userName) {
         Scanner input = new Scanner(System.in);
         List<Chat> userChats = userChatManager.getUserChats(userName);
-        int numChats = userChats.size();
+        //int numChats = userChats.size();
 
         this.MessagingPresenter.displayConsoleMessage("Please enter the number of the chat that you would like to view.");
         String chatChoice = input.nextLine();  //choose a number for which chat to go to
         Chat chosenChat = userChats.get(Integer.parseInt(chatChoice) - 1);
-        viewMessagesInChat(userName, this.userChatManager.getChatMemberUsernames(chosenChat));
+        viewChat(userName, this.userChatManager.getChatMemberUsernames(chosenChat));
 
 //        List<String> options = new ArrayList<String>(Arrays.asList("1.Send Message", "2.Go back"));
 //        MessagingPresenter.displayOptions(options);
@@ -145,7 +145,7 @@ public class MessagingSystem {
      */
     public void viewChatNames(String userName){
         List<Chat> userChats = userChatManager.getUserChats(userName); //might change the method since it might be redundant in the use case
-        MessagingPresenter.format(userChats);
+        MessagingPresenter.displayChatNames(userChats);
     }
 
     /**
@@ -153,9 +153,9 @@ public class MessagingSystem {
      * @param username The username of the current user
      * @param allUsers All the users in the chat
      */
-    public void viewMessagesInChat(String username, List<String> allUsers) {      //allUsers is a list of usernames
-        Chat userChats = userChatManager.getChatContainingUsers(allUsers);
-        MessagingPresenter.format(userChatManager.getChatMessages(username, userChats));
+    public void viewChat(String username, List<String> allUsers) {      //allUsers is a list of usernames
+        Chat userChat = userChatManager.getChatContainingUsers(allUsers);
+        MessagingPresenter.displayChat(username, userChatManager.getChatName(userChat), userChatManager.getChatMessages(username, userChat));
     }
 
     /**
@@ -169,7 +169,7 @@ public class MessagingSystem {
             List<Message> chatNewMessages = userChatManager.getNewMessages(userName, i);
             newMessages.put(i, chatNewMessages);
         }
-        MessagingPresenter.format(newMessages);
+        MessagingPresenter.displayNewMessages(newMessages);
     }
     
     /**
