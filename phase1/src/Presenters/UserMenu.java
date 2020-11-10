@@ -18,11 +18,7 @@ public class UserMenu {
     }
 
     private void signInMenu() {
-            System.out.println("""
-                    (1) Log In
-                    (2) Create Attendee Account
-                    (3) Create Organizer Account
-                    (4) Quit""");
+            System.out.println("1) Log In \n (2) Create Attendee Account  \n (3) Create Organizer Account \n (4) Quit");
             currentState = userMenuOptions.logInSignUp();
         if (currentState == 1) {
             System.out.println("temp log in");
