@@ -46,19 +46,23 @@ public class Reader {
     }
 
     private List loadHelper(String filename) throws ClassNotFoundException {
+        File file = new File(filename);
         ArrayList helper = new ArrayList();
         try {
-            InputStream file = new FileInputStream(filename);
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
+            if (file.length() != 0) {
+                InputStream inputFile = new FileInputStream(file);
+                InputStream buffer = new BufferedInputStream(inputFile);
+                ObjectInput input = new ObjectInputStream(buffer);
 
-            helper = (ArrayList) input.readObject();
-            input.close();
+                helper = (ArrayList) input.readObject();
+                input.close();
+            }
         } catch (IOException e) {
             System.out.println(":(");
         } catch (ClassNotFoundException h) {
             System.out.println(":(((");
         }
+        System.out.println(helper);
         return helper;
     }
 

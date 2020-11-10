@@ -29,6 +29,10 @@ public class RoomManager {
         return false;
     }
 
+    public List<Room> getAllRoom() {
+        return this.allRoom;
+    }
+
 //    already done so in EventManager(Lisa: I THINK IT'S EASIER TO DO SO IN EVENTMANAGER)
 //    public boolean isRoomAvailable(String roomNum, LocalDateTime time){
 //        for(Room room: allRoom){

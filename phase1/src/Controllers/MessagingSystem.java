@@ -34,7 +34,7 @@ public class MessagingSystem {
 
     public MessagingSystem(ChatManager chatManager, UserManager userManager, EventManager eventManager) {
         this.userChatManager = chatManager;
-        this.MessagingPresenter = new MessagePresenter();
+        this.MessagingPresenter = new MessagePresenter(userChatManager);
         this.userManager = userManager;
         this.eventManager = eventManager;
     }

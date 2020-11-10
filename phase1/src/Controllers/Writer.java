@@ -14,7 +14,7 @@ public class Writer {
      * @param allThings all the information needed to save
      * @throws IOException
      */
-    public void writeToFile(String filename, List allThings) throws IOException {
+    public void writeToFile(String filename, List allThings) {
         try {
             OutputStream file = new FileOutputStream(filename);
             OutputStream buffer = new BufferedOutputStream(file);
@@ -23,7 +23,7 @@ public class Writer {
             output.writeObject(allThings);
 
             output.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println(":((");
         }
     }
