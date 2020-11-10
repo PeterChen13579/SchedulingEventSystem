@@ -1,9 +1,8 @@
 package Entities;
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Dictionary;
 
 /**
  * A chat in our program. It stores info related to chats and preforms operations on chats (ex. sending messages).
@@ -13,7 +12,7 @@ import java.util.Dictionary;
  */
 public class Chat implements Serializable {
     private List<Message> chatMessages;  //stores all messages. should be sorted by time
-    private Dictionary<String, Message> lastViewedMessage; //pairs username with a message. If chatMessages/memberUsernames is changed, this must be changed as well.
+    private HashMap<String, Message> lastViewedMessage; //pairs username with a message. If chatMessages/memberUsernames is changed, this must be changed as well.
     private List<String> memberUsernames;  //users in the chat
     private String chatName;
 
@@ -23,8 +22,8 @@ public class Chat implements Serializable {
      * @param memberUsernames The users that are in this chat
      */
     public Chat(List<String> memberUsernames){
-        this.chatMessages = new ArrayList<Message>();
-        this.lastViewedMessage = new Hashtable<>();
+        this.chatMessages = new ArrayList<>();
+        this.lastViewedMessage = new HashMap<>();
         this.memberUsernames = memberUsernames;
         this.chatName = String.join(", ", this.memberUsernames); //we can overload and create another constructor to accept a chat name
         }

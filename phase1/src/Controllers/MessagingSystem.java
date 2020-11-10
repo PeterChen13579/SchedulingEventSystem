@@ -7,9 +7,8 @@ import Presenters.MessagePresenter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Dictionary;
 import java.util.Scanner;
 import java.util.Arrays;
 
@@ -40,7 +39,7 @@ public class MessagingSystem {
      */
     public void run(String userType, String userName){
 
-        List<String> options = new ArrayList<String>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit"));
+        List<String> options = new ArrayList<>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit"));
         MessagingPresenter.displayOptions(options);
 
         Scanner input = new Scanner(System.in); // used for getting input from keyboard
@@ -158,7 +157,7 @@ public class MessagingSystem {
      */
     public void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
         List<Chat> userChats = userChatManager.getUserChats(userName);
-        Dictionary<Chat, List<Message>> newMessages = new Hashtable<>();
+        HashMap<Chat, List<Message>> newMessages = new HashMap<>();
         for (Chat i: userChats){
             List<Message> chatNewMessages = userChatManager.getNewMessages(userName, i);
             newMessages.put(i, chatNewMessages);
