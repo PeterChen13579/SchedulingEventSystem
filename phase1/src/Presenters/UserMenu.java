@@ -1,8 +1,6 @@
 package Presenters;
-import Controllers.UserMenuOptions;
 
 public class UserMenu {
-    private static UserMenuOptions userMenuOptions;
     private int currentState;
 
 
