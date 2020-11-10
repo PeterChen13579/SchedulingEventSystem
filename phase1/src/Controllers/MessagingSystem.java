@@ -41,12 +41,11 @@ public class MessagingSystem {
 
     /**
      * Method that runs the Messaging feature
-     * @param userType The type of user (Ex. Attendee) that the current user is
      * @param userName The username of the current user
      */
-    public void run(String userType, String userName){
+    public void run(String userName){
 
-        List<String> options = new ArrayList<>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit"));
+        List<String> options = new ArrayList<>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit" , "5. Add friend"));
         MessagingPresenter.displayOptions(options);
 
         Scanner input = new Scanner(System.in); // used for getting input from keyboard
@@ -99,8 +98,13 @@ public class MessagingSystem {
             } else if (choice.equals("3")){
                 viewAllNewMessages(userName);
                 String goBack = input.nextLine();  //Press any key to go back (have to click enter after keypress), probably will need to call presenter
+            } else if (choice.equals("5")){             //ADDED THIS SECTION IN, NEED TO FIX LATER!!!!!
+                MessagingPresenter.displayConsoleMessage("Which friend would you like to add? Please don't break any phase 1 rules (Will fix later)");
+                String friendUsername = input.nextLine();
+                addPeopleToMessage(userName, friendUsername);
+                MessagingPresenter.displayConsoleMessage("Friend Added");
             } else{
-                MessagingPresenter.error("Please enter a number from 1 to 4.");
+                MessagingPresenter.error("Please enter a number from 1 to 5.");
             }
             MessagingPresenter.displayOptions(options);
             choice = input.nextLine();
@@ -287,6 +291,15 @@ public class MessagingSystem {
         }
 
         this.sendMessageToUsers(recipients, senderUsername, time, content);
+    }
+
+    /**
+     * Add friends to message
+     * @param mainUserUsername the current user
+     * @param newFriend new user they want to add
+     */
+    public void addPeopleToMessage(String mainUserUsername, String newFriend){ //NOTE : doesn't check if the friend is allowed to be messaged for now
+        userManager.addFriend(mainUserUsername, newFriend);
     }
 
 
