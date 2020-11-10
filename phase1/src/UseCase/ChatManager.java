@@ -6,8 +6,11 @@ import Entities.Message;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+/**
+ * Manages the chats in our program. It calls methods in the Chats or messages in the Chats.
+ * @author Kailas Moon
+ */
 public class ChatManager {
 
     private List<Chat> allChats;
