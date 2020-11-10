@@ -158,12 +158,12 @@ public class UserManager {
      * @return          true if successfully created an attendee account. False otherwise.
      */
     public boolean createAttendeeAccount(String userName, String password){
-        if (allAttendee.size() == 0){
+        if(isUserExists(userName)) {return false;}
+
+        if (allAttendee.size() == 0) {
             allAttendee.add(new Attendee(userName, password));
             return true;
         }
-
-        if(isUserExists(userName)) {return false;}
 
         allAttendee.add(new Attendee(userName, password));
         return true;
@@ -178,11 +178,13 @@ public class UserManager {
      * @return          true if successfully created an organizer account. False otherwise
      */
     public boolean createOrganizerAccount(String userName, String password){
+
+        if(isUserExists(userName)){ return false; }
         if (allOrganizer.size() == 0){
             allOrganizer.add(new Organizer(userName, password));
             return true;
         }
-        if(isUserExists(userName)){ return false; }
+
         allOrganizer.add(new Organizer(userName, password));
         return true;
     }
@@ -196,13 +198,15 @@ public class UserManager {
      * @return            true if successfully created a speaker account. False otherwise
      */
     public boolean createSpeakerAccount(String userName, String password){
+        if(isUserExists(userName)){
+            return false;
+        }
+
         if (allSpeaker.size() == 0){
             allSpeaker.add(new Speaker(userName, password));
             return true;
         }
-        if(isUserExists(userName)){
-            return false;
-        }
+
         allSpeaker.add(new Speaker(userName, password));
         return true;
     }
