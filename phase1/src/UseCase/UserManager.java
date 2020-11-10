@@ -2,7 +2,6 @@ package UseCase;
 import java.util.ArrayList;
 import java.util.List;
 import Entities.User;
-import Entities.Event;
 import Entities.Attendee;
 import Entities.Organizer;
 import Entities.Speaker;
@@ -20,9 +19,56 @@ public class UserManager {
         return this.allAttendee;
     }
 
+    public List<Organizer> getAllOrganizer(){return this.allOrganizer;}
+
     public List<Speaker> getAllSpeaker() {
         return this.allSpeaker;
     }
+
+    /**
+     * Check whether the user account exists.
+     * @param userName the name of the user account that you want to check.
+     * @return true iff the username exists.
+     */
+
+    public boolean isUserExists(String userName){
+        for (Attendee attendee: allAttendee){
+            if (userName.equals(attendee.getUsername())){return true;}
+        }
+
+        for (Organizer organizer: allOrganizer){
+            if (userName.equals(organizer.getUsername())){return true;}
+        }
+
+        for (Speaker speaker: allSpeaker){
+            if (userName.equals(speaker.getUsername())){return true;}
+        }
+        return false;
+    }
+//
+//
+//    private User helperUsername(String username) {
+//        assert isUserExists(username);
+//        for (Attendee attendee : allAttendee) {
+//            if (attendee.getUsername().equals(username)) {
+//                return attendee;
+//            }
+//        }
+//
+//        for(Organizer organizer: allOrganizer){
+//            if(organizer.getUsername().equals(username)){
+//                return organizer;
+//            }
+//        }
+//
+//        for(Speaker speaker: allSpeaker){
+//            if (speaker.getUsername().equals(username)){
+//                return speaker;
+//            }
+//        }
+//
+//        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
+//    }
 
     /**
      * Authorization of a user trying to log into their account
@@ -47,38 +93,47 @@ public class UserManager {
                 return user.getPassword().equals(enteredPassword);
             }
         }
+//        System.out.println("This user is not signed up into the system.");
+        return false;
+    }
 
-        System.out.println("This user is not signed up into the system.");
+    public boolean isAttendingEvent(String username, String eventTitle){
+        User user = stringtoUser(username);
+        for(String title: user.getEventAttending()){
+            if(eventTitle.equals(title)) {return true;}
+        }
         return false;
     }
 
     /**
      * Signs up attendee for a particular event
      *
-     * @param user The user we wants to sign up for an event
-     * @param event  The event the user wants to sign up for
+     * @param username The user we wants to sign up for an event
+     * @param eventTitle  The event the user wants to sign up for
      * @return      true if user successfully booked his/her event. false otherwise
      */
-    public boolean signUpEventAttendee(Attendee user, Event event){
-        if (user.isAttendingEvent(event.getTitle())){
-            System.out.println("You already booked this event. Please book another event.");
-            return false;
-        }
-        user.addEvent(event);
-        System.out.println("You have successfully booked this event.");
+    public boolean signUpEventAttendee(String username, String eventTitle){
+        User user = stringtoUser(username);
+        if (isAttendingEvent(username, eventTitle)) {return false;}
+        List<String> eventTitles = user.getEventAttending();
+        eventTitles.add(eventTitle);
+        user.setEventAttending(eventTitles);
         return true;
     }
 
     /**
      * Cancels an event that the attendee has already signed up for
      *
-     * @param user   The user wants to cancel their event
-     * @param event  The event the user wants to cancel
+     * @param username   The user wants to cancel their event
+     * @param eventTitle  The event the user wants to cancel
      * @return       true if user successfully cancelled his/her event. false otherwise.
      */
-    public boolean cancelSpotAttendee(Attendee user, Event event){
-        if (user.isAttendingEvent(event.getTitle())){
-            user.cancelEvent(event);
+    public boolean cancelSpotAttendee(String username, String eventTitle){
+        User user = stringtoUser(username);
+        if (isAttendingEvent(username, eventTitle)){
+            List<String> eventTitles = user.getEventAttending();
+            eventTitles.remove(eventTitle);
+            user.setEventAttending(eventTitles);
             return true;
         }
         return false;
@@ -97,19 +152,16 @@ public class UserManager {
             allAttendee.add(new Attendee(userName, password));
             return true;
         }
-        for (User user: allAttendee){
-            if (user.getUsername().equals(userName)) {
-                System.out.println("This Username has already been taken. Please enter another Username.");
-                return false;
-            }
-        }
+
+        if(isUserExists(userName)) {return false;}
+
         allAttendee.add(new Attendee(userName, password));
         return true;
     }
 
 
     /**
-     * Creates an Orgainzer Account
+     * Creates an Organizer Account
      *
      * @param userName  Username for an Organizer Account
      * @param password  Password for an Organizer Account
@@ -120,12 +172,7 @@ public class UserManager {
             allOrganizer.add(new Organizer(userName, password));
             return true;
         }
-        for (User user: allOrganizer){
-            if (user.getUsername().equals(userName)) {
-                System.out.println("This Username has already been taken. Please enter another Username.");
-                return false;
-            }
-        }
+        if(isUserExists(userName)){ return false; }
         allOrganizer.add(new Organizer(userName, password));
         return true;
     }
@@ -143,11 +190,8 @@ public class UserManager {
             allSpeaker.add(new Speaker(userName, password));
             return true;
         }
-        for (User user: allSpeaker){
-            if (user.getUsername().equals(userName)) {
-                System.out.println("This Username has already been taken. Please enter another Username.");
-                return false;
-            }
+        if(isUserExists(userName)){
+            return false;
         }
         allSpeaker.add(new Speaker(userName, password));
         return true;
@@ -177,19 +221,45 @@ public class UserManager {
                 return c;
             }
         }
-        System.out.println("Username not found in database.");
         return null;
+    }
+
+    /**
+     * Check whether the user has added this friend.
+     * @param usernameA user who wants to add new friend
+     * @param usernameB user that is being added
+     * @return true iff the user have already added the friends.
+     */
+
+    public boolean isAddFriend(String usernameA, String usernameB){
+        User userA = stringtoUser(usernameA);
+
+        List<String> friends = userA.getFriends();
+        for (String friend: friends){
+            if(friend.equals(usernameB)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Method to add user to friend's list
      *
-     * @param a  user wants to add user b
-     * @param b  user that is being added
+     * @param usernameA  user wants to add user b
+     * @param usernameB  user that is being added
      * @return   true if successfully added, false otherwise
      */
-    public boolean addFriend(User a, User b){
-        return a.addFriend(b);
+    public boolean addFriend(String usernameA, String usernameB){
+        User userA = stringtoUser(usernameA);
+
+        List<String> friends = userA.getFriends();
+        if (isUserExists(usernameB) && isAddFriend(usernameA, usernameB)){
+            friends.add(usernameB);
+            userA.setFriends(friends);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -204,5 +274,16 @@ public class UserManager {
         return false;
     }
 
-
+    /**
+     * Add the given event title to the given speaker's list of events.
+     * @param title the title of the event
+     * @param speakerUserName the username of the speaker
+     */
+    public void addEventToSpeaker(String title, String speakerUserName){
+        for (Speaker s: allSpeaker) {
+            if (s.getUsername().equals(speakerUserName)) {
+                s.addEventToSpeaker(title);
+            }
+        }
+    }
 }

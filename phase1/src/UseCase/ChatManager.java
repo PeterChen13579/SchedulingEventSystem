@@ -124,7 +124,7 @@ public class ChatManager {
     public List<Message> getChatMessages(String username, Chat chat) {
         List<Message> allMessages = chat.getAllMessages();
         chat.setLastViewedMessage(username, allMessages.get(allMessages.size()-1));
-        return chat.getAllMessages();
+        return chat.getAllMessages();  // can this be changed to just returning allMessages?
     }
 
     public String getChatName(Chat chat) {

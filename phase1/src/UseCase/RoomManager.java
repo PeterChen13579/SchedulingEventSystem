@@ -1,5 +1,6 @@
 package UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Entities.Room;
@@ -8,10 +9,9 @@ import Entities.Room;
  * A Use Case class that manages the functionality of room.
  */
 public class RoomManager {
-    private List<Room> allRoom;
+    private List<Room> allRoom = new ArrayList<>();
 
-    public void createRoom(String roomNum){
-        allRoom.add(new Room(roomNum));
+    public void createRoom(String roomNum){ allRoom.add(new Room(roomNum));
     }
 
     public boolean doesRoomExist(String roomNum){
