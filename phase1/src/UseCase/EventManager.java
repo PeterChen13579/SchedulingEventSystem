@@ -28,9 +28,12 @@ public class EventManager {
         //create event & add to list
         Event event = new Event(title, time.get(0), time.get(1), rmNum, speakerUserName);
         allEvents.add(event);
+        //update speaker's list of events?
     }
+
     /**
-     * Returns a list of 2 LocalDateTime object representating the start time and end time of a potential event
+     * Returns a list of 2 LocalDateTime object representing the start time and end time of a potential event
+     * (endTime will automatically be 1 hour after startTime)
      * @param date the date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @return a list of LocalDateTime objects parsed from the date and startTime parameters
@@ -51,47 +54,50 @@ public class EventManager {
         return Arrays.asList(sTime, eTime);
     }
 
+//    /**
+//     * Returns whether or not the given date and time already has an event booked in that interval
+//     * @param date the date for the potential event (YYYYMMDD)
+//     * @param startTime the start time for the potential event (HH:mm:ss)
+//     * @return true iff there is no date or time conflict with the already scheduled events and the new time
+//     */
+//    public boolean isTimeAvailable(String date, String startTime){
+//        //create LocalDateTime object for potential start time
+//        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
+//        for (Event e : allEvents){
+//            if (e.getStartTime().isEqual(time)){
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+
     /**
-     * Returns whether or not the given date and time already has an event booked in that interval
-     * @param date the date for the potential event (YYYYMMDD)
+     * Returns whether or not the given start time is between 9am and 4pm
      * @param startTime the start time for the potential event (HH:mm:ss)
-     * @return true iff there is no date or time conflict with the already scheduled events and the new time
+     * @return true iff the time is within 9am to 4pm
      */
-    public boolean isTimeAvailable(String date, String startTime){
-        //create LocalDateTime object for potential start time
-        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
-        for (Event e : allEvents){
-            if (e.getStartTime().isEqual(time)){
-                return false;
-            }
+    public boolean isTimeValid(String startTime){
+        //create LocalDateTime object for potential start time and valid start times
+        LocalTime potentialTime = LocalTime.parse(startTime);
+        LocalTime validTime9 = LocalTime.parse("09:00:00");
+        LocalTime validTime16 = LocalTime.parse("16:00:00");
+
+        if (potentialTime.compareTo(validTime9) == 0 || potentialTime.compareTo(validTime16) == 0){
+            return true;
+        }else{
+            return potentialTime.compareTo(validTime9) > 0 && potentialTime.compareTo(validTime16) < 0;
         }
-        return true;
-    }
-    //get a list of all the rooms that were booked
-    public List<String> getListOfRooms(){
-        List<String> rooms = new ArrayList<>();
-        for (Event e : allEvents){
-            if(!rooms.contains(e.getRoomNum())){
-                rooms.add(e.getRoomNum());
-            }
-        }
-        return rooms;
     }
 
-    //checks if room exists
-    public boolean doesRoomExist(String roomNum){
-        for(String room: getListOfRooms()){
-            if(room.equals(roomNum)) return true;
-        }
-        return false;
-    }
-    //checks if room exists and is available at the given time
+    /**
+     * Returns whether or not the given room is booked at the given date and time
+     * @param roomNum the room number for the potential event
+     * @param date the date for the potential event (YYYYMMDD)
+     * @param startTime the start time for the potential event (HH:mm:ss)
+     * @return true iff the room given is not booked by another event at the same time
+     */
     public boolean isRoomAvailableAtTime(String roomNum, String date, String startTime){
         LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
-        //check if room exists
-        if (!doesRoomExist(roomNum)){
-            return false;
-        }
         //check if room is booked at the time
         for(Event e: allEvents){
             if (e.getStartTime().isEqual(time) && e.getRoomNum().equals(roomNum)){
@@ -100,32 +106,10 @@ public class EventManager {
         }
         return true;
     }
-    //get a list of all the speakers that were going to perform
-    public List<String> getListOfSpeakers(){
-        List<String> speakers = new ArrayList<>();
-        for (Event e : allEvents){
-            if(!speakers.contains(e.getSpeakerUserName())){
-                speakers.add(e.getSpeakerUserName());
-            }
-        }
-        return speakers;
-    }
-
-    //checks if speaker exists
-    public boolean doesSpeakerExist(String speakerUserName){
-        for(String speaker: getListOfSpeakers()){
-            if(speaker.equals(speakerUserName)) return true;
-        }
-        return false;
-    }
 
     //checks if speaker is available at the given time
     public boolean isSpeakerAvailableAtTime(String date, String startTime, String speakerUserName){
         LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
-        //checks if speaker exists
-        if (!doesSpeakerExist(speakerUserName)){
-            return false; //throw exception???
-        }
         //check if speaker is booked at the time
         for(Event e: allEvents){
             if (e.getStartTime().isEqual(time) && e.getSpeakerUserName().equals(speakerUserName)){
@@ -135,16 +119,10 @@ public class EventManager {
         return true;
     }
 
-    //returns true iff can add event, calls the above helper methods
-    public boolean canAddEvent(String date, String startTime, String rmNum, String speakerUserName){
-        return isTimeAvailable(date, startTime) && isRoomAvailableAtTime(rmNum, date, startTime) &&
-                isSpeakerAvailableAtTime(date, startTime, speakerUserName);
-    }
-
     //checks if the event title is unique
     public boolean isEventTitleUnique(String title){
         for (Event e: allEvents){
-            if (e.getTitle() == title){
+            if (e.getTitle().equals(title)){
                 return false;
             }
         }
@@ -161,7 +139,7 @@ public class EventManager {
 
 
     //return true if the event is in allEvents
-    private boolean isEventExist(String eventTitle){
+    public boolean isEventExist(String eventTitle){
         for(Event event:allEvents){
             if (event.getTitle().equals(eventTitle)){return true;}
         }
@@ -169,14 +147,14 @@ public class EventManager {
     }
 
     //return true if the attendee is already in attendeeList stored in this event
-    private boolean isAttendeeAdded(String userName, String eventTitle){
+    public boolean isAttendeeAdded(String userName, String eventTitle){
         Event event = helperEventTitle(eventTitle);
         return event.getAttendeeList().contains(userName);
     }
 
     //return true if can add attendee. calls the above helper methods
     public boolean canAddAttendee(String userName, String eventTitle){
-        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle);
+        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle) && roomNotFull(eventTitle);
     }
 
 
@@ -200,6 +178,13 @@ public class EventManager {
             }
         }
         throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
+    }
+
+    public boolean roomNotFull(String eventTitle){
+        Event event = helperEventTitle(eventTitle);
+        int attendeeNum = event.getAttendeeList().size();
+        Room exampleRoom = new Room("exampleRoom");
+        return exampleRoom.getCapacity() > attendeeNum;
     }
 
     /**

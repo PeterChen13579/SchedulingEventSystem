@@ -45,6 +45,16 @@ public abstract class User implements Serializable {
 
 
     /**
+     *  getter to return list of friends.
+     *
+     * @return  List of friends(String Username)
+     */
+    public List <String> getFriends(){
+        return friends;
+    }
+
+
+    /**
      * Adding a user to user's friend list
      *
      * @param user to add into friends list
@@ -61,5 +71,16 @@ public abstract class User implements Serializable {
         return true;
     }
 
+
+    /*public boolean addFriend(String userToAdd){
+        for (String temp: friends){
+            if (temp.equals(userToAdd)){
+                System.out.println("You already have this friend in your friend list.");
+                return false;
+            }
+        }
+        friends.add(userToAdd);
+        return true;
+    }  */
 
 }
