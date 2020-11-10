@@ -19,6 +19,10 @@ public class ChatManager {
         this.allChats = new ArrayList<Chat>();
     }
 
+    public ChatManager(List<Chat> chat) {
+        allChats = chat;
+    }
+
     /**
      * Create a new chat and add it to the list of all chats
      * @param memberUsernames The users who are in the new chat

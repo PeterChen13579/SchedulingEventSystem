@@ -15,7 +15,15 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 public class EventManager {
-    private List<Event> allEvents = new ArrayList<>();
+    private List<Event> allEvents;
+
+    public EventManager() {
+        allEvents = new ArrayList<>();
+    }
+
+    public EventManager(List<Event> event) {
+        allEvents = event;
+    }
 
     /**
      * Create an Event object based on the parameters and add it into the list of allEvents variable.

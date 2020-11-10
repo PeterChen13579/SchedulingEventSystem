@@ -11,6 +11,11 @@ public class SignUpSystem {
     private EventManager em;
     private UserManager um;
 
+    SignUpSystem(EventManager eventManager, UserManager userManager) {
+        em = eventManager;
+        um = userManager;
+    }
+
     public void run(){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Type 'sign up' to sign up for an event or 'cancel' to cancel spot for an event.");

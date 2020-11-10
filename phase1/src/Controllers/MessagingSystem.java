@@ -32,6 +32,13 @@ public class MessagingSystem {
         this.eventManager = eventManager;
     }
 
+    public MessagingSystem(ChatManager chatManager, UserManager userManager, EventManager eventManager) {
+        this.userChatManager = chatManager;
+        this.MessagingPresenter = new MessagePresenter();
+        this.userManager = userManager;
+        this.eventManager = eventManager;
+    }
+
     /**
      * Method that runs the Messaging feature
      * @param userType The type of user (Ex. Attendee) that the current user is

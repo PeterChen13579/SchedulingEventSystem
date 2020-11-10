@@ -9,7 +9,15 @@ import Entities.Room;
  * A Use Case class that manages the functionality of room.
  */
 public class RoomManager {
-    private List<Room> allRoom = new ArrayList<>();
+    private List<Room> allRoom;
+
+    public RoomManager() {
+        allRoom = new ArrayList<>();
+    }
+
+    public RoomManager(List<Room> room) {
+        allRoom = room;
+    }
 
     public void createRoom(String roomNum){ allRoom.add(new Room(roomNum));
     }

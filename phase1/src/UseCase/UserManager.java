@@ -15,6 +15,16 @@ public class UserManager {
     private List <Organizer> allOrganizer = new ArrayList<Organizer>();
     private List <Speaker> allSpeaker = new ArrayList<Speaker>();
 
+    public UserManager() {
+
+    }
+
+    public UserManager(List<Attendee> attendee, List<Organizer> organizer, List<Speaker> speaker ) {
+        allAttendee = attendee;
+        allOrganizer = organizer;
+        allSpeaker = speaker;
+    }
+
     public List<Attendee> getAllAttendee() {
         return this.allAttendee;
     }

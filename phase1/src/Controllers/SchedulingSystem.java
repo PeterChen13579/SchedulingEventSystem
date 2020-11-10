@@ -15,6 +15,12 @@ public class SchedulingSystem {
     RoomManager rm;
     UserManager um;
 
+    SchedulingSystem(EventManager eventManager, RoomManager roomManager, UserManager userManager) {
+        em = eventManager;
+        rm = roomManager;
+        um = userManager;
+    }
+
     //need these?
     public void setEventManager(EventManager em){
         this.em = em;
