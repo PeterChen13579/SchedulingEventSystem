@@ -7,6 +7,7 @@ import Controllers.SchedulingSystem;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
+import Presenters.EventPresenter;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -16,7 +17,8 @@ public class SchedulingTest {
 //        parseStringToLocalDateTimeTest();
 //        parseStringToDateAndTimeTest();
 //        isTimeAvailableTest();
-        controllerTest();
+//        controllerTest();
+        eventPresenterTest();
 
     }
 
@@ -38,20 +40,32 @@ public class SchedulingTest {
     }
 
     public static void controllerTest(){
-        SchedulingSystem s = new SchedulingSystem();
         RoomManager rm = new RoomManager();
         EventManager em = new EventManager();
         UserManager um = new UserManager();
-
-        s.setEventManager(em);
-        s.setRoomManager(rm);
-        s.setUserManager(um);
+        SchedulingSystem s = new SchedulingSystem(em, rm, um);
 
         rm.createRoom("216");
         um.createSpeakerAccount("Tom", "12345");
 
         s.addEvent("20201130", "16:00:00", "216", "Tom", "Intro 101");
         s.run();
+    }
+
+    public static void eventPresenterTest(){
+        RoomManager rm = new RoomManager();
+        EventManager em = new EventManager();
+        UserManager um = new UserManager();
+        SchedulingSystem s = new SchedulingSystem(em, rm, um);
+
+        rm.createRoom("216");
+        um.createSpeakerAccount("Tom", "12345");
+
+        s.addEvent("20201130", "16:00:00", "216", "Tom", "Intro 102");
+        s.addEvent("20201130", "09:00:00", "216", "Tom", "Intro 101");
+
+        EventPresenter ep = new EventPresenter(em);
+        ep.displayEvents();
     }
 
 }

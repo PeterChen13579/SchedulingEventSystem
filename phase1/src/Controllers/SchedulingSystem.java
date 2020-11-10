@@ -15,25 +15,16 @@ public class SchedulingSystem {
     RoomManager rm;
     UserManager um;
 
-    public SchedulingSystem() {
-
-    }
-
+    /**
+     * Constructor for SchedulingSystem
+     * @param eventManager the EventManager for this execution of the program
+     * @param roomManager the RoomManager for this execution of the program
+     * @param userManager the UserManager for this execution of the program
+     */
     public SchedulingSystem(EventManager eventManager, RoomManager roomManager, UserManager userManager) {
         em = eventManager;
         rm = roomManager;
         um = userManager;
-    }
-
-    //need these?
-    public void setEventManager(EventManager em){
-        this.em = em;
-    }
-    public void setRoomManager(RoomManager rm){
-        this.rm = rm;
-    }
-    public void setUserManager(UserManager um){
-        this.um = um;
     }
 
     /**
@@ -54,7 +45,7 @@ public class SchedulingSystem {
                 } else if (temp.equals("2")) {
                     System.out.println("Please enter the date for the new event (in the format 'YYYYMMDD'): ");
                     String inputDate = br.readLine();
-                    System.out.println("Please enter the start time for the new event (in the format 'HH:MM:SS'): ");
+                    System.out.println("Please enter the start time for the new event (24-hour time in the format 'HH:MM:SS'): ");
                     String inputTime = br.readLine();
                     System.out.println("Please enter the room number for the new event: ");
                     String inputRoom = br.readLine();

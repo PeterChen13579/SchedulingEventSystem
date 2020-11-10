@@ -240,7 +240,10 @@ public class EventManager {
         event.setAttendeeList(currAttendee);
     }
 
-
+    /**
+     * Get a list of all the event titles that are scheduled
+     * @return a list of all the event titles that are booked
+     */
     public List<String> getAllEventTitle(){
         List<String> eventList = new ArrayList<>();
         for(Event event: allEvents){
@@ -249,6 +252,11 @@ public class EventManager {
         return eventList;
     }
 
+    /**
+     * Get a string representation for the given event title
+     * @param eventTitle the title for the event
+     * @return a string with the details about the event with given event title
+     */
     public String getEventInfo(String eventTitle){
         Event event = helperEventTitle(eventTitle);
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
@@ -256,7 +264,7 @@ public class EventManager {
         String endTime = event.getEndTime().format(formatter);
         String speaker = event.getSpeakerUserName();
         String roomNum = event.getRoomNum();
-        return eventTitle + ": start at" + startTime + "and end at" + endTime + "take place in room" + roomNum +
-                "with" + speaker +"who give the speech.";
+        return eventTitle + ": " + startTime + " - " + endTime + ", in Room " + roomNum +
+                ". Speaker: " + speaker;
     }
 }

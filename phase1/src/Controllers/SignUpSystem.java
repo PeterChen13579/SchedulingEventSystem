@@ -73,4 +73,4 @@ public class SignUpSystem {
             System.out.println("You haven't signed up for this event yet.");
         }
     }
-    }
+}
