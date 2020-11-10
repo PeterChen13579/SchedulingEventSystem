@@ -204,5 +204,16 @@ public class UserManager {
         return false;
     }
 
-
+    /**
+     * Add the given event title to the given speaker's list of events.
+     * @param title the title of the event
+     * @param speakerUserName the username of the speaker
+     */
+    public void addEventToSpeaker(String title, String speakerUserName){
+        for (Speaker s: allSpeaker) {
+            if (s.getUsername().equals(speakerUserName)) {
+                s.addEventToSpeaker(title);
+            }
+        }
+    }
 }
