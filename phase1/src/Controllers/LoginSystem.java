@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import Presenters.UserMenu;
+import UseCase.EventManager;
 import UseCase.UserManager;
 import Entities.User;
 
@@ -16,6 +17,9 @@ import Entities.User;
 public class LoginSystem implements Serializable {
     UserManager manager;
 
+    public LoginSystem(UserManager manager) {
+        this.manager = manager;
+    }
 
     public boolean run() {
         InputStreamReader r = new InputStreamReader(System.in);
