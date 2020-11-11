@@ -29,7 +29,7 @@ public class RoomManager {
         return false;
     }
 
-    public List<Room> getAllRoom() {
+    private List<Room> getAllRoom() {
         return this.allRoom;
     }
 
