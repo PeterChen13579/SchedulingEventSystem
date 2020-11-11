@@ -124,7 +124,13 @@ public class MessagingSystem {
 
         this.MessagingPresenter.displayConsoleMessage("Please enter the number of the chat that you would like to view.");
         String chatChoice = input.nextLine();  //choose a number for which chat to go to
-        Chat chosenChat = userChats.get(Integer.parseInt(chatChoice) - 1);
+        int index = Integer.parseInt(chatChoice) - 1;
+        while (index >= userChats.size()){
+            MessagingPresenter.error("please enter a number that corresponds to a chat");
+            chatChoice = input.nextLine();
+            index = Integer.parseInt(chatChoice) - 1;
+        }
+        Chat chosenChat = userChats.get(index);
         viewChat(userName, this.userChatManager.getChatMemberUsernames(chosenChat));
 
 //        List<String> options = new ArrayList<String>(Arrays.asList("1.Send Message", "2.Go back"));
