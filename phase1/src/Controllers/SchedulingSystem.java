@@ -134,7 +134,7 @@ public class SchedulingSystem {
      * @param title the title for the event
      * @return true iff the event can be created
      */
-    public boolean canAddEvent(String date, String time, String rmNum, String speakerUserName, String title){
+    private boolean canAddEvent(String date, String time, String rmNum, String speakerUserName, String title){
         return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(time) && rm.doesRoomExist(rmNum)
                 && em.isRoomAvailableAtTime(rmNum, date, time) && um.doesSpeakerExist(speakerUserName)
                 && em.isSpeakerAvailableAtTime(date, time, speakerUserName) && em.isEventTitleUnique(title);
