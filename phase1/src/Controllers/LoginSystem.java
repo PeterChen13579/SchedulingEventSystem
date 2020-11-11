@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import Presenters.UserMenu;
 import UseCase.UserManager;
 import Entities.User;
 
@@ -13,20 +14,22 @@ import Entities.User;
  *
  */
 public class LoginSystem implements Serializable {
-    UserManager um;
+    UserManager manager;
+    UserMenu menu;
+    String userName;
 
     public boolean run() {
         InputStreamReader r = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(r);
         String input = "";
         boolean verified = false;
-        System.out.println("Type 'cancel' to exit the program; otherwise hit enter to login. ");
+        menu.displayLogin();
         try {
             input = br.readLine();
                 if (!input.equals("cancel")) {
-                    System.out.println("Please type in your username: ");
+                    menu.displayUsername();
                     String enteredUsername = br.readLine();
-                    System.out.println("Please type in your password: ");
+                    menu.displayPassword();
                     String enteredPassword = br.readLine();
                     if (verifyLogin(enteredUsername, enteredPassword)) {
                         String username = enteredUsername;
@@ -35,7 +38,7 @@ public class LoginSystem implements Serializable {
                     }
                 }
         } catch(IOException e){
-            System.out.println("Oops! Something unexpected happened!");
+            menu.loginFail();
             e.printStackTrace();
             }
         return verified;
@@ -53,7 +56,7 @@ public class LoginSystem implements Serializable {
         int maxAttempts = 5; //the number of attempts, can be changed
         boolean verified = false;
         while (i < maxAttempts) {
-            if (um.credentialAuthorization(enteredUsername, enteredPassword)) {
+            if (manager.credentialAuthorization(enteredUsername, enteredPassword)) {
                 verified = true;
             }
             else {
@@ -69,6 +72,6 @@ public class LoginSystem implements Serializable {
      * @return User object to corresponding Username
      */
     public User verifyUserType(String username) {
-        return um.stringtoUser(username);
+        return manager.stringtoUser(username);
         }
 }
