@@ -14,7 +14,7 @@ public class TechConferenceSystem {
     private boolean terminated;
     private static Reader reader;
     private static Writer writer;
-    private static LogInSystem logInSystem;
+    private static LoginSystem loginSystem;
     private static MessagingSystem messagingSystem;
     private static SchedulingSystem schedulingSystem;
     private static SignUpSystem signUpSystem;
@@ -61,7 +61,15 @@ public class TechConferenceSystem {
             String userName = in.nextLine();
             userMenu.printStatement("Please enter your password:");
             String password = in.nextLine();
-            //
+
+            while (flag) {
+                if (loginSystem.run()) {
+                    flag = false;
+                }else {
+                    userMenu.printStatement("You have entered an incorrect password.");
+                }
+            }
+
         }else if (temp2.equals("2")){
             while(flag) {
                 userMenu.printStatement("Please enter a username:");
@@ -119,7 +127,7 @@ public class TechConferenceSystem {
             roomManager = new RoomManager();
             userManager = new UserManager();
         }
-        logInSystem = new LogInSystem(userManager);
+        loginSystem = new LoginSystem(userManager);
         messagingSystem = new MessagingSystem(chatManager, userManager, eventManager);
         schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager);
         signUpSystem = new SignUpSystem(eventManager, userManager);
@@ -136,7 +144,7 @@ public class TechConferenceSystem {
         writer.writeToFile("attendees.txt", userManager.getAllAttendee());
         writer.writeToFile("speakers.txt", userManager.getAllSpeaker());
         writer.writeToFile("events.txt", eventManager.getAllEvents());
-        writer.writeToFile("rooms.txt", roomManager.getAllRoom());
+        //writer.writeToFile("rooms.txt", roomManager.getAllRoom());
         writer.writeToFile("chats.txt", chatManager.getAllChats());
     }
 
