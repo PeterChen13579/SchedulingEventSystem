@@ -57,15 +57,9 @@ public class LoginSystem implements Serializable {
      */
     public boolean verifyLogin(String enteredUsername, String enteredPassword) {
         int i = 0;
-        int maxAttempts = 5; //the number of attempts, can be changed
         boolean verified = false;
-        while (i < maxAttempts) {
-            if (manager.credentialAuthorization(enteredUsername, enteredPassword)) {
-                verified = true;
-            }
-            else {
-                i ++;
-            }
+        if (manager.credentialAuthorization(enteredUsername, enteredPassword)) {
+            verified = true;
         }
         return verified;
     }

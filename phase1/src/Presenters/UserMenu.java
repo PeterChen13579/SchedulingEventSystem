@@ -14,7 +14,7 @@ public class UserMenu {
     }
 
     public void displayLogin(){
-        System.out.println("Type 'cancel' to exit the program; otherwise hit enter to login. \"");
+        System.out.println("Type 'cancel' to exit the program; otherwise hit enter to login:");
     }
 
     public void loginFail(){
@@ -27,6 +27,10 @@ public class UserMenu {
 
     public void displayPassword(){
         System.out.println("Please enter a password:");
+    }
+
+    public void displayIncorrectLogin(){
+        System.out.println("Sorry, your username or password are incorrect. Please try again.\n");
     }
 
     public void displayErrorUsername(){
