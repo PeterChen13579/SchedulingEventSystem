@@ -15,12 +15,12 @@ import Entities.User;
  */
 public class LoginSystem implements Serializable {
     UserManager manager;
-    UserMenu menu;
-    String userName;
+
 
     public boolean run() {
         InputStreamReader r = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(r);
+        UserMenu menu = new UserMenu();
         String input = "";
         boolean verified = false;
         menu.displayLogin();
