@@ -13,6 +13,13 @@ public class UserMenu {
         System.out.println("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
     }
 
+    public void displayLogin(){
+        System.out.println("Type 'cancel' to exit the program; otherwise hit enter to login. \"");
+    }
+
+    public void loginFail(){
+        System.out.println("Oops! Something unexpected happened!");
+    }
 
     public void displayUsername(){
         System.out.println("Please enter a username:");

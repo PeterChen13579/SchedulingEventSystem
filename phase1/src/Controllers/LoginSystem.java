@@ -9,38 +9,38 @@ import UseCase.UserManager;
 import Entities.User;
 
 /**
- * How Users or any type are able to login into the app.
+ * How Users or any type are able to login into the app. The run method will
+ *
  */
-public class LogInSystem implements Serializable {
+public class LoginSystem implements Serializable {
     UserManager um;
-    private boolean verified = false;
 
-    public LogInSystem(UserManager userManager) {
-        um =userManager;
-    }
-
-    public void run() {
+    public boolean run() {
         InputStreamReader r = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(r);
         String input = "";
-        while (!input.equals("cancel")) {
-            System.out.println("Type 'Log In' to log in or 'cancel' to exit the program: ");
-            try {
-                input = br.readLine();
-                System.out.println("Please type in your username.: ");
-                String enteredUsername = br.readLine();
-                System.out.println("Please type in your password: ");
-                String enteredPassword = br.readLine();
-                if (verifyLogin(enteredUsername, enteredPassword)) {
-                    String username = enteredUsername;
-                    User userType = verifyUserType(username);
+        boolean verified = false;
+        System.out.println("Type 'cancel' to exit the program; otherwise hit enter to login. ");
+        try {
+            input = br.readLine();
+                if (!input.equals("cancel")) {
+                    System.out.println("Please type in your username: ");
+                    String enteredUsername = br.readLine();
+                    System.out.println("Please type in your password: ");
+                    String enteredPassword = br.readLine();
+                    if (verifyLogin(enteredUsername, enteredPassword)) {
+                        String username = enteredUsername;
+                        User userType = verifyUserType(username);
+                        verified = true;
+                    }
                 }
-            } catch (IOException e) {
-                System.out.println("Oops! Something unexpected happened!");
-                e.printStackTrace();
+        } catch(IOException e){
+            System.out.println("Oops! Something unexpected happened!");
+            e.printStackTrace();
             }
+        return verified;
         }
-    }
+
         /**
      *
      * @param enteredUsername The Username the User inputs
@@ -51,6 +51,7 @@ public class LogInSystem implements Serializable {
     public boolean verifyLogin(String enteredUsername, String enteredPassword) {
         int i = 0;
         int maxAttempts = 5; //the number of attempts, can be changed
+        boolean verified = false;
         while (i < maxAttempts) {
             if (um.credentialAuthorization(enteredUsername, enteredPassword)) {
                 verified = true;
@@ -59,14 +60,15 @@ public class LogInSystem implements Serializable {
                 i ++;
             }
         }
-        return verified; //Not sure what to return right now, need to see how the UI menu looks.
+        return verified;
     }
 
     /**
      * When a User logs in, the system should recognize what kind of User they are and provide the appropriate menu
-     * @return
+     * @param username that we want to verify user type
+     * @return User object to corresponding Username
      */
     public User verifyUserType(String username) {
-        return null;
+        return um.stringtoUser(username);
         }
 }
