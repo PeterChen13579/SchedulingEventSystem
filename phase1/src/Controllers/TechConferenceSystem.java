@@ -29,7 +29,7 @@ public class TechConferenceSystem {
         //Basically controller does all the logic, presenter PRINTS to screen.
 
         Scanner input = new Scanner(System.in);
-        userMenu.displayInitialLoad();
+        userMenu.printStatement("(1) Load Existing Conference \n(2) Create New Conference");
         temp = input.nextLine();
 
         boolean flag = true;
@@ -42,7 +42,7 @@ public class TechConferenceSystem {
                 flag = false;
 
             } else {
-                userMenu.displayErrorMsg();
+                userMenu.printStatement("Please enter the corresponding number and try again");
             }
         }
         mainLevel();
@@ -54,41 +54,47 @@ public class TechConferenceSystem {
         Scanner in = new Scanner(System.in);
 
         boolean flag = true;
-        userMenu.displayMenu();
+        userMenu.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
         String temp2 = in.nextLine();
         if (temp2.equals("1")){
-            // login goes here
+            userMenu.printStatement("Please enter your username:");
+            String userName = in.nextLine();
+            userMenu.printStatement("Please enter your password:");
+            String password = in.nextLine();
+            //
         }else if (temp2.equals("2")){
             while(flag) {
-                userMenu.displayUsername();
+                userMenu.printStatement("Please enter a username:");
                 String userName = in.nextLine();
-                userMenu.displayPassword();
+                userMenu.printStatement("Please enter a password:");
                 String password = in.nextLine();
                 if (userManager.createAttendeeAccount(userName, password)){
-                    userMenu.createdAccountAttendee();
+                    userMenu.printStatement("You have successfully created an Attendee Account!");
                     flag = false;
                 }else {
-                    userMenu.displayErrorUsername();
+                    userMenu.printStatement("This username is already in our database.");
+                    userMenu.printStatement("Please enter a different username");
                 }
             }
         }else if (temp2.equals("3")){
             while(flag) {
-                userMenu.displayUsername();
+                userMenu.printStatement("Please enter a username:");
                 String userName = in.nextLine();
-                userMenu.displayPassword();
+                userMenu.printStatement("Please enter a password:");
                 String password = in.nextLine();
                 if (userManager.createOrganizerAccount(userName, password)){
-                    userMenu.createdAccountOrganizer();
+                    userMenu.printStatement("You have successfully created an Organizer Account!");
                     flag = false;
                 }else {
-                    userMenu.displayErrorUsername();
+                    userMenu.printStatement("This username is already in our database.");
+                    userMenu.printStatement("Please enter a different username");
                 }
             }
         }else if (temp2.equals("4")){
-            userMenu.displayExit();
+            userMenu.printStatement("You have exited the program.");
 
         }else{
-            userMenu.displayErrorMsg();
+            userMenu.printStatement("Please enter the corresponding number and try again");
         }
         if (! temp2.equals("4")) {
             mainLevel();
