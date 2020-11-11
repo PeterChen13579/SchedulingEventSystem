@@ -55,30 +55,6 @@ public class UserManager {
         }
         return false;
     }
-//
-//
-//    private User helperUsername(String username) {
-//        assert isUserExists(username);
-//        for (Attendee attendee : allAttendee) {
-//            if (attendee.getUsername().equals(username)) {
-//                return attendee;
-//            }
-//        }
-//
-//        for(Organizer organizer: allOrganizer){
-//            if(organizer.getUsername().equals(username)){
-//                return organizer;
-//            }
-//        }
-//
-//        for(Speaker speaker: allSpeaker){
-//            if (speaker.getUsername().equals(username)){
-//                return speaker;
-//            }
-//        }
-//
-//        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
-//    }
 
     /**
      * Authorization of a user trying to log into their account
@@ -299,5 +275,26 @@ public class UserManager {
                 s.addEventToSpeaker(title);
             }
         }
+    }
+
+    /**
+     * Check the type of the user.
+     * @param username the username of the user that you want to check.
+     * @return return "Attendee" if the user is an attendee;
+     * return "Organizer" if the user is an organizer;
+     * return "Speaker" if the user is a speaker.
+     */
+
+    public String userType(String username){
+        for(Attendee attendee: allAttendee){
+            if(username.equals(attendee.getUsername())) {return "Attendee";}
+        }
+        for (Organizer organizer: allOrganizer){
+            if(username.equals(organizer.getUsername())) {return "Organizer";}
+        }
+        for(Speaker speaker: allSpeaker){
+            if(username.equals(speaker.getUsername())) {return "Speaker";}
+        }
+        return "Invalid Username";
     }
 }
