@@ -31,9 +31,9 @@ public class LoginSystem implements Serializable {
         try {
             input = br.readLine();
             if (!input.equals("cancel")) {
-                menu.printStatement("Please enter your Username");
+                menu.printStatement("Please enter your username: ");
                 String enteredUsername = br.readLine();
-                menu.printStatement("Please enter your password:");
+                menu.printStatement("Please enter your password: ");
                 String enteredPassword = br.readLine();
                 if (verifyLogin(enteredUsername, enteredPassword)) {
                     String username = enteredUsername;
@@ -42,8 +42,6 @@ public class LoginSystem implements Serializable {
                 }
             }
         } catch(IOException e){
-            menu.printStatement("You have either entered an incorrect password or Username.");
-            menu.printStatement("Please try again.");
             e.printStackTrace();
         }
         return verified;

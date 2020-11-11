@@ -57,16 +57,11 @@ public class TechConferenceSystem {
         userMenu.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
         String temp2 = in.nextLine();
         if (temp2.equals("1")){
-            userMenu.printStatement("Please enter your username:");
-            String userName = in.nextLine();
-            userMenu.printStatement("Please enter your password:");
-            String password = in.nextLine();
-
             while (flag) {
                 if (loginSystem.run()) {
                     flag = false;
                 }else {
-                    userMenu.printStatement("You have entered an incorrect password.");
+                    userMenu.printStatement("You have entered an incorrect username or password.\n Please try again.");
                 }
             }
 
