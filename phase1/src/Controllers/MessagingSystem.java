@@ -209,14 +209,14 @@ public class MessagingSystem {
     public void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content) {
         List<String> recipients = new ArrayList<String>();
         recipients.add(recipientUsername);
-        User sender = this.userManager.stringtoUser(senderUsername);
+        // User sender = this.userManager.stringtoUser(senderUsername);    //think this can be deleted
 
-        if (this.userManager.stringtoUser(recipientUsername) == null) {
+        if (this.userManager.userType(recipientUsername).equals("Invalid Username")) {
             MessagingPresenter.error("Invalid recipient.");
             return;
         }
 
-        if (sender instanceof Speaker) {
+        if (this.userManager.userType(senderUsername).equals("Speaker")) {
             List<String> chatUsers = new ArrayList<String>();
             chatUsers.add(senderUsername);
             chatUsers.add(recipientUsername);
@@ -226,8 +226,8 @@ public class MessagingSystem {
             } else {
                 MessagingPresenter.error("Speakers may only reply to a user that has already started the chat.");
             }
-        } else if (sender instanceof Attendee || sender instanceof Organizer) {
-            if (!(this.userManager.stringtoUser(recipientUsername) instanceof Organizer)) {
+        } else if (this.userManager.userType(senderUsername).equals("Attendee") || this.userManager.userType(senderUsername).equals("Organizer")) {
+            if (!(this.userManager.userType(recipientUsername).equals("Organizer"))) {
                 this.sendMessageToUsers(recipients, senderUsername, time, content);
             } else {
                 MessagingPresenter.error("You may not message an organizer.");
@@ -238,7 +238,7 @@ public class MessagingSystem {
     }
 
     public void organizerMessageAllAttendees(String senderUsername, LocalDateTime time, String content) {
-        if (! (this.userManager.stringtoUser(senderUsername) instanceof Organizer)) {
+        if (! (this.userManager.userType(senderUsername).equals("Organizer"))) {
             MessagingPresenter.error("Only organizers may perform this action.");
         }
 
@@ -253,7 +253,7 @@ public class MessagingSystem {
     }
 
     public void organizerMessageAllSpeakers(String senderUsername, LocalDateTime time, String content) {
-        if (! (this.userManager.stringtoUser(senderUsername) instanceof Organizer)) {
+        if (! (this.userManager.userType(senderUsername).equals("Organizer"))) {
             MessagingPresenter.error("Only organizers may perform this action.");
         }
 
@@ -268,7 +268,7 @@ public class MessagingSystem {
     }
 
     public void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content) {
-        if (! (this.userManager.stringtoUser(senderUsername) instanceof Speaker)) {
+        if (! (this.userManager.userType(senderUsername).equals("Speaker"))) {
             MessagingPresenter.error("Only speakers may perform this action.");
         }
 
