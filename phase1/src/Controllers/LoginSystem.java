@@ -11,7 +11,8 @@ import UseCase.UserManager;
 import Entities.User;
 
 /**
- * How Users or any type are able to login into the app. The run method will
+ * How Users or any type are able to login into the app. The run method will also hold information on what Usertype it
+ * is in userType to be used in the corresponding UserMenu.
  *
  */
 public class LoginSystem implements Serializable {
@@ -37,7 +38,7 @@ public class LoginSystem implements Serializable {
                 String enteredPassword = br.readLine();
                 if (verifyLogin(enteredUsername, enteredPassword)) {
                     String username = enteredUsername;
-                    User userType = verifyUserType(username);
+                    String userType = verifyUserType(username);
                     verified = true;
                 }
             }
@@ -64,11 +65,12 @@ public class LoginSystem implements Serializable {
     }
 
     /**
-     * When a User logs in, the system should recognize what kind of User they are and provide the appropriate menu
+     * When a User logs in, the system should recognize what kind of User they are and provide the appropriate menu.
+     * This method should only be run once the login is successful.
      * @param username that we want to verify user type
      * @return User object to corresponding Username
      */
-    public User verifyUserType(String username) {
-        return manager.stringtoUser(username);
+    public String verifyUserType(String username) {
+        return manager.userType(username);
     }
 }
