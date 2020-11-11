@@ -14,7 +14,7 @@ public class TechConferenceSystem {
     private boolean terminated;
     private static Reader reader;
     private static Writer writer;
-    private static LogInSystem logInSystem;
+    private static LoginSystem loginSystem;
     private static MessagingSystem messagingSystem;
     private static SchedulingSystem schedulingSystem;
     private static SignUpSystem signUpSystem;
@@ -57,7 +57,12 @@ public class TechConferenceSystem {
         userMenu.displayMenu();
         String temp2 = in.nextLine();
         if (temp2.equals("1")){
-            // login goes here
+            while (flag) {
+                if (loginSystem.run()) {
+                    flag = false;
+                }
+            }
+
         }else if (temp2.equals("2")){
             while(flag) {
                 userMenu.displayUsername();
@@ -113,7 +118,7 @@ public class TechConferenceSystem {
             roomManager = new RoomManager();
             userManager = new UserManager();
         }
-        logInSystem = new LogInSystem(userManager);
+        loginSystem = new LoginSystem(userManager);
         messagingSystem = new MessagingSystem(chatManager, userManager, eventManager);
         schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager);
         signUpSystem = new SignUpSystem(eventManager, userManager);
