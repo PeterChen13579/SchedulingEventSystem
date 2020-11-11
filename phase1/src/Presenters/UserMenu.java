@@ -1,55 +1,75 @@
 package Presenters;
-import UseCase.UserManager;
-
-import java.util.Scanner;
 
 public class UserMenu {
-    private Scanner input;
-    private String temp;
-    private boolean terminate;
+    private int currentState;
 
-    public UserMenu() {
-        input = new Scanner(System.in);
-        temp = new String("0");
-        terminate = false;
 
-        System.out.println("(1) Log In \n (2) Create Attendee Account \n (3) Create Organizer Account" +
-                "\n (4) Quit");
-        while (!terminate) {
-            temp = input.nextLine();
-            if (temp.equals("1")) {
-                //add login method here
-                System.out.println("log in");
-                terminate = true;
-            } else if (temp.equals("2")) {
-                //add create attendee account here
-                System.out.println("Please enter a Username:");
-                String userName = input.nextLine();
-                System.out.println("Please enter a Password.");
-                String password = input.nextLine();
 
-                UserManager manage = new UserManager();
-                if (manage.createAttendeeAccount(userName, password)){
-                    //Created successfully
-                    System.out.println("You successfully created your account.");
-                }else{
-                    System.out.println("This Username is already registered.");
-                    System.out.println("Please try again");
-                }
-                terminate = true;
-            } else if (temp.equals("3")) {
-                System.out.println("organizer account");
-                terminate = true;
-            } else if (temp.equals("4")) {
-                System.out.println("quit");
-                terminate = true;
-            } else {
-                System.out.println("try again");
-            }
-        }
-        new UserMenu();
+    public void displayInitialLoad(){
+        System.out.println("(1) Load Existing Conference \n(2) Create New Conference");
+    }
+
+    public void displayMenu(){
+        System.out.println("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
     }
 
 
+    public void displayUsername(){
+        System.out.println("Please enter a username:");
+    }
+
+    public void displayPassword(){
+        System.out.println("Please enter a password:");
+    }
+
+    public void displayErrorUsername(){
+        System.out.println("This username is already in our database.");
+        System.out.println("Please enter a different username");
+    }
+
+    public void createdAccountAttendee(){
+        System.out.println("You have successfully created an Attendee account!");
+    }
+
+    public void createdAccountOrganizer(){
+        System.out.println("You have successfully created an Organizer account!");
+    }
+
+    public void createdAccountSpeaker(){
+        System.out.println("You have successfully created a Speaker account!");
+    }
+
+    public void displayExit(){
+        System.out.println("You have exited the program.");
+    }
+
+
+    public void loggedInMenuAttendee() {
+        //all options for attendees
+    }
+
+    public void loggedInMenuOrganizer(){
+        //all options for Organizer
+    }
+
+    public void loggedInMenuSpeaker(){
+        //all options for speaker
+    }
+
+    public void messageMenu() {
+        //all options for messaging
+    }
+
+    public void schedulingMenu() {
+        //all options for scheduling
+    }
+
+    public void signUpMenu() {
+        //all options for signing up
+    }
+
+    public void displayErrorMsg(){
+        System.out.println("Please enter the corresponding number and try again");
+    }
 
 }

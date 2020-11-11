@@ -1,5 +1,6 @@
 package UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Entities.Room;
@@ -10,8 +11,15 @@ import Entities.Room;
 public class RoomManager {
     private List<Room> allRoom;
 
-    public void createRoom(String roomNum){
-        allRoom.add(new Room(roomNum));
+    public RoomManager() {
+        allRoom = new ArrayList<>();
+    }
+
+    public RoomManager(List<Room> room) {
+        allRoom = room;
+    }
+
+    public void createRoom(String roomNum){ allRoom.add(new Room(roomNum));
     }
 
     public boolean doesRoomExist(String roomNum){
@@ -19,6 +27,10 @@ public class RoomManager {
             if(room.getRoomNum().equals(roomNum)) return true;
         }
         return false;
+    }
+
+    public List<Room> getAllRoom() {
+        return this.allRoom;
     }
 
 //    already done so in EventManager(Lisa: I THINK IT'S EASIER TO DO SO IN EVENTMANAGER)

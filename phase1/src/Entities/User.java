@@ -9,6 +9,7 @@ public abstract class User implements Serializable {
     private final String username;
     private String password;
     private List <String> friends;
+    private List<String> eventAttending;
 
 
     public User(String username, String password){
@@ -43,23 +44,19 @@ public abstract class User implements Serializable {
         password = newPassword;
     }
 
-
-    /**
-     * Adding a user to user's friend list
-     *
-     * @param user to add into friends list
-     * @return     true if sucessfully added user to friends list. False otherwise.
-     */
-    public boolean addFriend(User user){
-        for (String attendee: friends){
-            if (user.getUsername().equals(attendee)){
-                System.out.println("This user is already in your friend's list.");
-                return false;
-            }
-        }
-        friends.add(user.getUsername());
-        return true;
+    public List<String> getEventAttending() {
+        return eventAttending;
     }
 
+    public void setEventAttending(List<String> eventAttending) {
+        this.eventAttending = eventAttending;
+    }
 
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
+    }
 }

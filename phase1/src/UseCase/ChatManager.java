@@ -6,8 +6,11 @@ import Entities.Message;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+/**
+ * Manages the chats in our program. It calls methods in the Chats or messages in the Chats.
+ * @author Kailas Moon
+ */
 public class ChatManager {
 
     private List<Chat> allChats;
@@ -17,6 +20,10 @@ public class ChatManager {
      */
     public ChatManager() {
         this.allChats = new ArrayList<Chat>();
+    }
+
+    public ChatManager(List<Chat> chat) {
+        allChats = chat;
     }
 
     /**
@@ -124,7 +131,7 @@ public class ChatManager {
     public List<Message> getChatMessages(String username, Chat chat) {
         List<Message> allMessages = chat.getAllMessages();
         chat.setLastViewedMessage(username, allMessages.get(allMessages.size()-1));
-        return chat.getAllMessages();
+        return chat.getAllMessages();  // can this be changed to just returning allMessages?
     }
 
     public String getChatName(Chat chat) {

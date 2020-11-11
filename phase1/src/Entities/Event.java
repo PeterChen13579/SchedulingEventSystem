@@ -103,4 +103,12 @@ public class Event implements Serializable {
     public List<String> getAttendeeList() {
         return attendeeList;
     }
+
+    /**
+     * Getter for the end time of the Event
+     * @return the end time of the Event
+     */
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
 }
