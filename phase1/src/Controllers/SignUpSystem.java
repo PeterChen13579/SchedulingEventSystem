@@ -42,16 +42,22 @@ public class SignUpSystem {
                     System.out.println("Plz enter a valid username:");
                     userName = br.readLine();
                 }
-                if (temp.equals("sign up")) {
-                    System.out.println("Type the event title for the event you want to sign up:");
-                    String eventTitle = br.readLine();
-                    signUpEvent(userName, eventTitle);
-                } else if (temp.equals("cancel")) {
-                    System.out.println("Type the event title for the event you want to cancel spot:");
-                    String eventTitle = br.readLine();
-                    cancelSpotEvent(userName, eventTitle);
-                } else if (temp.equals("view")){
-                    ep.displayEvents();
+                switch (temp) {
+                    case "sign up": {
+                        System.out.println("Type the event title for the event you want to sign up:");
+                        String eventTitle = br.readLine();
+                        signUpEvent(userName, eventTitle);
+                        break;
+                    }
+                    case "cancel": {
+                        System.out.println("Type the event title for the event you want to cancel spot:");
+                        String eventTitle = br.readLine();
+                        cancelSpotEvent(userName, eventTitle);
+                        break;
+                    }
+                    case "view":
+                        ep.displayEvents();
+                        break;
                 }
             } catch (IOException e) {
                 System.out.println("Something went wrong :(");
