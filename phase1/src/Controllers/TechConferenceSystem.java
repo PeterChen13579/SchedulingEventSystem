@@ -59,6 +59,15 @@ public class TechConferenceSystem {
         if (temp2.equals("1")){
             while (flag) {
                 if (loginSystem.run()) {
+                    userMenu.printStatement("Please type your username: ");
+                    String username = in.nextLine();
+                    if (userManager.userType(username).equals("Attendee")){
+                        loggedInMenuAttendee(username);
+                    }else if (userManager.userType(username).equals("Organizer")){
+                        loggedInMenuOrganizer(username);
+                    }else{
+                        loggedInMenuSpeaker(username);
+                    }
                     flag = false;
                 }else {
                     userMenu.printStatement("You have entered an incorrect username or password.\n Please try again.");
@@ -100,6 +109,94 @@ public class TechConferenceSystem {
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
         if (! temp2.equals("4")) {
+            mainLevel();
+        }
+    }
+
+    public void loggedInMenuAttendee(String username){
+        Scanner in = new Scanner(System.in);
+
+        boolean flag = true;
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Quit");
+        String temp2 = in.nextLine();
+        if (temp2.equals("1")){
+            while (flag) {
+                signUpSystem.run();
+                flag = false;
+            }
+
+        }else if (temp2.equals("2")){
+            while(flag) {
+                messagingSystem.run(username);
+                flag = false;
+            }
+        }else if (temp2.equals("3")){
+            userMenu.printStatement("You have exited the program.");
+
+        }else{
+            userMenu.printStatement("Please enter the corresponding number and try again");
+        }
+
+        if (! temp2.equals("3")) {
+            mainLevel();
+        }
+    }
+
+    public void loggedInMenuOrganizer(String username){
+        Scanner in = new Scanner(System.in);
+
+        boolean flag = true;
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu \n(4) Quit");
+        String temp2 = in.nextLine();
+        if (temp2.equals("1")){
+            while (flag) {
+                signUpSystem.run();
+                flag = false;
+            }
+
+        }else if (temp2.equals("2")){
+            while(flag) {
+                messagingSystem.run(username);
+                flag = false;
+            }
+        }else if (temp2.equals("3")){
+            while(flag){
+                schedulingSystem.run();
+                flag = false;
+            }
+
+        }else if (temp2.equals("4")){
+            userMenu.printStatement("You have exited the program.");
+
+        }else{
+            userMenu.printStatement("Please enter the corresponding number and try again");
+        }
+
+        if (! temp2.equals("4")) {
+            mainLevel();
+        }
+    }
+
+    public void loggedInMenuSpeaker(String username){
+        Scanner in = new Scanner(System.in);
+
+        boolean flag = true;
+        userMenu.printStatement("(1) Message Menu  \n(2) Quit");
+        String temp2 = in.nextLine();
+        if (temp2.equals("1")){
+            while (flag) {
+                messagingSystem.run(username);
+                flag = false;
+            }
+
+        }else if (temp2.equals("2")){
+            userMenu.printStatement("You have exited the program.");
+
+        }else{
+            userMenu.printStatement("Please enter the corresponding number and try again");
+        }
+
+        if (! temp2.equals("2")) {
             mainLevel();
         }
     }

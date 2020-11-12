@@ -195,7 +195,7 @@ public class UserManager {
      * @param Username Username that wants to be searched for
      * @return         User object that matches with Username
      */
-    public User stringtoUser(String Username){
+    private User stringtoUser(String Username){
         for (Attendee a: allAttendee){
             if (a.getUsername().equals(Username)){
                 return a;

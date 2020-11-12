@@ -2,7 +2,7 @@ package UseCase;
 
 import Entities.Event;
 import Entities.Room;
-import UseCase.RoomManager;
+
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -159,15 +159,10 @@ public class EventManager {
     }
 
     /**
-     * Getter for List of all Events
-     * @return List of all Events
+     * Returns whether or not the event exists
+     * @param eventTitle the event title that we want to check
+     * @return true iff the event with the corresponding event title is in the allEvents list
      */
-    public List<Event> getAllEvents() {
-        return allEvents;
-    }
-
-
-    //return true if the event is in allEvents
     public boolean isEventExist(String eventTitle){
         for(Event event:allEvents){
             if (event.getTitle().equals(eventTitle)){return true;}
@@ -175,19 +170,35 @@ public class EventManager {
         return false;
     }
 
-    //return true if the attendee is already in attendeeList stored in this event
+    /**
+     * Returns whether or not the username of this attendee is in attendeeList of this event
+     * @param userName the username of the attendee that we want to check
+     * @param eventTitle the event title that we want to check if the attendee is in
+     * @return true iff the username of this attendee is in attendeeList of this event
+     */
     public boolean isAttendeeAdded(String userName, String eventTitle){
         Event event = helperEventTitle(eventTitle);
         return event.getAttendeeList().contains(userName);
     }
 
-    //return true if can add attendee. calls the above helper methods
+    /**
+     * Returns whether or not we can add the username of this attendee to the attendeeList of this event,
+     * calls the above helper methods (isEventExist isAttendeeAdded roomNotFull)
+     * @param userName the username of the attendee that we want to add
+     * @param eventTitle the event title that we want to check if we can add this attendee
+     * @return true iff we can add the username of this attendee to the attendeeList of this event
+     */
     public boolean canAddAttendee(String userName, String eventTitle){
         return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle) && roomNotFull(eventTitle);
     }
 
-
-    //return true if can delete attendee. calls the above helper methods
+    /**
+     * Returns whether or not we can delete the username of this attendee from the attendeeList of this event,
+     * calls the above helper methods (isEventExist isAttendeeAdded)
+     * @param userName the username of the attendee that we want to delete
+     * @param eventTitle the event title that we want to check if we can delete this attendee
+     * @return true iff we can delete the username of this attendee from the attendeeList of this event
+     */
     public boolean canDeleteAttendee(String userName, String eventTitle){
         return isEventExist(eventTitle) && isAttendeeAdded(userName, eventTitle);
     }
@@ -209,6 +220,11 @@ public class EventManager {
         throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
     }
 
+    /**
+     * Returns whether or not the room of this event is full
+     * @param eventTitle the event title that we want to check
+     * @return true iff the room is not full
+     */
     public boolean roomNotFull(String eventTitle){
         Event event = helperEventTitle(eventTitle);
         int attendeeNum = event.getAttendeeList().size();
@@ -229,7 +245,7 @@ public class EventManager {
     }
 
     /**
-     * Delete attendee from the attendeelist stored in Event
+     * Delete attendee from the attendeeList stored in Event
      * @param attendeeUserName the username of attendee that is is deleted from the attendeeList
      * @param eventTitle the event that this attendee want to cancel spot from
      */

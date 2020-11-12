@@ -160,7 +160,7 @@ public class ChatManager {
 
     /**
      * Get all messages of a chat
-     * @param chat The chat being looked at
+     * @param chatId The chat being looked at
      * @return A list of all the messages in the chat
      */
     public List<UUID> getChatMessages(String username, UUID chatId) {
@@ -191,17 +191,17 @@ public class ChatManager {
         chat.addUser(user);
     }
 
-    public String getMessageSenderUsername(UUID messageId) {
+    public String getMessageSenderUsername(UUID chatId, UUID messageId) {
         Message message = this.allMessages.get(messageId);
         return message.getSenderUsername();
     }
 
-    public LocalDateTime getMessageTimeStamp(UUID messageId) {
+    public LocalDateTime getMessageTimeStamp(UUID chatId, UUID messageId) {
         Message message = this.allMessages.get(messageId);
         return message.getTimeStamp();
     }
 
-    public String getMessageContent(UUID messageId) {
+    public String getMessageContent(UUID chatId, UUID messageId) {
         Message message = this.allMessages.get(messageId);
         return message.getContent();
     }
