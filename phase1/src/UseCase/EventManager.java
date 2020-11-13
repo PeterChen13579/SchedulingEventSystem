@@ -4,6 +4,7 @@ import Entities.Event;
 import Entities.Room;
 
 
+import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class EventManager {
+public class EventManager implements Serializable {
     private List<Event> allEvents;
 
     public EventManager() {
@@ -282,5 +283,18 @@ public class EventManager {
         String roomNum = event.getRoomNum();
         return eventTitle + ": " + startTime + " - " + endTime + ", in Room " + roomNum +
                 ". Speaker: " + speaker;
+    }
+
+    /**
+     * Get a list of all the usernames of attendees for the given event title
+     * @return a list of all the attendee usernames for the given event title
+     */
+    public List<String> getAllAttendeesByTitle(String title){
+        for(Event event: allEvents) {
+            if (event.getTitle().equals(title)) {
+                return event.getAttendeeList();
+            }
+        }
+        throw new IllegalArgumentException("The given title does not correspond to any event in the event list.");
     }
 }

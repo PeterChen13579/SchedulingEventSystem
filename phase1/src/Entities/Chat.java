@@ -1,8 +1,8 @@
 package Entities;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -12,8 +12,8 @@ import java.util.UUID;
  * @author William Wang
  */
 public class Chat implements Serializable {
-    private List<UUID> chatMessages;  //stores all messages. should be sorted by time
-    private HashMap<String, UUID> lastViewedMessage; //pairs username with a message. If chatMessages/memberUsernames is changed, this must be changed as well.
+    private LinkedHashMap<UUID, Message> chatMessages;  //stores all messages by pairing them with an id. Should be sorted by time
+    private HashMap<String, UUID> lastViewedMessage; //pairs username with a message id. If chatMessages/memberUsernames is changed, this must be changed as well.
     private List<String> memberUsernames;  //users in the chat
     private String chatName;
 
@@ -23,24 +23,28 @@ public class Chat implements Serializable {
      * @param memberUsernames The users that are in this chat
      */
     public Chat(List<String> memberUsernames){
-        this.chatMessages = new ArrayList<>();
+        this.chatMessages = new LinkedHashMap<>();
         this.lastViewedMessage = new HashMap<>();
+        for (String username : memberUsernames){
+            this.lastViewedMessage.put(username, null);  //sets the last viewed message to null for each user
+        }
+
         this.memberUsernames = memberUsernames;
         this.chatName = String.join(", ", this.memberUsernames); //we can overload and create another constructor to accept a chat name
         }
 
     /**
      * getter for the messages
-     * @return Sorted list of all messages in the chat
+     * @return Sorted LinkedHashMap of all messages in the chat
      */
-    public List<UUID> getAllMessages(){
+    public LinkedHashMap<UUID, Message> getAllMessages(){
         return chatMessages;
     }
 
     /**
      * getter for last viewed message for the user
      * @param username The user who we are referencing
-     * @return The last viewed message of the user
+     * @return The last viewed message id of the user
      */
     public UUID getLastViewedMessage(String username){
         // Preconditions : Username is in this chat
@@ -65,21 +69,22 @@ public class Chat implements Serializable {
 
     /**
      * Add a message to the chat
-     * @param newMessage The message being added to the chat
+     * @param newMessageId The message id being added to the chat
+     * @param message The message being added to the chat
      */
-    public void addChatMessage(UUID newMessage) {
+    public void addChatMessage(UUID newMessageId, Message message) {
         // Preconditions : Added message has a timestamp after the last message in the chat, Message does not already exist in another chat
-        chatMessages.add(newMessage); // maybe the use case needs to update the last viewed message (since sending a message probably means they view the previous ones)
+        chatMessages.put(newMessageId, message); // maybe the use case needs to update the last viewed message (since sending a message probably means they view the previous ones)
     }
 
     /**
      * Change the last viewed message for this user.
      * @param username The username of the user being changed
-     * @param lastMessage The message that is being set to the last viewed one
+     * @param lastMessageId The message id that is being set to the last viewed one
      */
-    public void setLastViewedMessage(String username, UUID lastMessage) {
+    public void setLastViewedMessage(String username, UUID lastMessageId) {
         // Precondition: the user and the message exist in this chat
-        lastViewedMessage.put(username, lastMessage);
+        lastViewedMessage.put(username, lastMessageId);
     }
 
     /**

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import Controllers.SchedulingSystem;
+import Controllers.SignUpSystem;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
@@ -18,7 +19,8 @@ public class SchedulingTest {
 //        parseStringToDateAndTimeTest();
 //        isTimeAvailableTest();
 //        controllerTest();
-        eventPresenterTest();
+//        eventPresenterTest();
+        getAllAttendeesTest();
 
     }
 
@@ -66,6 +68,25 @@ public class SchedulingTest {
 
         EventPresenter ep = new EventPresenter(em);
         ep.displayEvents();
+    }
+
+    public static void getAllAttendeesTest(){
+        RoomManager rm = new RoomManager();
+        EventManager em = new EventManager();
+        UserManager um = new UserManager();
+        SchedulingSystem s = new SchedulingSystem(em, rm, um);
+
+
+        rm.createRoom("216");
+        um.createSpeakerAccount("Tom", "12345");
+
+        s.addEvent("20201130", "16:00:00", "216", "Tom", "Intro 102");
+        s.addEvent("20201130", "09:00:00", "216", "Tom", "Intro 101");
+
+        em.addAttendee("Bob","Intro 101");
+        em.addAttendee("Lisa","Intro 101");
+        System.out.println(em.getAllAttendeesByTitle("Intro 101"));
+
     }
 
 }
