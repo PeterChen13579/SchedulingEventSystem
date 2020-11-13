@@ -161,7 +161,7 @@ public class MessagingSystem {
      */
     private void viewChatNames(String userName){
         List<UUID> userChats = userChatManager.getUserChats(userName); //might change the method since it might be redundant in the use case
-        MessagingPresenter.displayChatNames(userChatManager.getChatsByUUID(userChats));
+        MessagingPresenter.displayChatNames(userChats);
     }
 
     /**
@@ -172,7 +172,7 @@ public class MessagingSystem {
     private void viewChat(String username, List<String> allUsers) {      //allUsers is a list of usernames
         UUID userChat = userChatManager.getChatContainingUsers(allUsers);
         List<UUID> messages = userChatManager.getChatMessages(username, userChat);
-        MessagingPresenter.displayChat(username, userChatManager.getChatName(userChat), userChatManager.getMessagesByUID(messages));
+        MessagingPresenter.displayChat(username, userChat, messages);
     }
 
     /**
@@ -181,12 +181,10 @@ public class MessagingSystem {
      */
     private void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
         List<UUID> userChats = userChatManager.getUserChats(userName);
-        HashMap<Chat, List<Message>> newMessages = new HashMap<>();
+        HashMap<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
             List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
-            Chat chat = userChatManager.getChatsByUUID(Arrays.asList(new UUID[] {id})).get(0);
-            List<Message> messages = userChatManager.getMessagesByUID(chatNewMessages);
-            newMessages.put(chat, messages);
+            newMessages.put(id, chatNewMessages);
         }
         MessagingPresenter.displayNewMessages(newMessages);
     }
@@ -288,7 +286,7 @@ public class MessagingSystem {
             boolean found = false;
             for (String event : allEvents) {
                 if (event.equals(title)) {
-                    if (eventManager.getAllAttendeesByTitle(event).includes(senderUsername)) {
+                    if (eventManager.getAllAttendeesByTitle(event).contains(senderUsername)) {
                         found = true;
                         for (String recipient: eventManager.getAllAttendeesByTitle(event)) {
                             if (!recipients.contains(recipient)) {
