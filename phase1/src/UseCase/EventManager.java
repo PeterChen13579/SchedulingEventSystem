@@ -297,4 +297,13 @@ public class EventManager implements Serializable {
         }
         throw new IllegalArgumentException("The given title does not correspond to any event in the event list.");
     }
+
+    /**
+     * Get speaker username for the given event title
+     * @return the speaker username for the given event title
+     */
+    public String getSpeakerUsernameByTitle(String eventTitle){
+        Event event = helperEventTitle(eventTitle);
+        return event.getSpeakerUserName();
+    }
 }
