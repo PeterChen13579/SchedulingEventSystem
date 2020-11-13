@@ -14,14 +14,12 @@ import java.util.*;
 public class ChatManager implements Serializable {
 
     private HashMap<UUID, Chat> allChats;
-    //private HashMap<UUID, Message> allMessages;
 
     /**
      * Create an instance of ChatManager
      */
     public ChatManager() {
         this.allChats = new HashMap<>();
-        //this.allMessages = new HashMap<>();
     }
 
     public ChatManager(HashMap<UUID, Chat> chat) {  // might need to change this for loading objects
@@ -221,7 +219,7 @@ public class ChatManager implements Serializable {
     }
 
     // Private method
-    private Message getChatMessage (UUID chatId, UUID messageId){
+    private Message getChatMessage(UUID chatId, UUID messageId){
         Chat chat = this.allChats.get(chatId);
         return chat.getAllMessages().get(messageId);
     }

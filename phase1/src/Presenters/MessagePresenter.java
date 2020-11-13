@@ -9,6 +9,7 @@ import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.lang.Math;
+import java.util.UUID;
 
 /**
  * Presents information given by MessagingSystem by formatting and printing information to screen.
@@ -51,12 +52,12 @@ public class MessagePresenter {
 
     /**
      * Displays the chat names in a menu style. The user can select a chat.
-     * @param chats The chats to be displayed.
+     * @param chatIds The chats to be displayed.
      */
-    public void displayChatNames(List<Chat> chats){
+    public void displayChatNames(List<UUID> chatIds){
         System.out.println("\n Chats \n");
-        for (int i = 0; i < chats.size(); i++){
-            String chatName = userChatManager.getChatName(chats.get(i));
+        for (int i = 0; i < chatIds.size(); i++){
+            String chatName = userChatManager.getChatName(chatIds.get(i));
             System.out.println(i + ". " + chatName);
         }
         System.out.println("Select a chat by entering a number");
@@ -65,29 +66,29 @@ public class MessagePresenter {
     /**
      * Displays a chat.
      * @param username The username of the current user.
-     * @param chatName The name of the chat
-     * @param chatMessages The messages in the chat
+     * @param chatId The id of the chat
+     * @param chatMessageIds The messages in the chat
      */
-    public void displayChat(String username, String chatName, List<Message> chatMessages){
-        System.out.println("\n" + chatName + "\n");
-        for (Message message : chatMessages ){
-            displayChatMessage(username, message);
+    public void displayChat(String username, UUID chatId, List<UUID> chatMessageIds){
+        System.out.println("\n" + userChatManager.getChatName(chatId) + "\n");
+        for (UUID messageId : chatMessageIds ){
+            displayChatMessage(username, chatId, messageId);
         }
     }
 
     /**
      * Displays a chat message. Acts as a helper method for displayChat.
-     * @param message A chat message.
+     * @param messageId A chat message.
      */
-    public void displayChatMessage(String username, Message message) {  //probably shouldn't have entity parameters
-        String senderUsername = userChatManager.getMessageSenderUsername(message);
-        LocalDateTime timestamp = userChatManager.getMessageTimeStamp(message);
-        String content = userChatManager.getMessageContent(message);
+    public void displayChatMessage(String username, UUID chatId, UUID messageId) {
+        String senderUsername = userChatManager.getMessageSenderUsername(chatId, messageId);
+        LocalDateTime timestamp = userChatManager.getMessageTimeStamp(chatId, messageId);
+        String content = userChatManager.getMessageContent(chatId, messageId);
 
         if(username.equals(senderUsername)){
-            System.out.println(senderUsername +"(Me)" + " : " + content + "                                    at " + timestamp);
+            System.out.println(senderUsername +"(Me)" + "  :  " + content + "                               at   " + timestamp);
         }else{
-            System.out.println(senderUsername + " : " + content + "                                    at " + timestamp);
+            System.out.println(senderUsername + "  :  " + content + "                               at   " + timestamp);
         }
 
     }
@@ -96,25 +97,28 @@ public class MessagePresenter {
      * Displays all new Messages in a notification style (Think how new messages look on a phone notification).
      * @param newMessages Hashmap with the chats each paired with a list of their new messages.
      */
-    public void displayNewMessages(HashMap<Chat, List<Message>> newMessages){   // have to fix
+    public void displayNewMessages(HashMap<UUID, List<UUID>> newMessages){
         System.out.println("\n New Messages");
-        for (Map.Entry<Chat, List<Message>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
+        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
             //printing chat name
-            String chatName = userChatManager.getChatName(mapItem.getKey());
+            UUID chatId = mapItem.getKey();
+            String chatName = userChatManager.getChatName(chatId);
             System.out.println("\n" +chatName);
 
-            //showing time difference
-            List<Message> messages = mapItem.getValue();
-            LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(messages.get(messages.size() - 1));
+            //showing time difference from now and last message
+            List<UUID> messageIds = mapItem.getValue();
+            LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
             Duration timeDifference = Duration.between(LocalDateTime.now(), lastMessageTime);
             System.out.println(timeDifference.toHours() + " hours ago");          // might change the format to be more clearer
 
             //showing last eight messages
-            List<Message> last8Messages = messages.subList(messages.size()- Math.min(messages.size(), 8), messages.size());
-            for (Message message : last8Messages){   //only prints last 8 Messages
-                System.out.println(userChatManager.getMessageSenderUsername(message) + " : " +userChatManager.getMessageContent(message)); //might make this call helper instead
+            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
+                System.out.println(userChatManager.getMessageSenderUsername(chatId, last8Id) + "  :  " +
+                        userChatManager.getMessageContent(chatId, last8Id)); //might make this call helper instead
             }
         }
     }
+
 
 }
