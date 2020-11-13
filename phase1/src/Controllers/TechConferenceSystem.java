@@ -146,7 +146,8 @@ public class TechConferenceSystem {
         Scanner in = new Scanner(System.in);
 
         boolean flag = true;
-        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu \n(4) Quit");
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu \n(4) Create Speaker " +
+                "account \n(5) Quit");
         String temp2 = in.nextLine();
         if (temp2.equals("1")){
             while (flag) {
@@ -164,15 +165,25 @@ public class TechConferenceSystem {
                 schedulingSystem.run();
                 flag = false;
             }
-
         }else if (temp2.equals("4")){
+            userMenu.printStatement("Please enter a Username:");
+            String userName = in.nextLine();
+            userMenu.printStatement("Please enter a Password:");
+            String password = in.nextLine();
+            if (userManager.createSpeakerAccount(userName, password)){
+                userMenu.printStatement("You have successfully created a speaker account.");
+            }else {
+                userMenu.printStatement("This username is already in our database.");
+                userMenu.printStatement("Please enter a different username");
+                flag = false;
+            }
+        }else if (temp2.equals("5")){
             userMenu.printStatement("You have exited the program.");
             saveProgram();
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
-
-        if (! temp2.equals("4")) {
+        if (! temp2.equals("5")) {
             mainLevel();
         }
     }
