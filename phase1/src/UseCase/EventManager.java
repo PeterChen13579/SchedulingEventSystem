@@ -283,4 +283,17 @@ public class EventManager {
         return eventTitle + ": " + startTime + " - " + endTime + ", in Room " + roomNum +
                 ". Speaker: " + speaker;
     }
+
+    /**
+     * Get a list of all the usernames of attendees for the given event title
+     * @return a list of all the attendee usernames for the given event title
+     */
+    public List<String> getAllAttendeesByTitle(String title){
+        for(Event event: allEvents) {
+            if (event.getTitle().equals(title)) {
+                return event.getAttendeeList();
+            }
+        }
+        throw new IllegalArgumentException("The given title does not correspond to any event in the event list.");
+    }
 }
