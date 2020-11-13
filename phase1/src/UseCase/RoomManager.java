@@ -1,5 +1,6 @@
 package UseCase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import Entities.Room;
 /**
  * A Use Case class that manages the functionality of room.
  */
-public class RoomManager {
+public class RoomManager implements Serializable {
     private List<Room> allRoom;
 
     public RoomManager() {

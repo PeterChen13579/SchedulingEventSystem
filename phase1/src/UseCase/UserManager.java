@@ -1,4 +1,5 @@
 package UseCase;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import Entities.User;
@@ -10,7 +11,7 @@ import Entities.Speaker;
  * A UseCase class that manages the functionalities of User class.
  *
  */
-public class UserManager {
+public class UserManager implements Serializable {
     private List <Attendee> allAttendee = new ArrayList<Attendee>();
     private List <Organizer> allOrganizer = new ArrayList<Organizer>();
     private List <Speaker> allSpeaker = new ArrayList<Speaker>();

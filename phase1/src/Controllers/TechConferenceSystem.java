@@ -104,7 +104,7 @@ public class TechConferenceSystem {
             }
         }else if (temp2.equals("4")){
             userMenu.printStatement("You have exited the program.");
-
+            saveProgram();
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
@@ -132,7 +132,7 @@ public class TechConferenceSystem {
             }
         }else if (temp2.equals("3")){
             userMenu.printStatement("You have exited the program.");
-
+            saveProgram();
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
@@ -167,7 +167,7 @@ public class TechConferenceSystem {
 
         }else if (temp2.equals("4")){
             userMenu.printStatement("You have exited the program.");
-
+            saveProgram();
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
@@ -191,7 +191,7 @@ public class TechConferenceSystem {
 
         }else if (temp2.equals("2")){
             userMenu.printStatement("You have exited the program.");
-
+            saveProgram();
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
@@ -208,11 +208,10 @@ public class TechConferenceSystem {
     private void createProgram(boolean load) {
         if (load) {
             reader = new Reader();
-            chatManager = new ChatManager(reader.loadData("chats.txt"));
-            eventManager = new EventManager(reader.loadData("events.txt"));
-            roomManager = new RoomManager(reader.loadData("rooms.txt"));
-            userManager = new UserManager(reader.loadData("attendees.txt"),
-                    reader.loadData("organizers.txt"), reader.loadData("speakers.txt"));
+            chatManager = (ChatManager) reader.loadData("cm.txt");
+            eventManager = (EventManager) reader.loadData("em.txt");
+            roomManager = (RoomManager) reader.loadData("rm.txt");
+            userManager = (UserManager) reader.loadData("um.txt");
         } else {
             chatManager = new ChatManager();
             eventManager = new EventManager();
@@ -225,19 +224,12 @@ public class TechConferenceSystem {
         signUpSystem = new SignUpSystem(eventManager, userManager);
     }
 
-
-
-    /**
-     * Saves all information of the current session
-     */
-    public void saveProgram() {
+    private void saveProgram() {
         writer = new Writer();
-        writer.writeToFile("organizers.txt", userManager.getAllOrganizer());
-        writer.writeToFile("attendees.txt", userManager.getAllAttendee());
-        writer.writeToFile("speakers.txt", userManager.getAllSpeaker());
-        writer.writeToFile("events.txt", eventManager.getAllEvents());
-        //writer.writeToFile("rooms.txt", roomManager.getAllRoom());
-        writer.writeToFile("chats.txt", chatManager.getAllChats());
+        writer.writeToFile("cm.txt", chatManager);
+        writer.writeToFile("em.txt", eventManager);
+        writer.writeToFile("rm.txt", roomManager);
+        writer.writeToFile("um.txt", userManager);
     }
 
 

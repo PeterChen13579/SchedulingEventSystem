@@ -3,34 +3,35 @@ package UseCase;
 import Entities.Chat;
 import Entities.Message;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * Manages the chats in our program. It calls methods in the Chats or messages in the Chats.
+ * Manages the chats in our program. It calls methods in the Chats or in the messages in the Chats.
  * @author Kailas Moon
  */
-public class ChatManager {
+public class ChatManager implements Serializable {
 
     private HashMap<UUID, Chat> allChats;
-    private HashMap<UUID, Message> allMessages;
+    //private HashMap<UUID, Message> allMessages;
 
     /**
      * Create an instance of ChatManager
      */
     public ChatManager() {
         this.allChats = new HashMap<>();
-        this.allMessages = new HashMap<>();
+        //this.allMessages = new HashMap<>();
     }
 
-    public ChatManager(HashMap<UUID, Chat> chat) {
+    public ChatManager(HashMap<UUID, Chat> chat) {  // might need to change this for loading objects
         allChats = chat;
     }
 
     /**
      * Create a new chat and add it to the list of all chats
      * @param memberUsernames The users who are in the new chat
-     * @return The new chat
+     * @return The id of the new chat
      */
     public UUID createChat(List<String> memberUsernames) {
         Chat newChat = new Chat(memberUsernames);
@@ -41,7 +42,7 @@ public class ChatManager {
 
     /**
      * Send a message to one chat
-     * @param chatId The chat that the message is being sent in
+     * @param chatId The id of the chat that the message is being sent in
      * @param senderUsername The username of the sender
      * @param time The time the message was sent
      * @param content The content of the message
@@ -50,17 +51,17 @@ public class ChatManager {
         // Precondition: senderUsername is in this chat
         Message message = new Message(senderUsername, time, content);
         UUID newMessageId = UUID.randomUUID();
-        this.allMessages.put(newMessageId, message);
+        //this.allMessages.put(newMessageId, message);
 
         Chat chosenChat = allChats.get(chatId);
-        chosenChat.addChatMessage(newMessageId);
+        chosenChat.addChatMessage(newMessageId, message);
         chosenChat.setLastViewedMessage(senderUsername, newMessageId);
     }
 
     /**
      * Get the chat containing only the specified users. Returns null if no such chat exists
      * @param usernames A list of the usernames of the users in the chat
-     * @return The chat containing all of the given users if it exists, or null otherwise
+     * @return The id of the chat containing all of the given users if it exists, or null otherwise
      */
     public UUID getChatContainingUsers(List<String> usernames) {
         // Precondition: There is only one chat between all the users in usernames
@@ -99,19 +100,24 @@ public class ChatManager {
     /**
      * Get all new messages for a user
      * @param username The username of the user
-     * @param chatId The chat containing the new messages
+     * @param chatId The id of the chat containing the new messages
      * @return The new messages to that user
      */
     public List<UUID> getNewMessages(String username, UUID chatId) {
         // Precondition: Username is in the chat
 
-        Chat chat = allChats.get(chatId);
-        List<UUID> chatMessages = chat.getAllMessages();
-        UUID seenMessageId = chat.getLastViewedMessage(username);
-        int newMessageIndex = chatMessages.indexOf(seenMessageId) + 1;
+        if (isChatEmpty(chatId)){
+            return new ArrayList<>();  // returns empty list if chat is empty
+        }
 
-        chat.setLastViewedMessage(username, chatMessages.get(chatMessages.size() - 1)); // Update the last viewed message
-        return chatMessages.subList(newMessageIndex, chatMessages.size());
+        Chat chat = allChats.get(chatId);
+        LinkedHashMap<UUID, Message> chatMessages = chat.getAllMessages();
+        List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
+        UUID seenMessageId = chat.getLastViewedMessage(username);   // if the user has not seen any messages, then seenMessageId will be null.
+        int newMessageIndex = chatMessagesList.indexOf(seenMessageId) + 1;
+
+        chat.setLastViewedMessage(username, chatMessagesList.get(chatMessagesList.size() - 1)); // Update the last viewed message
+        return chatMessagesList.subList(newMessageIndex, chatMessages.size());
     }
 
     /**
@@ -150,7 +156,7 @@ public class ChatManager {
 
     /**
      * Checks if a chat has no messages
-     * @param chatId The chat being checked
+     * @param chatId The id of the chat being checked
      * @return A boolean to represent whether or not the chat is empty
      */
     public boolean isChatEmpty(UUID chatId) {
@@ -160,14 +166,20 @@ public class ChatManager {
 
     /**
      * Get all messages of a chat
-     * @param chatId The chat being looked at
+     * @param chatId The id of the chat being looked at
      * @return A list of all the messages in the chat
      */
     public List<UUID> getChatMessages(String username, UUID chatId) {
+        // Precondition : user exists in chat
+        if (isChatEmpty(chatId)){
+            return new ArrayList<>(); // returns empty list if chat is empty
+        }
+
         Chat chat = this.allChats.get(chatId);
-        List<UUID> chatMessages = chat.getAllMessages();
-        chat.setLastViewedMessage(username, chatMessages.get(chatMessages.size()-1));
-        return chat.getAllMessages();  // can this be changed to just returning chatMessages?
+        LinkedHashMap<UUID, Message> chatMessages = chat.getAllMessages();
+        List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
+        chat.setLastViewedMessage(username, chatMessagesList.get(chatMessagesList.size()-1));
+        return chatMessagesList;
     }
 
     public String getChatName(UUID chatId) {
@@ -186,23 +198,31 @@ public class ChatManager {
     }
 
 
-    public void addUserToChat(UUID chatId, String user) {
+    public void addUserToChat(UUID chatId, String username) {   //make sure you call getMessages if you want the user to see the messages
+        //Precondition: User does not already exist in chat.
         Chat chat = this.allChats.get(chatId);
-        chat.addUser(user);
+        chat.addUser(username);
+        chat.setLastViewedMessage(username, null);
     }
 
     public String getMessageSenderUsername(UUID chatId, UUID messageId) {
-        Message message = this.allMessages.get(messageId);
+        Message message = getChatMessage(chatId, messageId);
         return message.getSenderUsername();
     }
 
     public LocalDateTime getMessageTimeStamp(UUID chatId, UUID messageId) {
-        Message message = this.allMessages.get(messageId);
+        Message message = getChatMessage(chatId, messageId);
         return message.getTimeStamp();
     }
 
     public String getMessageContent(UUID chatId, UUID messageId) {
-        Message message = this.allMessages.get(messageId);
+        Message message = getChatMessage(chatId, messageId);
         return message.getContent();
+    }
+
+    // Private method
+    private Message getChatMessage (UUID chatId, UUID messageId){
+        Chat chat = this.allChats.get(chatId);
+        return chat.getAllMessages().get(messageId);
     }
 }
