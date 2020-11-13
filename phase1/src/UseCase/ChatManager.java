@@ -3,6 +3,7 @@ package UseCase;
 import Entities.Chat;
 import Entities.Message;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -10,7 +11,7 @@ import java.util.*;
  * Manages the chats in our program. It calls methods in the Chats or in the messages in the Chats.
  * @author Kailas Moon
  */
-public class ChatManager {
+public class ChatManager implements Serializable {
 
     private HashMap<UUID, Chat> allChats;
     //private HashMap<UUID, Message> allMessages;

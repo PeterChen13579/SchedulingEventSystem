@@ -4,6 +4,7 @@ import Entities.Event;
 import Entities.Room;
 
 
+import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class EventManager {
+public class EventManager implements Serializable {
     private List<Event> allEvents;
 
     public EventManager() {

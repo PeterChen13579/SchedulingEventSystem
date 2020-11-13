@@ -6,6 +6,10 @@ import Entities.Event;
 import Entities.Organizer;
 import Entities.Room;
 import Entities.Speaker;
+import UseCase.UserManager;
+import UseCase.RoomManager;
+import UseCase.EventManager;
+import UseCase.ChatManager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,40 +26,19 @@ public class Reader {
      * @return a list of lists that contains all the data needed
      * @throws ClassNotFoundException
      */
-    public List loadData(String filename) {
-        List results = new ArrayList<>(5);
-        if (verifySave("file")) {
-            try {
-                results.add(loadHelper(filename));
-            } catch (ClassNotFoundException e) {
-                System.out.println("loadData");
-            }
-        }
-        return results;
-    }
-
-    private boolean verifySave(String filename) {
-        File attendee = new File("attendees.txt");
-        File organizer = new File("organizers.txt");
-        File speaker = new File("speakers.txt");
-        File room = new File("rooms.txt");
-        File event = new File("events.txt");
-        File chat = new File("chats.txt");
-        return (attendee.exists() && organizer.exists() && speaker.exists() && room.exists() &&
-                event.exists() && chat.exists());
-    }
-
-    private List loadHelper(String filename) throws ClassNotFoundException {
+    public Object loadData(String filename) {
         File file = new File(filename);
-        ArrayList helper = new ArrayList();
+        Object helper = new Object();
         try {
-            if (file.length() != 0) {
-                InputStream inputFile = new FileInputStream(file);
-                InputStream buffer = new BufferedInputStream(inputFile);
-                ObjectInput input = new ObjectInputStream(buffer);
+            if (file.exists()) {
+                if (file.length() != 0) {
+                    InputStream inputFile = new FileInputStream(file);
+                    InputStream buffer = new BufferedInputStream(inputFile);
+                    ObjectInput input = new ObjectInputStream(buffer);
 
-                helper = (ArrayList) input.readObject();
-                input.close();
+                    helper = input.readObject();
+                    input.close();
+                }
             }
         } catch (IOException e) {
             System.out.println(":(");
