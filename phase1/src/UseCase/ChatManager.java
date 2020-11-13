@@ -218,22 +218,6 @@ public class ChatManager implements Serializable {
         return message.getContent();
     }
 
-    public List<Chat> getChatsByUUID(List<UUID> allIds) {
-        List<Chat> output = new ArrayList<Chat>();
-        for (UUID id : allIds) {
-            output.add(this.allChats.get(id));
-        }
-        return output;
-    }
-
-    public List<Message> getMessagesByUID(List<UUID> allIds) {
-        List<Message> output = new ArrayList<Message>();
-        for (UUID id : allIds) {
-            output.add(this.allMessages.get(id));
-        }
-        return output;
-    }
-
     private Message getChatMessage(UUID chatId, UUID messageId){
         Chat chat = this.allChats.get(chatId);
         return chat.getAllMessages().get(messageId);
