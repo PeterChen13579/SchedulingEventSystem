@@ -219,6 +219,7 @@ public class EventManager implements Serializable {
             }
         }
         throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
+
     }
 
     /**
