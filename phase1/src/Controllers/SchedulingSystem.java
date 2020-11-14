@@ -47,7 +47,7 @@ public class SchedulingSystem {
                 } else if (temp.equals("2")) {
                     menu.printStatement("Please enter the date for the new event (in the format 'YYYYMMDD'): ");
                     String inputDate = br.readLine();
-                    menu.printStatement("Please enter the start time for the new event (24-hour time in the format 'HH:MM:SS'): ");
+                    menu.printStatement("Please enter the start time for the new event (24-hour time, between 9AM - 4PM, in the format 'HH:MM:SS'): ");
                     String inputTime = br.readLine();
                     menu.printStatement("Please enter the room number for the new event: ");
                     String inputRoom = br.readLine();
@@ -68,7 +68,7 @@ public class SchedulingSystem {
      * If satisfied, create new room and print success message.
      * @param rmNum the room number for the event
      */
-    public void addRoom(String rmNum){
+    private void addRoom(String rmNum){
         //check if room already exists
         if (rm.doesRoomExist(rmNum)){
             menu.printStatement("Room already exists!");
@@ -88,7 +88,7 @@ public class SchedulingSystem {
      * @param speakerUsername the name of the speaker for the event
      * @param title the title for the event
      */
-    public void addEvent (String date, String time, String rmNum, String speakerUsername, String title){
+    private void addEvent (String date, String time, String rmNum, String speakerUsername, String title){
         //check if date is valid format and value
         if (!em.parseStringToLocalDate(date)){
             menu.printStatement("Uh-oh! The date entered is not a valid date or not written in the correct format (YYYYMMDD)!");
