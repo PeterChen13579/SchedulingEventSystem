@@ -29,7 +29,6 @@ public class SignUpSystem {
      * This method ends when user want to return to the main menu.
      */
     public void run(String userName){
-        String UN = userName;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String temp = "";
 
@@ -37,17 +36,12 @@ public class SignUpSystem {
             System.out.println("Type 'view' to browse the events\n 'sign up' to sign up for an event\n 'cancel' to cancel spot for an event\n 'exit' to get back to the main menu:");
             try {
                 temp = br.readLine();
-                //System.out.println("Type your username:");
-                //String userName = br.readLine();
-                //while(!um.isUserExists(userName)){
-                //    System.out.println("Plz enter a valid username:");
-                //    userName = br.readLine();
-                //}
                 switch (temp) {
                     case "sign up": {
                         System.out.println("Type the event title for the event you want to sign up:");
                         String eventTitle = br.readLine();
-                        signUpEvent(userName, eventTitle);
+                        try{signUpEvent(userName, eventTitle);}
+                        catch(IllegalArgumentException e){System.out.println("The event title you have entered is invalid.");}
                         break;
                     }
                     case "cancel": {
@@ -76,9 +70,6 @@ public class SignUpSystem {
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
             System.out.println("You have successfully signed up for this event.");
-        }
-        if (!em.isEventExist(eventTitle)){
-            System.out.println("The event title you have entered is invalid.");
         }
         if (em.isAttendeeAdded(userName, eventTitle)){
             System.out.println("You have signed up for this event before.");
