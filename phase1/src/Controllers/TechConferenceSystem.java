@@ -9,12 +9,6 @@ import java.util.Scanner;
 
 public class TechConferenceSystem {
 
-    private Scanner input;
-    private String temp;
-    private String temp1;
-    private boolean terminated;
-    private static Reader reader;
-    private static Writer writer;
     private static LoginSystem loginSystem;
     private static MessagingSystem messagingSystem;
     private static SchedulingSystem schedulingSystem;
@@ -23,7 +17,7 @@ public class TechConferenceSystem {
     private static ChatManager chatManager;
     private static EventManager eventManager;
     private static RoomManager roomManager;
-    private static UserMenu userMenu = new UserMenu();
+    private static final UserMenu userMenu = new UserMenu();
 
     public TechConferenceSystem(){
 
@@ -43,7 +37,7 @@ public class TechConferenceSystem {
         userMenu.printStatement("Please enter the corresponding number of the options: ");
 
         Scanner input = new Scanner(System.in);
-        temp = input.nextLine();
+        String temp = input.nextLine();
 
         if (temp.equals("1")) {
             try {
@@ -80,62 +74,67 @@ public class TechConferenceSystem {
         userMenu.printStatement("Please enter the corresponding number of the options: ");
         String temp2 = in.nextLine();
 
-        if (temp2.equals("1")){
-            if (loginSystem.run()) {
-                String username = loginSystem.getUsername();
-                if (userManager.userType(username).equals("Attendee")){
-                    loggedInMenuAttendee(username);
-                }else if (userManager.userType(username).equals("Organizer")){
-                    loggedInMenuOrganizer(username);
-                }else{
-                    loggedInMenuSpeaker(username);
+        switch (temp2) {
+            case "1":
+                if (loginSystem.run()) {
+                    String username = loginSystem.getUsername();
+                    if (userManager.userType(username).equals("Attendee")) {
+                        loggedInMenuAttendee(username);
+                    } else if (userManager.userType(username).equals("Organizer")) {
+                        loggedInMenuOrganizer(username);
+                    } else {
+                        loggedInMenuSpeaker(username);
+                    }
+                    return true;
+                } else {
+                    return false;
                 }
-                return true;
-            }else {
+
+            case "2": {
+                userMenu.printStatement("Please enter a username:");
+                String userName = in.nextLine();
+                userMenu.printStatement("Please enter a password:");
+                String password = in.nextLine();
+                if (userManager.createAttendeeAccount(userName, password)) {
+                    userMenu.printStatement("You have successfully created an Attendee Account!");
+                } else {
+                    userMenu.printStatement("This username is already in our database.");
+                    userMenu.printStatement("Please enter a different username");
+                }
                 return false;
             }
-
-        }else if (temp2.equals("2")){
+            case "3": {
                 userMenu.printStatement("Please enter a username:");
                 String userName = in.nextLine();
                 userMenu.printStatement("Please enter a password:");
                 String password = in.nextLine();
-                if (userManager.createAttendeeAccount(userName, password)){
-                    userMenu.printStatement("You have successfully created an Attendee Account!");
-                }else {
-                    userMenu.printStatement("This username is already in our database.");
-                    userMenu.printStatement("Please enter a different username");
-                }
-                return false;
-        }else if (temp2.equals("3")){
-                userMenu.printStatement("Please enter a username:");
-                String userName = in.nextLine();
-                userMenu.printStatement("Please enter a password:");
-                String password = in.nextLine();
-                if (userManager.createOrganizerAccount(userName, password)){
+                if (userManager.createOrganizerAccount(userName, password)) {
                     userMenu.printStatement("You have successfully created an Organizer Account!");
-                }else {
+                } else {
                     userMenu.printStatement("This username is already in our database.");
                     userMenu.printStatement("Please enter a different username");
                 }
                 return false;
-        }else if (temp2.equals("4")){
-            userMenu.printStatement("You have exited the program.");
-            saveProgram();
-        }else{
-            userMenu.printStatement("Please enter the corresponding number and try again");
+            }
+            case "4":
+                userMenu.printStatement("You have exited the program.");
+                saveProgram();
+                return true;
+            default:
+                userMenu.printStatement("Please enter the corresponding number and try again");
+                break;
         }
-        return true;
+        return false;
     }
 
     public void loggedInMenuAttendee(String username){
         boolean flag = true;
         while (flag){
-            loggedInMenuAttendeeHelper(username);
+            if (loggedInMenuAttendeeHelper(username)) { flag = false; }
         }
     }
 
-    private void loggedInMenuAttendeeHelper(String username){
+    private boolean loggedInMenuAttendeeHelper(String username){
         Scanner in = new Scanner(System.in);
 
         userMenu.printStatement("What do you want to do? ");
@@ -143,54 +142,68 @@ public class TechConferenceSystem {
         userMenu.printStatement("Please type the corresponding number of the options: ");
         String temp2 = in.nextLine();
 
-        if (temp2.equals("1")){
-            signUpSystem.run(username);
-        }else if (temp2.equals("2")){
-            messagingSystem.run(username);
-        }else if (temp2.equals("3")){
-            userMenu.printStatement("You have logged out successfully! ;)");
-            mainLevel();
-        }else{
-            userMenu.printStatement("Please enter the corresponding number and try again");
+        switch (temp2) {
+            case "1":
+                signUpSystem.run(username);
+                return false;
+            case "2":
+                messagingSystem.run(username);
+                return false;
+            case "3":
+                userMenu.printStatement("You have logged out successfully! ;)");
+                mainLevel();
+                return true;
+            default:
+                userMenu.printStatement("Please enter the corresponding number and try again");
+                return false;
         }
     }
 
     public void loggedInMenuOrganizer(String username){
         boolean flag = true;
         while(flag){
-            loggedInMenuOrganizerHelper(username);
+            if (loggedInMenuOrganizerHelper(username)){
+                flag = false;
+            }
         }
     }
 
-    private void loggedInMenuOrganizerHelper(String username){
+    private boolean loggedInMenuOrganizerHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu \n(4) Create Speaker " +
-                "account \n(5) Log Out");
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu " +
+                "\n(4) Create Speaker account \n(5) Log Out");
         String temp2 = in.nextLine();
 
-        if (temp2.equals("1")){
-            signUpSystem.run(username);
-        }else if (temp2.equals("2")){
-            messagingSystem.run(username);
-        }else if (temp2.equals("3")){
-            schedulingSystem.run();
-        }else if (temp2.equals("4")){
-            userMenu.printStatement("Please enter a Username:");
-            String userName = in.nextLine();
-            userMenu.printStatement("Please enter a Password:");
-            String password = in.nextLine();
-            if (userManager.createSpeakerAccount(userName, password)){
-                userMenu.printStatement("You have successfully created a speaker account.");
-            }else {
-                userMenu.printStatement("This username is already in our database.");
-                userMenu.printStatement("Please enter a different username");
-            }
-        }else if (temp2.equals("5")){
-            userMenu.printStatement("You have logged out successfully! ;)");
-            mainLevel();
-        }else{
-            userMenu.printStatement("Please enter the corresponding number and try again");
+        switch (temp2) {
+            case "1":
+                signUpSystem.run(username);
+                return false;
+            case "2":
+                messagingSystem.run(username);
+                return false;
+            case "3":
+                schedulingSystem.run();
+                return false;
+            case "4":
+                userMenu.printStatement("Please enter a Username:");
+                String userName = in.nextLine();
+                userMenu.printStatement("Please enter a Password:");
+                String password = in.nextLine();
+                if (userManager.createSpeakerAccount(userName, password)) {
+                    userMenu.printStatement("You have successfully created a speaker account.");
+                } else {
+                    userMenu.printStatement("This username is already in our database.");
+                    userMenu.printStatement("Please enter a different username");
+                }
+                return false;
+            case "5":
+                userMenu.printStatement("You have logged out successfully! ;)");
+                mainLevel();
+                return true;
+            default:
+                userMenu.printStatement("Please enter the corresponding number and try again");
+                return false;
         }
     }
 
@@ -198,11 +211,13 @@ public class TechConferenceSystem {
         boolean flag = true;
 
         while (flag){
-            loggedInMenuSpeakerHelper(username);
+            if (loggedInMenuSpeakerHelper(username)){
+                flag = false;
+            }
         }
     }
 
-    private void loggedInMenuSpeakerHelper(String username){
+    private boolean loggedInMenuSpeakerHelper(String username){
         Scanner in = new Scanner(System.in);
 
         userMenu.printStatement("(1) Message Menu  \n(2) Log Out");
@@ -210,11 +225,14 @@ public class TechConferenceSystem {
 
         if (temp2.equals("1")){
             messagingSystem.run(username);
+            return false;
         }else if (temp2.equals("2")){
-            userMenu.printStatement("You have loggged out successfully! ;)");
+            userMenu.printStatement("You have logged out successfully! ;)");
             mainLevel();
+            return true;
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
+            return false;
         }
     }
 
@@ -224,7 +242,7 @@ public class TechConferenceSystem {
      */
     private void createProgram(boolean load) {
         if (load) {
-            reader = new Reader();
+            Reader reader = new Reader();
             if (reader.verifySaves()) {
                 chatManager = (ChatManager) reader.loadData("cm.txt");
                 eventManager = (EventManager) reader.loadData("em.txt");
@@ -249,7 +267,7 @@ public class TechConferenceSystem {
     }
 
     private void saveProgram() {
-        writer = new Writer();
+        Writer writer = new Writer();
         writer.writeToFile("cm.txt", chatManager);
         writer.writeToFile("em.txt", eventManager);
         writer.writeToFile("rm.txt", roomManager);
