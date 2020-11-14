@@ -82,16 +82,13 @@ public class TechConferenceSystem {
 
         if (temp2.equals("1")){
             if (loginSystem.run()) {
-                userMenu.printStatement("Please enter your username: ");
-                String username = in.nextLine();
+                String username = loginSystem.getUsername();
                 if (userManager.userType(username).equals("Attendee")){
                     loggedInMenuAttendee(username);
                 }else if (userManager.userType(username).equals("Organizer")){
                     loggedInMenuOrganizer(username);
-                }else if (userManager.userType(username).equals("Speaker")){
-                    loggedInMenuSpeaker(username);
                 }else{
-                    userMenu.printStatement("Please enter your username: ");
+                    loggedInMenuSpeaker(username);
                 }
                 return true;
             }else {
