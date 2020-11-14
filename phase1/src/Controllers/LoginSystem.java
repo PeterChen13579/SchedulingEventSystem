@@ -17,6 +17,7 @@ import Entities.User;
  */
 public class LoginSystem implements Serializable {
     UserManager manager;
+    private String username;
 
     public LoginSystem(UserManager manager) {
         this.manager = manager;
@@ -37,7 +38,7 @@ public class LoginSystem implements Serializable {
                 menu.printStatement("Please enter your password: ");
                 String enteredPassword = br.readLine();
                 if (verifyLogin(enteredUsername, enteredPassword)) {
-                    String username = enteredUsername;
+                    username = enteredUsername;
                     String userType = verifyUserType(username);
                     verified = true;
                 }
@@ -73,4 +74,6 @@ public class LoginSystem implements Serializable {
     public String verifyUserType(String username) {
         return manager.userType(username);
     }
+
+    public String getUsername() { return this.username; }
 }
