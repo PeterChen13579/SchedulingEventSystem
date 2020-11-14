@@ -224,22 +224,23 @@ public class TechConferenceSystem {
         STATEMENT_PRESENTER.printStatement("(1) Message Menu \n(2) View List of Events Speaking \n(3) Log Out");
         String temp2 = in.nextLine();
 
-        if (temp2.equals("1")){
-            messagingSystem.run(username);
-            return false;
-        }else if(temp2.equals("2")){
-            for (String events: userManager.getEventsSpeaking(username)){
-                STATEMENT_PRESENTER.printStatement(events);
-                System.out.println();
-            }
-            return false;
-        }else if (temp2.equals("3")){
-            STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
-            mainLevel();
-            return true;
-        }else{
-            STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
-            return false;
+        switch (temp2) {
+            case "1":
+                messagingSystem.run(username);
+                return false;
+            case "2":
+                for (String events : userManager.getEventsSpeaking(username)) {
+                    STATEMENT_PRESENTER.printStatement(events);
+                    System.out.println();
+                }
+                return false;
+            case "3":
+                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
+                mainLevel();
+                return true;
+            default:
+                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+                return false;
         }
     }
 
