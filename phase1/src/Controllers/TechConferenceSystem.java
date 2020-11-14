@@ -121,7 +121,7 @@ public class TechConferenceSystem {
         String temp2 = in.nextLine();
         if (temp2.equals("1")){
             while (flag) {
-                signUpSystem.run();
+                signUpSystem.run(username);
                 flag = false;
             }
 
@@ -151,7 +151,7 @@ public class TechConferenceSystem {
         String temp2 = in.nextLine();
         if (temp2.equals("1")){
             while (flag) {
-                signUpSystem.run();
+                signUpSystem.run(username);
                 flag = false;
             }
 
