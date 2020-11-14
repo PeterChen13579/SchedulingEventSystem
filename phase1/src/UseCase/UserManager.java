@@ -213,18 +213,6 @@ public class UserManager implements Serializable {
     }
 
     /**
-     * Return whether a Speaker object with the given username has been created
-     * @param speakerUserName the username of the speaker
-     * @return true iff speaker exists; false otherwise
-     */
-    public boolean doesSpeakerExist(String speakerUserName){
-        for(Speaker speaker: allSpeaker){
-            if(speaker.getUsername().equals(speakerUserName)) return true;
-        }
-        return false;
-    }
-
-    /**
      * Add the given event title to the given speaker's list of events.
      * @param title the title of the event
      * @param speakerUserName the username of the speaker

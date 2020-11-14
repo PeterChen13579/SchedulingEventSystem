@@ -104,7 +104,7 @@ public class SchedulingSystem {
             menu.printStatement("Uh-oh! Room is already booked at the given time!");
         }
         //check if speaker exists
-        else if(!um.doesSpeakerExist(speakerUsername)){
+        else if(!um.isUserExists(speakerUsername)){
             menu.printStatement("Uh-oh! Speaker does not exist! Please create an account for this speaker first!");
         }
         //check if speaker is already giving another talk at this time
@@ -136,7 +136,7 @@ public class SchedulingSystem {
      */
     private boolean canAddEvent(String date, String time, String rmNum, String speakerUserName, String title){
         return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(time) && rm.doesRoomExist(rmNum)
-                && em.isRoomAvailableAtTime(rmNum, date, time) && um.doesSpeakerExist(speakerUserName)
+                && em.isRoomAvailableAtTime(rmNum, date, time) && um.isUserExists(speakerUserName)
                 && em.isSpeakerAvailableAtTime(date, time, speakerUserName) && em.isEventTitleUnique(title);
     }
 
