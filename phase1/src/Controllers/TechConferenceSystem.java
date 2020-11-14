@@ -122,6 +122,7 @@ public class TechConferenceSystem {
         }else if (temp2.equals("4")){
             userMenu.printStatement("You have exited the program.");
             saveProgram();
+            return true;
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
@@ -131,11 +132,11 @@ public class TechConferenceSystem {
     public void loggedInMenuAttendee(String username){
         boolean flag = true;
         while (flag){
-            loggedInMenuAttendeeHelper(username);
+            if (loggedInMenuAttendeeHelper(username)) { flag = false; }
         }
     }
 
-    private void loggedInMenuAttendeeHelper(String username){
+    private boolean loggedInMenuAttendeeHelper(String username){
         Scanner in = new Scanner(System.in);
 
         userMenu.printStatement("What do you want to do? ");
@@ -145,36 +146,45 @@ public class TechConferenceSystem {
 
         if (temp2.equals("1")){
             signUpSystem.run(username);
+            return false;
         }else if (temp2.equals("2")){
             messagingSystem.run(username);
+            return false;
         }else if (temp2.equals("3")){
             userMenu.printStatement("You have logged out successfully! ;)");
             mainLevel();
+            return true;
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
+            return false;
         }
     }
 
     public void loggedInMenuOrganizer(String username){
         boolean flag = true;
         while(flag){
-            loggedInMenuOrganizerHelper(username);
+            if (loggedInMenuOrganizerHelper(username)){
+                flag = false;
+            }
         }
     }
 
-    private void loggedInMenuOrganizerHelper(String username){
+    private boolean loggedInMenuOrganizerHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu \n(4) Create Speaker " +
-                "account \n(5) Log Out");
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu " +
+                "\n(4) Create Speaker account \n(5) Log Out");
         String temp2 = in.nextLine();
 
         if (temp2.equals("1")){
             signUpSystem.run(username);
+            return false;
         }else if (temp2.equals("2")){
             messagingSystem.run(username);
+            return false;
         }else if (temp2.equals("3")){
             schedulingSystem.run();
+            return false;
         }else if (temp2.equals("4")){
             userMenu.printStatement("Please enter a Username:");
             String userName = in.nextLine();
@@ -186,11 +196,14 @@ public class TechConferenceSystem {
                 userMenu.printStatement("This username is already in our database.");
                 userMenu.printStatement("Please enter a different username");
             }
+            return false;
         }else if (temp2.equals("5")){
             userMenu.printStatement("You have logged out successfully! ;)");
             mainLevel();
+            return true;
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
+            return false;
         }
     }
 
@@ -198,11 +211,13 @@ public class TechConferenceSystem {
         boolean flag = true;
 
         while (flag){
-            loggedInMenuSpeakerHelper(username);
+            if (loggedInMenuSpeakerHelper(username)){
+                flag = false;
+            }
         }
     }
 
-    private void loggedInMenuSpeakerHelper(String username){
+    private boolean loggedInMenuSpeakerHelper(String username){
         Scanner in = new Scanner(System.in);
 
         userMenu.printStatement("(1) Message Menu  \n(2) Log Out");
@@ -210,11 +225,14 @@ public class TechConferenceSystem {
 
         if (temp2.equals("1")){
             messagingSystem.run(username);
+            return false;
         }else if (temp2.equals("2")){
             userMenu.printStatement("You have loggged out successfully! ;)");
             mainLevel();
+            return true;
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
+            return false;
         }
     }
 
