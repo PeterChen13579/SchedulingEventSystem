@@ -59,8 +59,7 @@ public class TechConferenceSystem {
         if (temp2.equals("1")){
             while (flag) {
                 if (loginSystem.run()) {
-                    userMenu.printStatement("Please type your username: ");
-                    String username = in.nextLine();
+                    String username = loginSystem.getUsername();
                     if (userManager.userType(username).equals("Attendee")){
                         loggedInMenuAttendee(username);
                     }else if (userManager.userType(username).equals("Organizer")){
@@ -69,8 +68,9 @@ public class TechConferenceSystem {
                         loggedInMenuSpeaker(username);
                     }
                     flag = false;
-                }else {
-                    userMenu.printStatement("You have entered an incorrect username or password.\n Please try again.");
+                }
+                else {
+                    flag = false;
                 }
             }
 

@@ -29,22 +29,30 @@ public class LoginSystem implements Serializable {
         UserMenu menu = new UserMenu();
         String input = "";
         boolean verified = false;
-        menu.printStatement("Type 'cancel' to exit the program; otherwise hit enter to login:");
-        try {
-            input = br.readLine();
-            if (!input.equals("cancel")) {
-                menu.printStatement("Please enter your username: ");
-                String enteredUsername = br.readLine();
-                menu.printStatement("Please enter your password: ");
-                String enteredPassword = br.readLine();
-                if (verifyLogin(enteredUsername, enteredPassword)) {
-                    username = enteredUsername;
-                    String userType = verifyUserType(username);
-                    verified = true;
+        while (true) {
+            menu.printStatement("Type 'cancel' to exit the program; otherwise hit enter to login:");
+            try {
+                input = br.readLine();
+                if (input.equals("cancel")){
+                    break;
                 }
+                else {
+                    menu.printStatement("Please enter your username: ");
+                    String enteredUsername = br.readLine();
+                    menu.printStatement("Please enter your password: ");
+                    String enteredPassword = br.readLine();
+                    if (verifyLogin(enteredUsername, enteredPassword)) {
+                        username = enteredUsername;
+                        String userType = verifyUserType(username);
+                        verified = true;
+                        break;
+                    } else {
+                        menu.printStatement("You have entered an incorrect username or password.\n Please try again.");
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch(IOException e){
-            e.printStackTrace();
         }
         return verified;
     }
