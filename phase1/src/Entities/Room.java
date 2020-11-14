@@ -22,21 +22,10 @@ public class Room implements Serializable {
     public String getRoomNum(){return roomNum;}
 
     /**
-     * Setter for room number of the room.
-     * @param roomNum Room number of this room.
-     */
-    public void setRoomNum(String roomNum){this.roomNum = roomNum;}
-
-    /**
      * Getter for capacity of the room.
      * @return capacity of this room.
      */
     public Integer getCapacity(){return capacity;}
-    /**
-     * Setter for capacity of the room.
-     * @param capacity Capacity of this room.
-     */
-    public void setCapacity(Integer capacity){this.capacity = capacity;}
 
     /**
      * Getter for a list of events held in this room.
