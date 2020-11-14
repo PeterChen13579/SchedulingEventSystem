@@ -47,7 +47,8 @@ public class SignUpSystem {
                     case "cancel": {
                         System.out.println("Type the event title for the event you want to cancel spot:");
                         String eventTitle = br.readLine();
-                        cancelSpotEvent(userName, eventTitle);
+                        try{cancelSpotEvent(userName, eventTitle);}
+                        catch(IllegalArgumentException e){System.out.println("The event title you have entered is invalid.");}
                         break;
                     }
                     case "view":
@@ -90,9 +91,6 @@ public class SignUpSystem {
             em.deleteAttendee(userName, eventTitle);
             um.cancelSpotAttendee(userName, eventTitle);
             System.out.println("You have cancelled the spot for this event.");
-        }
-        if (!em.isEventExist(eventTitle)){
-            System.out.println("The event title you have entered is invalid.");
         }
         if (!em.isAttendeeAdded(userName, eventTitle)){
             System.out.println("You haven't signed up for this event before.");

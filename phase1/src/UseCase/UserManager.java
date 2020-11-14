@@ -202,7 +202,8 @@ public class UserManager implements Serializable {
                 return c;
             }
         }
-        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
+        return allAttendee.get(1);
+//        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
     }
 
     /**
