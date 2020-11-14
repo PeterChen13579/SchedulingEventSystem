@@ -33,8 +33,9 @@ public class TechConferenceSystem {
 
     private boolean start(){
 
+        userMenu.printStatement("Please enter the corresponding number listed below: ");
         userMenu.printStatement("(1) Load Existing Conference \n(2) Create New Conference");
-        userMenu.printStatement("Please enter the corresponding number of the options: ");
+
 
         Scanner input = new Scanner(System.in);
         String temp = input.nextLine();
@@ -70,8 +71,8 @@ public class TechConferenceSystem {
         Scanner in = new Scanner(System.in);
 
         userMenu.printStatement("What do you want to do? ;)");
+        userMenu.printStatement("Please enter the corresponding number listed below: ");
         userMenu.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
-        userMenu.printStatement("Please enter the corresponding number of the options: ");
         String temp2 = in.nextLine();
 
         switch (temp2) {
@@ -194,7 +195,7 @@ public class TechConferenceSystem {
                     userMenu.printStatement("You have successfully created a speaker account.");
                 } else {
                     userMenu.printStatement("This username is already in our database.");
-                    userMenu.printStatement("Please enter a different username");
+                    userMenu.printStatement("Please enter a different username.");
                 }
                 return false;
             case "5":
