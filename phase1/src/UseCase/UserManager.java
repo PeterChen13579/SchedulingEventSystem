@@ -12,9 +12,9 @@ import Entities.Speaker;
  *
  */
 public class UserManager implements Serializable {
-    private List <Attendee> allAttendee = new ArrayList<Attendee>();
-    private List <Organizer> allOrganizer = new ArrayList<Organizer>();
-    private List <Speaker> allSpeaker = new ArrayList<Speaker>();
+    private List <Attendee> allAttendee = new ArrayList<>();
+    private List <Organizer> allOrganizer = new ArrayList<>();
+    private List <Speaker> allSpeaker = new ArrayList<>();
 
     public UserManager() {
 
@@ -83,32 +83,17 @@ public class UserManager implements Serializable {
         return false;
     }
 
-    public boolean isAttendingEvent(String username, String eventTitle){
-        if (isUserExists(username)){
-            User user = stringtoUser(username);
-            for(String title: user.getEventAttending()){
-                if(eventTitle.equals(title)) {return true;}
-            }
-        }
-        return false;
-    }
-
     /**
      * Signs up attendee for a particular event
      *
      * @param username The user we wants to sign up for an event
      * @param eventTitle  The event the user wants to sign up for
-     * @return      true if user successfully booked his/her event. false otherwise
      */
-    public boolean signUpEventAttendee(String username, String eventTitle){
-        if (isUserExists(username)){
-            User user = stringtoUser(username);
-            if (isAttendingEvent(username, eventTitle)) {return false;}
-            List<String> eventTitles = user.getEventAttending();
-            eventTitles.add(eventTitle);
-            user.setEventAttending(eventTitles);
-        }
-        return true;
+    public void signUpEventAttendee(String username, String eventTitle){
+        User user = stringtoUser(username);
+        List<String> eventList = user.getEventAttending();
+        eventList.add(eventTitle);
+        user.setEventAttending(eventList);
     }
 
     /**
@@ -116,21 +101,13 @@ public class UserManager implements Serializable {
      *
      * @param username   The user wants to cancel their event
      * @param eventTitle  The event the user wants to cancel
-     * @return       true if user successfully cancelled his/her event. false otherwise.
      */
-    public boolean cancelSpotAttendee(String username, String eventTitle){
-        if (isUserExists(username)) {
-            User user = stringtoUser(username);
-            if (isAttendingEvent(username, eventTitle)){
-                List<String> eventTitles = user.getEventAttending();
-                eventTitles.remove(eventTitle);
-                user.setEventAttending(eventTitles);
-                return true;
-            }
-        }
-        return false;
+    public void cancelSpotAttendee(String username, String eventTitle){
+        User user = stringtoUser(username);
+        List<String> eventList = user.getEventAttending();
+        eventList.remove(eventTitle);
+        user.setEventAttending(eventList);
     }
-
 
     /**
      * Creates an Attendee Account
@@ -188,6 +165,7 @@ public class UserManager implements Serializable {
      * @return         User object that matches with Username
      */
     private User stringtoUser(String Username){
+        assert isUserExists(Username);
         for (Attendee a: allAttendee){
             if (a.getUsername().equals(Username)){
                 return a;
@@ -203,8 +181,7 @@ public class UserManager implements Serializable {
                 return c;
             }
         }
-        return allAttendee.get(1);
-//        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
+        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
     }
 
     /**
