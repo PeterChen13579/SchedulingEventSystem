@@ -219,10 +219,17 @@ public class TechConferenceSystem {
     private void createProgram(boolean load) {
         if (load) {
             reader = new Reader();
-            chatManager = (ChatManager) reader.loadData("cm.txt");
-            eventManager = (EventManager) reader.loadData("em.txt");
-            roomManager = (RoomManager) reader.loadData("rm.txt");
-            userManager = (UserManager) reader.loadData("um.txt");
+            if (reader.verifySaves()) {
+                chatManager = (ChatManager) reader.loadData("cm.txt");
+                eventManager = (EventManager) reader.loadData("em.txt");
+                roomManager = (RoomManager) reader.loadData("rm.txt");
+                userManager = (UserManager) reader.loadData("um.txt");
+            } else {
+                chatManager = new ChatManager();
+                eventManager = new EventManager();
+                roomManager = new RoomManager();
+                userManager = new UserManager();
+            }
         } else {
             chatManager = new ChatManager();
             eventManager = new EventManager();
