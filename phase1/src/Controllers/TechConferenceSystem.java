@@ -92,7 +92,6 @@ public class TechConferenceSystem {
                 }
                 return true;
             }else {
-                userMenu.printStatement("You have entered an incorrect username or password.\n Please try again.");
                 return false;
             }
 
