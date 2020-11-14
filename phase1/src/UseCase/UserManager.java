@@ -12,25 +12,15 @@ import Entities.Speaker;
  *
  */
 public class UserManager implements Serializable {
-    private List <Attendee> allAttendee = new ArrayList<>();
-    private List <Organizer> allOrganizer = new ArrayList<>();
-    private List <Speaker> allSpeaker = new ArrayList<>();
+    private final List <Attendee> allAttendee = new ArrayList<>();
+    private final List <Organizer> allOrganizer = new ArrayList<>();
+    private final List <Speaker> allSpeaker = new ArrayList<>();
 
-    public UserManager() {
-
-    }
-
-    public UserManager(List<Attendee> attendee, List<Organizer> organizer, List<Speaker> speaker ) {
-        allAttendee = attendee;
-        allOrganizer = organizer;
-        allSpeaker = speaker;
-    }
+    public UserManager() {}
 
     public List<Attendee> getAllAttendee() {
         return this.allAttendee;
     }
-
-    public List<Organizer> getAllOrganizer(){return this.allOrganizer;}
 
     public List<Speaker> getAllSpeaker() {
         return this.allSpeaker;
@@ -90,7 +80,7 @@ public class UserManager implements Serializable {
      * @param eventTitle  The event the user wants to sign up for
      */
     public void signUpEventAttendee(String username, String eventTitle){
-        User user = stringtoUser(username);
+        User user = stringToUser(username);
         List<String> eventList = user.getEventAttending();
         eventList.add(eventTitle);
         user.setEventAttending(eventList);
@@ -103,7 +93,7 @@ public class UserManager implements Serializable {
      * @param eventTitle  The event the user wants to cancel
      */
     public void cancelSpotAttendee(String username, String eventTitle){
-        User user = stringtoUser(username);
+        User user = stringToUser(username);
         List<String> eventList = user.getEventAttending();
         eventList.remove(eventTitle);
         user.setEventAttending(eventList);
@@ -164,7 +154,7 @@ public class UserManager implements Serializable {
      * @param Username Username that wants to be searched for
      * @return         User object that matches with Username
      */
-    private User stringtoUser(String Username){
+    private User stringToUser(String Username){
         assert isUserExists(Username);
         for (Attendee a: allAttendee){
             if (a.getUsername().equals(Username)){
@@ -192,7 +182,7 @@ public class UserManager implements Serializable {
      */
 
     public boolean isAddFriend(String usernameA, String usernameB){
-        User userA = stringtoUser(usernameA);
+        User userA = stringToUser(usernameA);
 
         List<String> friends = userA.getFriends();
         for (String friend: friends){
@@ -211,7 +201,7 @@ public class UserManager implements Serializable {
      * @return   true if successfully added, false otherwise
      */
     public boolean addFriend(String usernameA, String usernameB){
-        User userA = stringtoUser(usernameA);
+        User userA = stringToUser(usernameA);
 
         List<String> friends = userA.getFriends();
         if (isUserExists(usernameB) && isAddFriend(usernameA, usernameB)){
