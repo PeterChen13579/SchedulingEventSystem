@@ -137,11 +137,6 @@ public class UserManager implements Serializable {
     public boolean createAttendeeAccount(String userName, String password){
         if(isUserExists(userName)) {return false;}
 
-        if (allAttendee.size() == 0) {
-            allAttendee.add(new Attendee(userName, password));
-            return true;
-        }
-
         allAttendee.add(new Attendee(userName, password));
         return true;
     }
@@ -157,10 +152,6 @@ public class UserManager implements Serializable {
     public boolean createOrganizerAccount(String userName, String password){
 
         if(isUserExists(userName)){ return false; }
-        if (allOrganizer.size() == 0){
-            allOrganizer.add(new Organizer(userName, password));
-            return true;
-        }
 
         allOrganizer.add(new Organizer(userName, password));
         return true;
@@ -177,11 +168,6 @@ public class UserManager implements Serializable {
     public boolean createSpeakerAccount(String userName, String password){
         if(isUserExists(userName)){
             return false;
-        }
-
-        if (allSpeaker.size() == 0){
-            allSpeaker.add(new Speaker(userName, password));
-            return true;
         }
 
         allSpeaker.add(new Speaker(userName, password));
