@@ -1,5 +1,6 @@
 package Controllers;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,18 +10,18 @@ public class Writer {
     // users, conferences, events, messages, rooms
 
     /**
-     * A method that saves all the information in a session to a .txt file
+     * A method that saves an object to a .txt file
      * @param filename name of the file to save to
-     * @param allThings all the information needed to save
+     * @param thing the object being saved
      * @throws IOException
      */
-    public void writeToFile(String filename, List allThings) {
+    public void writeToFile(String filename, Object thing) {
         try {
             OutputStream file = new FileOutputStream(filename);
             OutputStream buffer = new BufferedOutputStream(file);
             ObjectOutput output = new ObjectOutputStream(buffer);
 
-            output.writeObject(allThings);
+            output.writeObject(thing);
 
             output.close();
         } catch (IOException e) {

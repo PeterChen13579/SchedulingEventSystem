@@ -6,6 +6,10 @@ import Entities.Event;
 import Entities.Organizer;
 import Entities.Room;
 import Entities.Speaker;
+import UseCase.UserManager;
+import UseCase.RoomManager;
+import UseCase.EventManager;
+import UseCase.ChatManager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,40 +26,19 @@ public class Reader {
      * @return a list of lists that contains all the data needed
      * @throws ClassNotFoundException
      */
-    public List loadData(String filename) {
-        List results = new ArrayList<>(5);
-        if (verifySave("file")) {
-            try {
-                results.add(loadHelper(filename));
-            } catch (ClassNotFoundException e) {
-                System.out.println("loadData");
-            }
-        }
-        return results;
-    }
-
-    private boolean verifySave(String filename) {
-        File attendee = new File("attendees.txt");
-        File organizer = new File("organizers.txt");
-        File speaker = new File("speakers.txt");
-        File room = new File("rooms.txt");
-        File event = new File("events.txt");
-        File chat = new File("chats.txt");
-        return (attendee.exists() && organizer.exists() && speaker.exists() && room.exists() &&
-                event.exists() && chat.exists());
-    }
-
-    private List loadHelper(String filename) throws ClassNotFoundException {
+    public Object loadData(String filename) {
         File file = new File(filename);
-        ArrayList helper = new ArrayList();
+        Object helper = new Object();
         try {
-            if (file.length() != 0) {
-                InputStream inputFile = new FileInputStream(file);
-                InputStream buffer = new BufferedInputStream(inputFile);
-                ObjectInput input = new ObjectInputStream(buffer);
+            if (file.exists()) {
+                if (file.length() != 0) {
+                    InputStream inputFile = new FileInputStream(file);
+                    InputStream buffer = new BufferedInputStream(inputFile);
+                    ObjectInput input = new ObjectInputStream(buffer);
 
-                helper = (ArrayList) input.readObject();
-                input.close();
+                    helper = input.readObject();
+                    input.close();
+                }
             }
         } catch (IOException e) {
             System.out.println(":(");
@@ -64,6 +47,58 @@ public class Reader {
         }
         System.out.println(helper);
         return helper;
+    }
+
+    /**
+     * Checks all the save files contain a valid object to load
+     * @return a boolean stating whether or not the save files can be loaded
+     */
+    public boolean verifySaves() {
+        File[] files = new File[4];
+        files[0] = new File("em.txt");
+        files[1] = new File("um.txt");
+        files[2] = new File("rm.txt");
+        files[3] = new File("cm.txt");
+        InputStream inputFile;
+        InputStream buffer;
+        ObjectInput input;
+        Object helper;
+        try {
+            for (int i = 0; i < 4; i++) {
+                inputFile = new FileInputStream(files[i]);
+                buffer = new BufferedInputStream(inputFile);
+                input = new ObjectInputStream(buffer);
+
+                switch(i) {
+                    case 0:
+                        helper = (EventManager) input.readObject();
+                        break;
+                    case 1:
+                        helper = (UserManager) input.readObject();
+                        break;
+                    case 2:
+                        helper = (RoomManager) input.readObject();
+                        break;
+                    case 3:
+                        helper = (ChatManager) input.readObject();
+                        break;
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Load failed. Creating new conference.");
+            return false;
+        } catch (ClassCastException cc) {
+            System.out.println("Load failed. Creating new conference.");
+            return false;
+        } catch (IOException er) {
+            System.out.println("Load failed. Creating new conference.");
+            return false;
+        } catch (ClassNotFoundException cnf) {
+            System.out.println("Load failed. Creating new conference.");
+            return false;
+        }
+        return true;
     }
 
 }

@@ -59,6 +59,15 @@ public class TechConferenceSystem {
         if (temp2.equals("1")){
             while (flag) {
                 if (loginSystem.run()) {
+                    userMenu.printStatement("Please type your username: ");
+                    String username = in.nextLine();
+                    if (userManager.userType(username).equals("Attendee")){
+                        loggedInMenuAttendee(username);
+                    }else if (userManager.userType(username).equals("Organizer")){
+                        loggedInMenuOrganizer(username);
+                    }else{
+                        loggedInMenuSpeaker(username);
+                    }
                     flag = false;
                 }else {
                     userMenu.printStatement("You have entered an incorrect username or password.\n Please try again.");
@@ -95,11 +104,110 @@ public class TechConferenceSystem {
             }
         }else if (temp2.equals("4")){
             userMenu.printStatement("You have exited the program.");
-
+            saveProgram();
         }else{
             userMenu.printStatement("Please enter the corresponding number and try again");
         }
         if (! temp2.equals("4")) {
+            mainLevel();
+        }
+    }
+
+    public void loggedInMenuAttendee(String username){
+        Scanner in = new Scanner(System.in);
+
+        boolean flag = true;
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Quit");
+        String temp2 = in.nextLine();
+        if (temp2.equals("1")){
+            while (flag) {
+                signUpSystem.run(username);
+                flag = false;
+            }
+
+        }else if (temp2.equals("2")){
+            while(flag) {
+                messagingSystem.run(username);
+                flag = false;
+            }
+        }else if (temp2.equals("3")){
+            userMenu.printStatement("You have exited the program.");
+            saveProgram();
+        }else{
+            userMenu.printStatement("Please enter the corresponding number and try again");
+        }
+
+        if (! temp2.equals("3")) {
+            mainLevel();
+        }
+    }
+
+    public void loggedInMenuOrganizer(String username){
+        Scanner in = new Scanner(System.in);
+
+        boolean flag = true;
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu \n(4) Create Speaker " +
+                "account \n(5) Quit");
+        String temp2 = in.nextLine();
+        if (temp2.equals("1")){
+            while (flag) {
+                signUpSystem.run(username);
+                flag = false;
+            }
+
+        }else if (temp2.equals("2")){
+            while(flag) {
+                messagingSystem.run(username);
+                flag = false;
+            }
+        }else if (temp2.equals("3")){
+            while(flag){
+                schedulingSystem.run();
+                flag = false;
+            }
+        }else if (temp2.equals("4")){
+            userMenu.printStatement("Please enter a Username:");
+            String userName = in.nextLine();
+            userMenu.printStatement("Please enter a Password:");
+            String password = in.nextLine();
+            if (userManager.createSpeakerAccount(userName, password)){
+                userMenu.printStatement("You have successfully created a speaker account.");
+            }else {
+                userMenu.printStatement("This username is already in our database.");
+                userMenu.printStatement("Please enter a different username");
+                flag = false;
+            }
+        }else if (temp2.equals("5")){
+            userMenu.printStatement("You have exited the program.");
+            saveProgram();
+        }else{
+            userMenu.printStatement("Please enter the corresponding number and try again");
+        }
+        if (! temp2.equals("5")) {
+            mainLevel();
+        }
+    }
+
+    public void loggedInMenuSpeaker(String username){
+        Scanner in = new Scanner(System.in);
+
+        boolean flag = true;
+        userMenu.printStatement("(1) Message Menu  \n(2) Quit");
+        String temp2 = in.nextLine();
+        if (temp2.equals("1")){
+            while (flag) {
+                messagingSystem.run(username);
+                flag = false;
+            }
+
+        }else if (temp2.equals("2")){
+            userMenu.printStatement("You have exited the program.");
+            saveProgram();
+        }else{
+            userMenu.printStatement("Please enter the corresponding number and try again");
+        }
+
+        if (! temp2.equals("2")) {
             mainLevel();
         }
     }
@@ -111,11 +219,17 @@ public class TechConferenceSystem {
     private void createProgram(boolean load) {
         if (load) {
             reader = new Reader();
-            chatManager = new ChatManager(reader.loadData("chats.txt"));
-            eventManager = new EventManager(reader.loadData("events.txt"));
-            roomManager = new RoomManager(reader.loadData("rooms.txt"));
-            userManager = new UserManager(reader.loadData("attendees.txt"),
-                    reader.loadData("organizers.txt"), reader.loadData("speakers.txt"));
+            if (reader.verifySaves()) {
+                chatManager = (ChatManager) reader.loadData("cm.txt");
+                eventManager = (EventManager) reader.loadData("em.txt");
+                roomManager = (RoomManager) reader.loadData("rm.txt");
+                userManager = (UserManager) reader.loadData("um.txt");
+            } else {
+                chatManager = new ChatManager();
+                eventManager = new EventManager();
+                roomManager = new RoomManager();
+                userManager = new UserManager();
+            }
         } else {
             chatManager = new ChatManager();
             eventManager = new EventManager();
@@ -128,19 +242,12 @@ public class TechConferenceSystem {
         signUpSystem = new SignUpSystem(eventManager, userManager);
     }
 
-
-
-    /**
-     * Saves all information of the current session
-     */
-    public void saveProgram() {
+    private void saveProgram() {
         writer = new Writer();
-        writer.writeToFile("organizers.txt", userManager.getAllOrganizer());
-        writer.writeToFile("attendees.txt", userManager.getAllAttendee());
-        writer.writeToFile("speakers.txt", userManager.getAllSpeaker());
-        writer.writeToFile("events.txt", eventManager.getAllEvents());
-        //writer.writeToFile("rooms.txt", roomManager.getAllRoom());
-        writer.writeToFile("chats.txt", chatManager.getAllChats());
+        writer.writeToFile("cm.txt", chatManager);
+        writer.writeToFile("em.txt", eventManager);
+        writer.writeToFile("rm.txt", roomManager);
+        writer.writeToFile("um.txt", userManager);
     }
 
 
