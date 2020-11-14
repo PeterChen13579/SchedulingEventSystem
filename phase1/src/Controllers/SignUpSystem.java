@@ -1,7 +1,7 @@
 package Controllers;
 
 import Presenters.EventPresenter;
-import Presenters.UserMenu;
+import Presenters.StatementPresenter;
 import UseCase.EventManager;
 import UseCase.UserManager;
 
@@ -13,7 +13,7 @@ public class SignUpSystem {
     EventManager em;
     UserManager um;
     EventPresenter ep;
-    private final UserMenu sp = new UserMenu();
+    private final StatementPresenter sp = new StatementPresenter();
 
     /**
      * Constructor for SignUpSystem
