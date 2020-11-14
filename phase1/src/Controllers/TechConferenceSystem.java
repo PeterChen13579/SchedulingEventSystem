@@ -5,6 +5,8 @@ import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
 import Presenters.UserMenu;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class TechConferenceSystem {
@@ -139,7 +141,7 @@ public class TechConferenceSystem {
         Scanner in = new Scanner(System.in);
 
         userMenu.printStatement("What do you want to do? ");
-        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Log Out");
+        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu \n(3) Log Out");
         userMenu.printStatement("Please type the corresponding number of the options: ");
         String temp2 = in.nextLine();
 
@@ -150,7 +152,7 @@ public class TechConferenceSystem {
             case "2":
                 messagingSystem.run(username);
                 return false;
-            case "3":
+            case "4":
                 userMenu.printStatement("You have logged out successfully! ;)");
                 mainLevel();
                 return true;
@@ -221,13 +223,19 @@ public class TechConferenceSystem {
     private boolean loggedInMenuSpeakerHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        userMenu.printStatement("(1) Message Menu  \n(2) Log Out");
+        userMenu.printStatement("(1) Message Menu  \n(2) See list of Events \n(3) Log Out");
         String temp2 = in.nextLine();
 
         if (temp2.equals("1")){
             messagingSystem.run(username);
             return false;
         }else if (temp2.equals("2")){
+            List<String> temp = userManager.getEventsSpeaking(username);
+            for (String print: temp){
+                userMenu.printStatement(print);
+            }
+            return false;
+        }else if (temp2.equals("3")){
             userMenu.printStatement("You have logged out successfully! ;)");
             mainLevel();
             return true;

@@ -245,4 +245,22 @@ public class UserManager implements Serializable {
         }
         return "Invalid Username";
     }
+
+    /**
+     * PRECONDITION: Attendee or Speaker account with this username must exist
+     * Returns a list of events names(strings) that this speaker is giving
+     *
+     * @param username String username of a specific speaker account
+     * @return         a list of events titles they are speaking(for speaker)
+     */
+    public List<String> getEventsSpeaking(String username){
+        for (Speaker speaker: allSpeaker){
+            if (speaker.getUsername().equals(username)){
+                return speaker.getEventAttending();
+            }
+        }
+        return null;
+        //This should never happen since precondition specifies that
+        //this username is an existing attendee or speaker account.
+    }
 }
