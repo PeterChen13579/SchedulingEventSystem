@@ -80,14 +80,15 @@ public class UserManager implements Serializable {
                 return user.getPassword().equals(enteredPassword);
             }
         }
-//        System.out.println("This user is not signed up into the system.");
         return false;
     }
 
     public boolean isAttendingEvent(String username, String eventTitle){
-        User user = stringtoUser(username);
-        for(String title: user.getEventAttending()){
-            if(eventTitle.equals(title)) {return true;}
+        if (isUserExists(username)){
+            User user = stringtoUser(username);
+            for(String title: user.getEventAttending()){
+                if(eventTitle.equals(title)) {return true;}
+            }
         }
         return false;
     }
