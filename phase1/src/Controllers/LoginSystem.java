@@ -5,10 +5,8 @@ import java.io.Serializable;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import Presenters.UserMenu;
-import UseCase.EventManager;
+import Presenters.StatementPresenter;
 import UseCase.UserManager;
-import Entities.User;
 
 /**
  * How Users or any type are able to login into the app. The run method will also hold information on what Usertype it
@@ -26,7 +24,7 @@ public class LoginSystem implements Serializable {
     public boolean run() {
         InputStreamReader r = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(r);
-        UserMenu menu = new UserMenu();
+        StatementPresenter menu = new StatementPresenter();
         String input = "";
         boolean verified = false;
         while (true) {

@@ -3,7 +3,7 @@ package Controllers;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-import Presenters.UserMenu;
+import Presenters.StatementPresenter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +13,7 @@ public class SchedulingSystem {
     EventManager em;
     RoomManager rm;
     UserManager um;
-    private UserMenu menu = new UserMenu();
+    private StatementPresenter menu = new StatementPresenter();
 
     /**
      * Constructor for SchedulingSystem
