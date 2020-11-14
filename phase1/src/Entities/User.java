@@ -1,5 +1,6 @@
 package Entities;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <User> is an abstract class that contains basic information
@@ -15,6 +16,8 @@ public abstract class User implements Serializable {
     public User(String username, String password){
         this.username = username;
         this.password = password;
+        this.eventAttending = new ArrayList<>();
+        this.friends = new ArrayList<>();
     }
 
     /**
