@@ -1,6 +1,5 @@
 package Controllers;
 
-import Entities.User;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
@@ -9,7 +8,6 @@ import Presenters.UserMenu;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public class SchedulingSystem {
     EventManager em;
