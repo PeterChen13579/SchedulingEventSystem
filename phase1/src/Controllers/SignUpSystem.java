@@ -28,7 +28,8 @@ public class SignUpSystem {
      * Sign up or cancel spot for an event by displaying options and handling user input.
      * This method ends when user want to return to the main menu.
      */
-    public void run(){
+    public void run(String userName){
+        String UN = userName;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String temp = "";
 
@@ -36,12 +37,12 @@ public class SignUpSystem {
             System.out.println("Type 'view' to browse the events\n 'sign up' to sign up for an event\n 'cancel' to cancel spot for an event\n 'exit' to get back to the main menu:");
             try {
                 temp = br.readLine();
-                System.out.println("Type your username:");
-                String userName = br.readLine();
-                while(!um.isUserExists(userName)){
-                    System.out.println("Plz enter a valid username:");
-                    userName = br.readLine();
-                }
+                //System.out.println("Type your username:");
+                //String userName = br.readLine();
+                //while(!um.isUserExists(userName)){
+                //    System.out.println("Plz enter a valid username:");
+                //    userName = br.readLine();
+                //}
                 switch (temp) {
                     case "sign up": {
                         System.out.println("Type the event title for the event you want to sign up:");
