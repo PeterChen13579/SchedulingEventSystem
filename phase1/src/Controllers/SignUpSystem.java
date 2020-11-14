@@ -1,6 +1,7 @@
 package Controllers;
 
 import Presenters.EventPresenter;
+import Presenters.UserMenu;
 import UseCase.EventManager;
 import UseCase.UserManager;
 
@@ -9,9 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class SignUpSystem {
-    private EventManager em;
-    private UserManager um;
-    private EventPresenter ep;
+    EventManager em;
+    UserManager um;
+    EventPresenter ep;
+    private final UserMenu sp = new UserMenu();
 
     /**
      * Constructor for SignUpSystem
@@ -32,31 +34,32 @@ public class SignUpSystem {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String temp = "";
 
-        while (!temp.equals("exit")) {
-            System.out.println("Type 'view' to browse the events\n 'sign up' to sign up for an event\n 'cancel' to cancel spot for an event\n 'exit' to get back to the main menu:");
+        while (!temp.equals("4")) {
+            sp.printStatement("(1) browse the events\n(2) sign up for an event\n(3) cancel spot for an " +
+                    "event\n(4) exit\nPlease type the corresponding number of the options:");
             try {
                 temp = br.readLine();
                 switch (temp) {
-                    case "sign up": {
-                        System.out.println("Type the event title for the event you want to sign up:");
+                    case "2": {
+                        sp.printStatement("Type the event title for the event you want to sign up:");
                         String eventTitle = br.readLine();
                         try{signUpEvent(userName, eventTitle);}
-                        catch(IllegalArgumentException e){System.out.println("The event title you have entered is invalid.");}
+                        catch(IllegalArgumentException e){sp.printStatement("The event title you have entered is invalid.");}
                         break;
                     }
-                    case "cancel": {
-                        System.out.println("Type the event title for the event you want to cancel spot:");
+                    case "3": {
+                        sp.printStatement("Type the event title for the event you want to cancel spot:");
                         String eventTitle = br.readLine();
                         try{cancelSpotEvent(userName, eventTitle);}
-                        catch(IllegalArgumentException e){System.out.println("The event title you have entered is invalid.");}
+                        catch(IllegalArgumentException e){sp.printStatement("The event title you have entered is invalid.");}
                         break;
                     }
-                    case "view":
+                    case "1":
                         ep.displayEvents();
                         break;
                 }
             } catch (IOException e) {
-                System.out.println("Something went wrong :(");
+                sp.printStatement("Something went wrong :(");
             }
         }
     }
@@ -68,15 +71,15 @@ public class SignUpSystem {
      */
     public void signUpEvent(String userName, String eventTitle){
         if (em.isAttendeeAdded(userName, eventTitle)){
-            System.out.println("You have signed up for this event before.");
+            sp.printStatement("You have signed up for this event before.");
         }
         if(em.canAddAttendee(userName, eventTitle)){
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
-            System.out.println("You have successfully signed up for this event.");
+            sp.printStatement("You have successfully signed up for this event.");
         }
         if (!em.roomNotFull(eventTitle)){
-            System.out.println("The event you have entered is already full.");
+            sp.printStatement("The event you have entered is already full.");
         }
 
     }
@@ -88,12 +91,12 @@ public class SignUpSystem {
      */
     public void cancelSpotEvent(String userName, String eventTitle){
         if (!em.isAttendeeAdded(userName, eventTitle)){
-            System.out.println("You haven't signed up for this event before.");
+            sp.printStatement("You haven't signed up for this event yet.");
         }
         if(em.canDeleteAttendee(userName, eventTitle)) {
             em.deleteAttendee(userName, eventTitle);
             um.cancelSpotAttendee(userName, eventTitle);
-            System.out.println("You have cancelled the spot for this event.");
+            sp.printStatement("You have cancelled the spot for this event.");
         }
     }
 }
