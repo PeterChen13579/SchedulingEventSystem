@@ -100,11 +100,13 @@ public class UserManager implements Serializable {
      * @return      true if user successfully booked his/her event. false otherwise
      */
     public boolean signUpEventAttendee(String username, String eventTitle){
-        User user = stringtoUser(username);
-        if (isAttendingEvent(username, eventTitle)) {return false;}
-        List<String> eventTitles = user.getEventAttending();
-        eventTitles.add(eventTitle);
-        user.setEventAttending(eventTitles);
+        if (isUserExists(username)){
+            User user = stringtoUser(username);
+            if (isAttendingEvent(username, eventTitle)) {return false;}
+            List<String> eventTitles = user.getEventAttending();
+            eventTitles.add(eventTitle);
+            user.setEventAttending(eventTitles);
+        }
         return true;
     }
 
@@ -116,12 +118,14 @@ public class UserManager implements Serializable {
      * @return       true if user successfully cancelled his/her event. false otherwise.
      */
     public boolean cancelSpotAttendee(String username, String eventTitle){
-        User user = stringtoUser(username);
-        if (isAttendingEvent(username, eventTitle)){
-            List<String> eventTitles = user.getEventAttending();
-            eventTitles.remove(eventTitle);
-            user.setEventAttending(eventTitles);
-            return true;
+        if (isUserExists(username)) {
+            User user = stringtoUser(username);
+            if (isAttendingEvent(username, eventTitle)){
+                List<String> eventTitles = user.getEventAttending();
+                eventTitles.remove(eventTitle);
+                user.setEventAttending(eventTitles);
+                return true;
+            }
         }
         return false;
     }
@@ -198,7 +202,7 @@ public class UserManager implements Serializable {
                 return c;
             }
         }
-        return null;
+        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
     }
 
     /**
