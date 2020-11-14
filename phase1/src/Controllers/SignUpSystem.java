@@ -67,13 +67,13 @@ public class SignUpSystem {
      * @param eventTitle the event title of the event that this attendee want to sign up for
      */
     public void signUpEvent(String userName, String eventTitle){
+        if (em.isAttendeeAdded(userName, eventTitle)){
+            System.out.println("You have signed up for this event before.");
+        }
         if(em.canAddAttendee(userName, eventTitle)){
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
             System.out.println("You have successfully signed up for this event.");
-        }
-        if (em.isAttendeeAdded(userName, eventTitle)){
-            System.out.println("You have signed up for this event before.");
         }
         if (!em.roomNotFull(eventTitle)){
             System.out.println("The event you have entered is already full.");
@@ -87,13 +87,13 @@ public class SignUpSystem {
      * @param eventTitle the event title of the event that this attendee want to cancel spot
      */
     public void cancelSpotEvent(String userName, String eventTitle){
+        if (!em.isAttendeeAdded(userName, eventTitle)){
+            System.out.println("You haven't signed up for this event before.");
+        }
         if(em.canDeleteAttendee(userName, eventTitle)) {
             em.deleteAttendee(userName, eventTitle);
             um.cancelSpotAttendee(userName, eventTitle);
             System.out.println("You have cancelled the spot for this event.");
-        }
-        if (!em.isAttendeeAdded(userName, eventTitle)){
-            System.out.println("You haven't signed up for this event before.");
         }
     }
 }
