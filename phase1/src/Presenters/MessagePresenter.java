@@ -1,10 +1,7 @@
 package Presenters;
-import Entities.Chat;
-import Entities.Message;
 import UseCase.ChatManager;
 
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -16,10 +13,10 @@ import java.util.UUID;
  * @author William wang
  */
 public class MessagePresenter {
-    ChatManager userChatManager;
+    private ChatManager userChatManager;
 
     public MessagePresenter(ChatManager chatManager){
-        this.userChatManager = chatManager; // I'm not sure if it is a good idea to have the Messaging presenter get the use case from the Messaging system
+        this.userChatManager = chatManager;
     }
 
     /**
@@ -58,7 +55,7 @@ public class MessagePresenter {
         System.out.println("\n Chats \n");
         for (int i = 0; i < chatIds.size(); i++){
             String chatName = userChatManager.getChatName(chatIds.get(i));
-            System.out.println(i + ". " + chatName);
+            System.out.println(i + ". " + chatName);    // I want to change this to start from 1
         }
         System.out.println("Select a chat by entering a number");
     }
@@ -76,28 +73,24 @@ public class MessagePresenter {
         }
     }
 
-    /**
-     * Displays a chat message. Acts as a helper method for displayChat.
-     * @param messageId A chat message.
-     */
-    public void displayChatMessage(String username, UUID chatId, UUID messageId) {
+    private void displayChatMessage(String username, UUID chatId, UUID messageId) {
         String senderUsername = userChatManager.getMessageSenderUsername(chatId, messageId);
         LocalDateTime timestamp = userChatManager.getMessageTimeStamp(chatId, messageId);
         String content = userChatManager.getMessageContent(chatId, messageId);
 
         if(username.equals(senderUsername)){
-            System.out.println(senderUsername +"(Me)" + "  :  " + content + "                               at   " + timestamp);
+            System.out.println(senderUsername +"(Me)" + "  :  " + content + "                              at  " + timestamp);
         }else{
-            System.out.println(senderUsername + "  :  " + content + "                               at   " + timestamp);
+            System.out.println(senderUsername + "  :  " + content + "                              at  " + timestamp);
         }
 
     }
 
     /**
      * Displays all new Messages in a notification style (Think how new messages look on a phone notification).
-     * @param newMessages Hashmap with the chats each paired with a list of their new messages.
+     * @param newMessages Map with the chats each paired with a list of their new messages.
      */
-    public void displayNewMessages(HashMap<UUID, List<UUID>> newMessages){
+    public void displayNewMessages(Map<UUID, List<UUID>> newMessages){
         System.out.println("\n New Messages");
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
             //printing chat name
@@ -105,17 +98,21 @@ public class MessagePresenter {
             String chatName = userChatManager.getChatName(chatId);
             System.out.println("\n" +chatName);
 
-            //showing time difference from now and last message
             List<UUID> messageIds = mapItem.getValue();
-            LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
-            Duration timeDifference = Duration.between(LocalDateTime.now(), lastMessageTime);
-            System.out.println(timeDifference.toHours() + " hours ago");          // might change the format to be more clearer
+            if (messageIds.size() > 0){
+                //showing time difference from now and last message
+                LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
+                Duration timeDifference = Duration.between(LocalDateTime.now(), lastMessageTime);
+                System.out.println(timeDifference.toHours() + " hours ago");          // might change the format to be more clearer
 
-            //showing last eight messages
-            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
-            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
-                System.out.println(userChatManager.getMessageSenderUsername(chatId, last8Id) + "  :  " +
-                        userChatManager.getMessageContent(chatId, last8Id)); //might make this call helper instead
+                //showing last eight messages
+                List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+                for (UUID last8Id : last8Messages){   //only prints last 8 Messages
+                    System.out.println(userChatManager.getMessageSenderUsername(chatId, last8Id) + "  :  " +
+                            userChatManager.getMessageContent(chatId, last8Id));
+                }
+            } else{  //if there are no new messages
+                System.out.println("No new Messages");
             }
         }
     }
