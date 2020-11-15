@@ -13,7 +13,7 @@ public class SignUpSystem {
     EventManager em;
     UserManager um;
     EventPresenter ep;
-    private final StatementPresenter sp = new StatementPresenter();
+    StatementPresenter sp;
 
     /**
      * Constructor for SignUpSystem
@@ -23,7 +23,8 @@ public class SignUpSystem {
     public SignUpSystem(EventManager em, UserManager um) {
         this.em = em;
         this.um = um;
-        this.ep = new EventPresenter(em);
+        this.ep = new EventPresenter(em, um);
+        this.sp = new StatementPresenter();
     }
 
     /**
@@ -35,7 +36,7 @@ public class SignUpSystem {
         String temp = "";
 
         while (!temp.equals("4")) {
-            sp.printStatement("(1) browse the events\n(2) sign up for an event\n(3) cancel spot for an " +
+            sp.printStatement("(1) browse events\n(2) sign up for an event\n(3) cancel spot for an " +
                     "event\n(4) exit\nPlease type the corresponding number of the options:");
             try {
                 temp = br.readLine();
@@ -55,7 +56,13 @@ public class SignUpSystem {
                         break;
                     }
                     case "1":
-                        ep.displayEvents();
+                        String temp2 = "";
+                        while(!temp2.equals("3")){
+                            sp.printStatement("(1) browse all the events\n(2) browse the events you have signed up\n(3) exit");
+                            temp2 = br.readLine();
+                            if(temp2.equals("1")){ep.displayEvents();}
+                            else if(temp2.equals("2")){ep.displaySignedUpEvents(userName);}
+                        }
                         break;
                 }
             } catch (IOException e) {

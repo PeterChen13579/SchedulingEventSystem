@@ -65,7 +65,7 @@ public class SchedulingTest {
 //        s.addEvent("20201130", "16:00:00", "216", "Tom", "Intro 102");
 //        s.addEvent("20201130", "09:00:00", "216", "Tom", "Intro 101");
 
-        EventPresenter ep = new EventPresenter(em);
+        EventPresenter ep = new EventPresenter(em,um);
         ep.displayEvents();
     }
 
