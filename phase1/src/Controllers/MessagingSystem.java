@@ -46,31 +46,34 @@ public class MessagingSystem {
      */
     public void run(String userName){
 
-        List<String> options = new ArrayList<>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Exit" , "5. Add friend"));
+        List<String> options = new ArrayList<>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Add friend", "5.Exit"));
         MessagingPresenter.displayOptions(options);
 
         Scanner input = new Scanner(System.in); // used for getting input from keyboard
         String choice = ""; //get input from keyboard
-        while (!choice.equals("4")){
+        while (!choice.equals("5")){
             choice = input.nextLine();
             if (choice.equals("1")){
                 String newChoice;
                 do {
-                    this.MessagingPresenter.displayConsoleMessage("Press q to go go back.");
+                    MessagingPresenter.displayConsoleMessage("Press q to go go back.");
                     viewChatNames(userName);
                     chatInteraction(userName);  //this will lead to a new menu where the user can interact with the chats
                     newChoice = input.nextLine();
-                } while (!newChoice.equals("0"));
+                } while (!newChoice.equals("q"));
             } else if (choice.equals("2")) {
                 sendMessage(userName);
             } else if (choice.equals("3")){
                 viewAllNewMessages(userName);
                 String goBack = input.nextLine();  //Press any key to go back (have to click enter after keypress), probably will need to call presenter
-            } else if (choice.equals("5")){             //ADDED THIS SECTION IN, NEED TO FIX LATER!!!!!
-                MessagingPresenter.displayConsoleMessage("Which friend would you like to add? Please don't break any phase 1 rules (Will fix later)");
+            } else if (choice.equals("4")) {
+                MessagingPresenter.displayConsoleMessage("Which friend would you like to add?");
                 String friendUsername = input.nextLine();
-                addPeopleToMessage(userName, friendUsername);
-                MessagingPresenter.displayConsoleMessage("Friend Added");
+                if (addPeopleToMessage(userName, friendUsername)) {
+                    MessagingPresenter.displayConsoleMessage("Friend added");
+                } else {
+                    MessagingPresenter.displayConsoleMessage("You may not add this friend.");
+                }
             } else{
                 MessagingPresenter.error("Please enter a number from 1 to 5.");
             }
@@ -139,20 +142,6 @@ public class MessagingSystem {
         UUID chosenChat = userChats.get(index);
         viewChat(userName, userChatManager.getChatMemberUsernames(chosenChat));
 
-//        List<String> options = new ArrayList<String>(Arrays.asList("1.Send Message", "2.Go back"));
-//        MessagingPresenter.displayOptions(options);
-//        String choice = input.nextLine(); //get input from keyboard
-//        while (!choice.equals("2")) {
-//            if (choice.equals("1")) {
-//                // send message blah blah blah
-//                // make sure sending messages in chat refreshes the chat view
-//            } else {
-//                MessagingPresenter.error("Please enter a number from 1 to 2");
-//            }
-//            MessagingPresenter.displayOptions(options);
-//            choice = input.nextLine();
-//        }
-
     }
 
     /**
@@ -205,12 +194,22 @@ public class MessagingSystem {
             thisChatUsernames.add(usernames.get(i));
 
             UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
+
             if (chat == null) {
+                if (!userManager.isAddFriend(senderUsername, usernames.get(i))) {
+                    if (addPeopleToMessage(senderUsername, usernames.get(i))) {
+                        MessagingPresenter.displayConsoleMessage(usernames.get(i) + "added as a friend.");
+                    } else {
+                        MessagingPresenter.displayConsoleMessage(usernames.get(i) + "is not a friend and cannot be added.");
+                        return;
+                    }
+                }
                 chat = userChatManager.createChat(thisChatUsernames); // If no such chat exists, create it
             }
+
             this.userChatManager.sendMessageToChat(chat, senderUsername, time, content);
         }
-        this.MessagingPresenter.displayConsoleMessage("Message sent!");
+        MessagingPresenter.displayConsoleMessage("Message sent!");
     }
 
     private void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content) {
@@ -294,12 +293,12 @@ public class MessagingSystem {
                             }
                         }
                     } else {
-                        this.MessagingPresenter.error("Sender is not the speaker of " + title);
+                        MessagingPresenter.error("Sender is not the speaker of " + title);
                     }
                 }
             }
             if (!found) {
-                this.MessagingPresenter.error("No event with title " + title + " found.");
+                MessagingPresenter.error("No event with title " + title + " found.");
             }
         }
 
@@ -311,8 +310,12 @@ public class MessagingSystem {
      * @param mainUserUsername the current user
      * @param newFriend new user they want to add
      */
-    private void addPeopleToMessage(String mainUserUsername, String newFriend){ //NOTE : doesn't check if the friend is allowed to be messaged for now
+    private boolean addPeopleToMessage(String mainUserUsername, String newFriend){ //NOTE : doesn't check if the friend is allowed to be messaged for now
+        if (userManager.userType(newFriend).equals("Organizer") || userManager.userType(mainUserUsername).equals("Speaker")) {
+            return false;
+        }
         userManager.addFriend(mainUserUsername, newFriend);
+        return true;
     }
 
 
