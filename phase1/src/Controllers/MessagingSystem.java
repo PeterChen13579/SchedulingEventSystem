@@ -60,13 +60,7 @@ public class MessagingSystem {
             } else if (choice.equals("4")) {
                 messagingPresenter.displayConsoleMessage("Which friend would you like to add?");
                 String friendUsername = input.nextLine();
-                if (userManager.isAddFriend(userName, friendUsername)) {
-                    messagingPresenter.displayConsoleMessage(friendUsername + " is already your friend.");
-                } else if (addPeopleToMessage(userName, friendUsername)) {
-                    messagingPresenter.displayConsoleMessage("Friend added");
-                } else {
-                    messagingPresenter.displayConsoleMessage("You may not add this friend.");
-                }
+                addPeopleToMessage(userName, friendUsername);
             } else {
                 messagingPresenter.error("Please enter a number from 1 to 5.");
             }
@@ -100,8 +94,8 @@ public class MessagingSystem {
                 this.organizerMessageAllSpeakers(userName, LocalDateTime.now(), content);
                 completed = true;
             } else if (choice2.equals("4")) {
-                messagingPresenter.displayConsoleMessage("Please enter a list of titles of the events, each title separated by one space.");
-                List<String> titles = Arrays.asList(input.nextLine().split(" "));
+                messagingPresenter.displayConsoleMessage("Please enter a list of titles of the events, each title separated by one \"+\" sign.");
+                List<String> titles = Arrays.asList(input.nextLine().split("\\+"));
                 messagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
                 String content = input.nextLine();
                 this.speakerMessageEventAttendees(userName, titles, LocalDateTime.now(), content);
@@ -181,20 +175,17 @@ public class MessagingSystem {
      */
     private void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content) {
 
-        for (int i=0; i<usernames.size(); i++) {
+        for (String username : usernames) {
 
             List<String> thisChatUsernames = new ArrayList<String>();
             thisChatUsernames.add(senderUsername);
-            thisChatUsernames.add(usernames.get(i));
+            thisChatUsernames.add(username);
 
             UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
 
             if (chat == null) {
-                if (!userManager.isAddFriend(senderUsername, usernames.get(i))) {
-                    if (addPeopleToMessage(senderUsername, usernames.get(i))) {
-                        messagingPresenter.displayConsoleMessage(usernames.get(i) + " added as a friend.");
-                    } else {
-                        messagingPresenter.displayConsoleMessage(usernames.get(i) + " is not a friend and cannot be added.");
+                if (!userManager.isAddFriend(senderUsername, username)) {
+                    if (!addPeopleToMessage(senderUsername, username)) {
                         return;
                     }
                 }
@@ -209,7 +200,6 @@ public class MessagingSystem {
     private void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content) {
         List<String> recipients = new ArrayList<String>();
         recipients.add(recipientUsername);
-        // User sender = this.userManager.stringtoUser(senderUsername);    //think this can be deleted
 
         if (this.userManager.userType(recipientUsername).equals("Invalid Username")) {
             messagingPresenter.error("Invalid recipient.");
@@ -289,18 +279,24 @@ public class MessagingSystem {
         this.sendMessageToUsers(recipients, senderUsername, time, content);
     }
 
-    /**
-     * Add friends to message
-     * @param mainUserUsername the current user
-     * @param newFriend new user they want to add
-     */
-    private boolean addPeopleToMessage(String mainUserUsername, String newFriend){ //NOTE : doesn't check if the friend is allowed to be messaged for now
+    private boolean addPeopleToMessage(String mainUserUsername, String newFriend){
+        //checks if phase 1 rules allow to message
         if (userManager.userType(newFriend).equals("Organizer") || userManager.userType(mainUserUsername).equals("Speaker")) {
+            messagingPresenter.error(newFriend + " cannot be added.");
             return false;
         }
-        userManager.addFriend(mainUserUsername, newFriend);
-        return true;
-    }
 
+        // tries to add friend
+        if (userManager.addFriend(mainUserUsername, newFriend)){
+            messagingPresenter.displayConsoleMessage(newFriend + " added as a friend.");
+            return true;
+        }else if (!userManager.isUserExists(newFriend)){
+            messagingPresenter.error(newFriend + " this user doesn't exist.");
+            return false;
+        } else {
+            messagingPresenter.displayConsoleMessage(newFriend + " is already added as a friend.");
+            return true;
+        }
+    }
 
 }

@@ -53,7 +53,7 @@ public class MessagePresenter {
      * @param chatIds The chats to be displayed.
      */
     public void displayChatNames(List<UUID> chatIds){
-        System.out.println("\nChats\n");
+        System.out.println("\nChats");
         for (int i = 0; i < chatIds.size(); i++){
             String chatName = userChatManager.getChatName(chatIds.get(i));
             System.out.println((i+1) + ". " + chatName);
