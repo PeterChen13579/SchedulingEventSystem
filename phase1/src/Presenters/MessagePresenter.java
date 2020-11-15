@@ -95,15 +95,16 @@ public class MessagePresenter {
         boolean newMessagesExist = false;
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
 
-            if (mapItem.getValue().size() != 0) {
+            UUID chatId = mapItem.getKey();
+            List<UUID> messageIds = mapItem.getValue();
+
+            if (messageIds.size() != 0) {
                 newMessagesExist = true;
                 //printing chat name
-                UUID chatId = mapItem.getKey();
                 String chatName = userChatManager.getChatName(chatId);
                 System.out.println("\n" +chatName);
 
                 //showing time difference from now and last message
-                List<UUID> messageIds = mapItem.getValue();
                 LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
                 Duration timeDifference = Duration.between(LocalDateTime.now(), lastMessageTime);
                 System.out.println(timeDifference.toHours() + " hours ago");          // might change the format to be more clearer
