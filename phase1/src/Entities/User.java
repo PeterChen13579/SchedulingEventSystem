@@ -8,9 +8,10 @@ import java.util.List;
  */
 public abstract class User implements Serializable {
     private final String username;
-    private String password;
+    private final String password;
     private List <String> friends;
     private List<String> eventAttending;
+
 
 
     public User(String username, String password){
@@ -41,11 +42,11 @@ public abstract class User implements Serializable {
     /**
      * Setter for this <User></User>'s password
      *
-     * @param newPassword the new password
-     */
+     *   the new password
+
     public void setPassword(String newPassword) {
         password = newPassword;
-    }
+    }  */
 
     public List<String> getEventAttending() {
         return eventAttending;

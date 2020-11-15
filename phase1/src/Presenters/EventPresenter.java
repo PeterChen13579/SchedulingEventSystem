@@ -7,8 +7,8 @@ import java.util.List;
 
 
 public class EventPresenter {
-    private final EventManager em;
-    private final UserManager um;
+    private EventManager em;
+    private UserManager um;
 
     /**
      * Constructor for EventPresenter
@@ -47,4 +47,5 @@ public class EventPresenter {
         }
 
     }
+
 }
