@@ -248,14 +248,8 @@ public class MessagingSystem {
             MessagingPresenter.error("Only organizers may perform this action.");
         }
 
-        List<Attendee> allAttendees = userManager.getAllAttendee();
-        List<String> recipients = new ArrayList<String>();
-
-        for (Attendee attendee: allAttendees) {
-            recipients.add(attendee.getUsername());
-        }
-
-        this.sendMessageToUsers(recipients, senderUsername, time, content);
+        List<String> allAttendees = userManager.getAllAttendee();
+        this.sendMessageToUsers(allAttendees, senderUsername, time, content);
     }
 
     private void organizerMessageAllSpeakers(String senderUsername, LocalDateTime time, String content) {
@@ -263,14 +257,8 @@ public class MessagingSystem {
             MessagingPresenter.error("Only organizers may perform this action.");
         }
 
-        List<Speaker> allSpeakers = userManager.getAllSpeaker();
-        List<String> recipients = new ArrayList<String>();
-
-        for (Speaker speaker: allSpeakers) {
-            recipients.add(speaker.getUsername());
-        }
-
-        this.sendMessageToUsers(recipients, senderUsername, time, content);
+        List<String> allSpeakers = userManager.getAllSpeaker();
+        this.sendMessageToUsers(allSpeakers, senderUsername, time, content);
     }
 
     private void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content) {
