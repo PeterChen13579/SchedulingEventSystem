@@ -22,7 +22,7 @@ public class EventPresenter {
     public void displayEvents(){
         List<String> eventList = em.getAllEventTitle();
         if(em.getAllEventTitle().isEmpty()){
-            System.out.println("There are no event yet!");
+            System.out.println("There are no events yet!");
         }
         for(String event:eventList){
             System.out.println(em.getEventInfo(event));

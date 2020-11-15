@@ -13,7 +13,7 @@ public class SchedulingSystem {
     EventManager em;
     RoomManager rm;
     UserManager um;
-    private StatementPresenter menu = new StatementPresenter();
+    private final StatementPresenter menu = new StatementPresenter();
 
     /**
      * Constructor for SchedulingSystem
