@@ -47,40 +47,38 @@ public class MessagingSystem {
     public void run(String userName){
 
         List<String> options = new ArrayList<>(Arrays.asList("1.View Chats", "2.Send Message", "3.View all new Messages ", "4.Add friend", "5.Exit"));
-        MessagingPresenter.displayOptions(options);
 
         Scanner input = new Scanner(System.in); // used for getting input from keyboard
         String choice = ""; //get input from keyboard
         while (!choice.equals("5")){
+            MessagingPresenter.displayOptions(options);
             choice = input.nextLine();
             if (choice.equals("1")){
-                String newChoice;
-                do {
-                    MessagingPresenter.displayConsoleMessage("Press q to go go back.");
-                    viewChatNames(userName);
-                    chatInteraction(userName);  //this will lead to a new menu where the user can interact with the chats
-                    newChoice = input.nextLine();
-                } while (!newChoice.equals("q"));
+                viewChatNames(userName);
+                chatInteraction(userName);
+                MessagingPresenter.displayConsoleMessage("Press any key to go back.");
+                input.nextLine();
             } else if (choice.equals("2")) {
                 sendMessage(userName);
             } else if (choice.equals("3")){
                 viewAllNewMessages(userName);
-                String goBack = input.nextLine();  //Press any key to go back (have to click enter after keypress), probably will need to call presenter
+                MessagingPresenter.displayConsoleMessage("Press any key to go back.");
+                input.nextLine();
             } else if (choice.equals("4")) {
                 MessagingPresenter.displayConsoleMessage("Which friend would you like to add?");
                 String friendUsername = input.nextLine();
-                if (addPeopleToMessage(userName, friendUsername)) {
+                if (userManager.isAddFriend(userName, friendUsername)) {
+                    MessagingPresenter.displayConsoleMessage(friendUsername + " is already your friend.");
+                } else if (addPeopleToMessage(userName, friendUsername)) {
                     MessagingPresenter.displayConsoleMessage("Friend added");
                 } else {
                     MessagingPresenter.displayConsoleMessage("You may not add this friend.");
                 }
-            } else{
+            } else {
                 MessagingPresenter.error("Please enter a number from 1 to 5.");
             }
-            MessagingPresenter.displayOptions(options);
-            choice = input.nextLine();
         }
-        input.close();
+        //input.close();
     }
 
     private void sendMessage(String userName) {
@@ -131,16 +129,19 @@ public class MessagingSystem {
         List<UUID> userChats = userChatManager.getUserChats(userName);
         //int numChats = userChats.size();
 
-        this.MessagingPresenter.displayConsoleMessage("Please enter the number of the chat that you would like to view.");
+        this.MessagingPresenter.displayConsoleMessage("Please enter the number of the chat that you would like to view. Press 0 to cancel.");
         String chatChoice = input.nextLine();  //choose a number for which chat to go to
         int index = Integer.parseInt(chatChoice) - 1;
-        while (index >= userChats.size()){
-            MessagingPresenter.error("please enter a number that corresponds to a chat");
+        while (index >= userChats.size() && index != -1){
+            MessagingPresenter.error("Please enter a number that corresponds to a chat or 0 to cancel.");
             chatChoice = input.nextLine();
             index = Integer.parseInt(chatChoice) - 1;
         }
-        UUID chosenChat = userChats.get(index);
-        viewChat(userName, userChatManager.getChatMemberUsernames(chosenChat));
+
+        if (index != -1) {
+            UUID chosenChat = userChats.get(index);
+            viewChat(userName, userChatManager.getChatMemberUsernames(chosenChat));
+        }
 
     }
 
@@ -198,9 +199,9 @@ public class MessagingSystem {
             if (chat == null) {
                 if (!userManager.isAddFriend(senderUsername, usernames.get(i))) {
                     if (addPeopleToMessage(senderUsername, usernames.get(i))) {
-                        MessagingPresenter.displayConsoleMessage(usernames.get(i) + "added as a friend.");
+                        MessagingPresenter.displayConsoleMessage(usernames.get(i) + " added as a friend.");
                     } else {
-                        MessagingPresenter.displayConsoleMessage(usernames.get(i) + "is not a friend and cannot be added.");
+                        MessagingPresenter.displayConsoleMessage(usernames.get(i) + " is not a friend and cannot be added.");
                         return;
                     }
                 }
@@ -246,6 +247,7 @@ public class MessagingSystem {
     private void organizerMessageAllAttendees(String senderUsername, LocalDateTime time, String content) {
         if (! (userManager.userType(senderUsername).equals("Organizer"))) {
             MessagingPresenter.error("Only organizers may perform this action.");
+            return;
         }
 
         List<String> allAttendees = userManager.getAllAttendee();
@@ -255,6 +257,7 @@ public class MessagingSystem {
     private void organizerMessageAllSpeakers(String senderUsername, LocalDateTime time, String content) {
         if (! (userManager.userType(senderUsername).equals("Organizer"))) {
             MessagingPresenter.error("Only organizers may perform this action.");
+            return;
         }
 
         List<String> allSpeakers = userManager.getAllSpeaker();
@@ -264,6 +267,7 @@ public class MessagingSystem {
     private void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content) {
         if (! (userManager.userType(senderUsername).equals("Speaker"))) {
             MessagingPresenter.error("Only speakers may perform this action.");
+            return;
         }
 
         List<String> allEvents = eventManager.getAllEventTitle();

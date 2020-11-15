@@ -43,7 +43,7 @@ public class MessagePresenter {
      * @param options The options that the user can select
      */
     public void displayOptions(List<String> options){
-        System.out.println("\n What would you like to do?");
+        System.out.println("\nWhat would you like to do?");
         for (String choice : options){
             System.out.println(choice);
         }
@@ -55,12 +55,11 @@ public class MessagePresenter {
      * @param chatIds The chats to be displayed.
      */
     public void displayChatNames(List<UUID> chatIds){
-        System.out.println("\n Chats \n");
+        System.out.println("\nChats\n");
         for (int i = 0; i < chatIds.size(); i++){
             String chatName = userChatManager.getChatName(chatIds.get(i));
-            System.out.println(i + ". " + chatName);
+            System.out.println((i+1) + ". " + chatName);
         }
-        System.out.println("Select a chat by entering a number");
     }
 
     /**
@@ -98,25 +97,37 @@ public class MessagePresenter {
      * @param newMessages Hashmap with the chats each paired with a list of their new messages.
      */
     public void displayNewMessages(HashMap<UUID, List<UUID>> newMessages){
-        System.out.println("\n New Messages");
+        if (newMessages.size() == 0) {
+            System.out.println("\nNo new messages.");
+            return;
+        }
+        System.out.println("\nNew Messages");
+        boolean newMessagesExist = false;
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
-            //printing chat name
-            UUID chatId = mapItem.getKey();
-            String chatName = userChatManager.getChatName(chatId);
-            System.out.println("\n" +chatName);
 
-            //showing time difference from now and last message
-            List<UUID> messageIds = mapItem.getValue();
-            LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
-            Duration timeDifference = Duration.between(LocalDateTime.now(), lastMessageTime);
-            System.out.println(timeDifference.toHours() + " hours ago");          // might change the format to be more clearer
+            if (mapItem.getValue().size() != 0) {
+                newMessagesExist = true;
+                //printing chat name
+                UUID chatId = mapItem.getKey();
+                String chatName = userChatManager.getChatName(chatId);
+                System.out.println("\n" +chatName);
 
-            //showing last eight messages
-            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
-            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
-                System.out.println(userChatManager.getMessageSenderUsername(chatId, last8Id) + "  :  " +
-                        userChatManager.getMessageContent(chatId, last8Id)); //might make this call helper instead
+                //showing time difference from now and last message
+                List<UUID> messageIds = mapItem.getValue();
+                LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
+                Duration timeDifference = Duration.between(LocalDateTime.now(), lastMessageTime);
+                System.out.println(timeDifference.toHours() + " hours ago");          // might change the format to be more clearer
+
+                //showing last eight messages
+                List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+                for (UUID last8Id : last8Messages){   //only prints last 8 Messages
+                    System.out.println(userChatManager.getMessageSenderUsername(chatId, last8Id) + "  :  " +
+                            userChatManager.getMessageContent(chatId, last8Id)); //might make this call helper instead
+                }
             }
+        }
+        if (!newMessagesExist) {
+            System.out.println("\nNo new messages.");
         }
     }
 
