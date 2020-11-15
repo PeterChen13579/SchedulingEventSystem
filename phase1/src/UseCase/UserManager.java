@@ -18,12 +18,41 @@ public class UserManager implements Serializable {
 
     public UserManager() {}
 
-    public List<Attendee> getAllAttendee() {
-        return this.allAttendee;
+
+    /**
+     * Getter for all userName of all attendees
+     * @return A list of username that includes all attendees.
+     */
+    public List<String> getAllAttendee() {
+        List <String> list = new ArrayList<>();
+        for (Attendee attendees: allAttendee){
+            list.add(attendees.getUsername());
+        }
+        return list;
     }
 
-    public List<Speaker> getAllSpeaker() {
-        return this.allSpeaker;
+    /**
+     * Getter for all userName of all Orgainzers
+     * @return A list of username that includes all Organizers
+     */
+    public List<String> getAllOrganizer() {
+        List <String> list = new ArrayList<>();
+        for (Organizer organizer: allOrganizer){
+            list.add(organizer.getUsername());
+        }
+        return list;
+    }
+
+    /**
+     * Getter for all userName of all Speakers
+     * @return A list of username that includes all speakers.
+     */
+    public List<String> getAllSpeaker() {
+        List <String> list = new ArrayList<>();
+        for (Speaker speaker: allSpeaker){
+            list.add(speaker.getUsername());
+        }
+        return list;
     }
 
     /**
