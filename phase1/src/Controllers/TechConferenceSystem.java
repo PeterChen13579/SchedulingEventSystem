@@ -9,6 +9,10 @@ import UseCase.UserManager;
 import Presenters.StatementPresenter;
 import java.util.Scanner;
 
+/**
+ * Determines all the behaviour for the text-based UI
+ * @author Joyce Huang, Peter Chen, and Amy Miao
+ */
 public class TechConferenceSystem {
 
     private LoginSystem loginSystem;
@@ -22,9 +26,15 @@ public class TechConferenceSystem {
     private final StatementPresenter STATEMENT_PRESENTER = new StatementPresenter();
 
 
+    /**
+     * Constructor for the entire controller, begins the program
+     */
     public TechConferenceSystem(){
-
         //Basically controller does all the logic, presenter PRINTS to screen.
+        run();
+    }
+
+    private void run() {
         boolean flag = true;
         while(flag){
             if (start()) {
@@ -60,8 +70,7 @@ public class TechConferenceSystem {
         }
     }
 
-
-    public void mainLevel(){
+    private void mainLevel(){
         boolean flag = true;
         while(flag){
             if(mainLevelHelper()) {
@@ -131,7 +140,7 @@ public class TechConferenceSystem {
         return false;
     }
 
-    public void loggedInMenuAttendee(String username){
+    private void loggedInMenuAttendee(String username){
         boolean flag = true;
         while (flag){
             if (loggedInMenuAttendeeHelper(username)) { flag = false; }
@@ -163,7 +172,7 @@ public class TechConferenceSystem {
         }
     }
 
-    public void loggedInMenuOrganizer(String username){
+    private void loggedInMenuOrganizer(String username){
         boolean flag = true;
         while(flag){
             if (loggedInMenuOrganizerHelper(username)){
@@ -211,7 +220,7 @@ public class TechConferenceSystem {
         }
     }
 
-    public void loggedInMenuSpeaker(String username){
+    private void loggedInMenuSpeaker(String username){
         boolean flag = true;
 
         while (flag){
@@ -249,10 +258,6 @@ public class TechConferenceSystem {
         }
     }
 
-    /**
-     * creates all necessary use cases and controllers based off whether the user loads or not
-     * @param load true iff you want to call an existing TechConference.
-     */
     private void createProgram(boolean load) {
         if (load) {
             Reader reader = new Reader();
