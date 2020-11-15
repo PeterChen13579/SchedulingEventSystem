@@ -1,5 +1,6 @@
 package Entities;
 import java.io.Serializable;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,25 +14,25 @@ import java.util.UUID;
  */
 public class Chat implements Serializable {
     private LinkedHashMap<UUID, Message> chatMessages;  //stores all messages by pairing them with an id. Should be sorted by time
-    private HashMap<String, UUID> lastViewedMessage; //pairs username with a message id. If chatMessages/memberUsernames is changed, this must be changed as well.
+    private Map<String, UUID> lastViewedMessage; //pairs username with a message id. If chatMessages/memberUsernames is changed, this must be changed as well.
     private List<String> memberUsernames;  //users in the chat
     private String chatName;
 
     /**
      * Creates a new chat
-     *
      * @param memberUsernames The users that are in this chat
      */
     public Chat(List<String> memberUsernames){
         this.chatMessages = new LinkedHashMap<>();
         this.lastViewedMessage = new HashMap<>();
-        for (String username : memberUsernames){
-            this.lastViewedMessage.put(username, null);  //sets the last viewed message to null for each user
-        }
-
         this.memberUsernames = memberUsernames;
         this.chatName = String.join(", ", this.memberUsernames); //we can overload and create another constructor to accept a chat name
+
+        // adds username to lastViewedMessage
+        for (String username : this.memberUsernames){
+            this.lastViewedMessage.put(username, null);  //sets the last viewed message to null for each user
         }
+    }
 
     /**
      * getter for the messages
@@ -48,7 +49,7 @@ public class Chat implements Serializable {
      */
     public UUID getLastViewedMessage(String username){
         // Preconditions : Username is in this chat
-        return lastViewedMessage.get(username);   //If there are no messages in this chat, this will return null
+        return lastViewedMessage.get(username);   //If there are no messages in this chat or the user has not viewed any messages, this will return null
     }
 
     /**
@@ -73,8 +74,8 @@ public class Chat implements Serializable {
      * @param message The message being added to the chat
      */
     public void addChatMessage(UUID newMessageId, Message message) {
-        // Preconditions : Added message has a timestamp after the last message in the chat, Message does not already exist in another chat
-        chatMessages.put(newMessageId, message); // maybe the use case needs to update the last viewed message (since sending a message probably means they view the previous ones)
+        // Preconditions : Added message has a timestamp after the last message in the chat, message does not already exist in this chat or another one
+        chatMessages.put(newMessageId, message); // the use case needs to update the last viewed message (since sending a message probably means they view the previous ones)
     }
 
     /**

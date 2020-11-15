@@ -18,12 +18,41 @@ public class UserManager implements Serializable {
 
     public UserManager() {}
 
-    public List<Attendee> getAllAttendee() {
-        return this.allAttendee;
+
+    /**
+     * Getter for all userName of all attendees
+     * @return A list of username that includes all attendees.
+     */
+    public List<String> getAllAttendee() {
+        List <String> list = new ArrayList<>();
+        for (Attendee attendees: allAttendee){
+            list.add(attendees.getUsername());
+        }
+        return list;
     }
 
-    public List<Speaker> getAllSpeaker() {
-        return this.allSpeaker;
+    /**
+     * Getter for all userName of all Orgainzers
+     * @return A list of username that includes all Organizers
+     */
+    public List<String> getAllOrganizer() {
+        List <String> list = new ArrayList<>();
+        for (Organizer organizer: allOrganizer){
+            list.add(organizer.getUsername());
+        }
+        return list;
+    }
+
+    /**
+     * Getter for all userName of all Speakers
+     * @return A list of username that includes all speakers.
+     */
+    public List<String> getAllSpeaker() {
+        List <String> list = new ArrayList<>();
+        for (Speaker speaker: allSpeaker){
+            list.add(speaker.getUsername());
+        }
+        return list;
     }
 
     /**
@@ -244,5 +273,23 @@ public class UserManager implements Serializable {
             if(username.equals(speaker.getUsername())) {return "Speaker";}
         }
         return "Invalid Username";
+    }
+
+    /**
+     * PRECONDITION: Attendee or Speaker account with this username must exist
+     * Returns a list of events names(strings) that this speaker is giving
+     *
+     * @param username String username of a specific speaker account
+     * @return         a list of events titles they are speaking(for speaker)
+     */
+    public List<String> getEventsSpeaking(String username){
+        for (Speaker speaker: allSpeaker){
+            if (speaker.getUsername().equals(username)){
+                return speaker.getEventAttending();
+            }
+        }
+        return null;
+        //This should never happen since precondition specifies that
+        //this username is an existing attendee or speaker account.
     }
 }
