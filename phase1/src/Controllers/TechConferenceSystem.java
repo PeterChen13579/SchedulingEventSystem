@@ -4,16 +4,11 @@ import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-import Presenters.UserMenu;
+import Presenters.StatementPresenter;
 import java.util.Scanner;
 
 public class TechConferenceSystem {
 
-    private Scanner input;
-    private String temp;
-    private boolean terminated;
-    private static Reader reader;
-    private static Writer writer;
     private static LoginSystem loginSystem;
     private static MessagingSystem messagingSystem;
     private static SchedulingSystem schedulingSystem;
@@ -22,196 +17,251 @@ public class TechConferenceSystem {
     private static ChatManager chatManager;
     private static EventManager eventManager;
     private static RoomManager roomManager;
-    private static UserMenu userMenu = new UserMenu();
+    private static final StatementPresenter STATEMENT_PRESENTER = new StatementPresenter();
 
     public TechConferenceSystem(){
 
         //Basically controller does all the logic, presenter PRINTS to screen.
-
-        Scanner input = new Scanner(System.in);
-        userMenu.printStatement("(1) Load Existing Conference \n(2) Create New Conference");
-        temp = input.nextLine();
-
         boolean flag = true;
-        while(flag) {
-            if (temp.equals("1")) {
-                createProgram(true);
+        while(flag){
+            if (start()) {
                 flag = false;
-            } else if (temp.equals("2")) {
-                createProgram(false);
-                flag = false;
-
-            } else {
-                userMenu.printStatement("Please enter the corresponding number and try again");
             }
         }
         mainLevel();
+    }
 
+    private boolean start(){
+
+        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
+        STATEMENT_PRESENTER.printStatement("(1) Load Existing Conference \n(2) Create New Conference");
+
+
+        Scanner input = new Scanner(System.in);
+        String temp = input.nextLine();
+
+        if (temp.equals("1")) {
+            try {
+                createProgram(true);
+                return true;
+            } catch (ClassCastException exception) {
+                STATEMENT_PRESENTER.printStatement("There is no existing Conference, please create a new one. ");
+                return false;
+            }
+        } else if (temp.equals("2")) {
+            createProgram(false);
+            return true;
+        } else {
+            STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+            return false;
+        }
     }
 
 
     public void mainLevel(){
-        Scanner in = new Scanner(System.in);
-
         boolean flag = true;
-        userMenu.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
-        String temp2 = in.nextLine();
-        if (temp2.equals("1")){
-            while (flag) {
-                if (loginSystem.run()) {
-                    userMenu.printStatement("Please type your username: ");
-                    String username = in.nextLine();
-                    if (userManager.userType(username).equals("Attendee")){
-                        loggedInMenuAttendee(username);
-                    }else if (userManager.userType(username).equals("Organizer")){
-                        loggedInMenuOrganizer(username);
-                    }else{
-                        loggedInMenuSpeaker(username);
-                    }
-                    flag = false;
-                }else {
-                    userMenu.printStatement("You have entered an incorrect username or password.\n Please try again.");
-                }
+        while(flag){
+            if(mainLevelHelper()) {
+                flag = false;
             }
-
-        }else if (temp2.equals("2")){
-            while(flag) {
-                userMenu.printStatement("Please enter a username:");
-                String userName = in.nextLine();
-                userMenu.printStatement("Please enter a password:");
-                String password = in.nextLine();
-                if (userManager.createAttendeeAccount(userName, password)){
-                    userMenu.printStatement("You have successfully created an Attendee Account!");
-                    flag = false;
-                }else {
-                    userMenu.printStatement("This username is already in our database.");
-                    userMenu.printStatement("Please enter a different username");
-                }
-            }
-        }else if (temp2.equals("3")){
-            while(flag) {
-                userMenu.printStatement("Please enter a username:");
-                String userName = in.nextLine();
-                userMenu.printStatement("Please enter a password:");
-                String password = in.nextLine();
-                if (userManager.createOrganizerAccount(userName, password)){
-                    userMenu.printStatement("You have successfully created an Organizer Account!");
-                    flag = false;
-                }else {
-                    userMenu.printStatement("This username is already in our database.");
-                    userMenu.printStatement("Please enter a different username");
-                }
-            }
-        }else if (temp2.equals("4")){
-            userMenu.printStatement("You have exited the program.");
-            saveProgram();
-        }else{
-            userMenu.printStatement("Please enter the corresponding number and try again");
-        }
-        if (! temp2.equals("4")) {
-            mainLevel();
         }
     }
 
-    public void loggedInMenuAttendee(String username){
+    private boolean mainLevelHelper(){
         Scanner in = new Scanner(System.in);
 
-        boolean flag = true;
-        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Quit");
+        STATEMENT_PRESENTER.printStatement("What do you want to do? ;)");
+        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
+        STATEMENT_PRESENTER.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
         String temp2 = in.nextLine();
-        if (temp2.equals("1")){
-            while (flag) {
-                signUpSystem.run();
-                flag = false;
-            }
 
-        }else if (temp2.equals("2")){
-            while(flag) {
-                messagingSystem.run(username);
-                flag = false;
+        switch (temp2) {
+            case "1":
+                if (loginSystem.run()) {
+                    String username = loginSystem.getUsername();
+                    if (userManager.userType(username).equals("Attendee")) {
+                        loggedInMenuAttendee(username);
+                    } else if (userManager.userType(username).equals("Organizer")) {
+                        loggedInMenuOrganizer(username);
+                    } else {
+                        loggedInMenuSpeaker(username);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+
+            case "2": {
+                STATEMENT_PRESENTER.printStatement("Please enter a username:");
+                String userName = in.nextLine();
+                STATEMENT_PRESENTER.printStatement("Please enter a password:");
+                String password = in.nextLine();
+                if (userManager.createAttendeeAccount(userName, password)) {
+                    STATEMENT_PRESENTER.printStatement("You have successfully created an Attendee Account!");
+                } else {
+                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
+                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
+                }
+                return false;
             }
-        }else if (temp2.equals("3")){
-            userMenu.printStatement("You have exited the program.");
-            saveProgram();
-        }else{
-            userMenu.printStatement("Please enter the corresponding number and try again");
+            case "3": {
+                STATEMENT_PRESENTER.printStatement("Please enter a username:");
+                String userName = in.nextLine();
+                STATEMENT_PRESENTER.printStatement("Please enter a password:");
+                String password = in.nextLine();
+                if (userManager.createOrganizerAccount(userName, password)) {
+                    STATEMENT_PRESENTER.printStatement("You have successfully created an Organizer Account!");
+                } else {
+                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
+                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
+                }
+                return false;
+            }
+            case "4":
+                STATEMENT_PRESENTER.printStatement("You have exited the program.");
+                saveProgram();
+                return true;
+            default:
+                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+                break;
         }
+        return false;
+    }
 
-        if (! temp2.equals("3")) {
-            mainLevel();
+    public void loggedInMenuAttendee(String username){
+        boolean flag = true;
+        while (flag){
+            if (loggedInMenuAttendeeHelper(username)) { flag = false; }
+        }
+    }
+
+    private boolean loggedInMenuAttendeeHelper(String username){
+        Scanner in = new Scanner(System.in);
+
+        STATEMENT_PRESENTER.printStatement("What do you want to do? ");
+        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Log Out");
+        STATEMENT_PRESENTER.printStatement("Please type the corresponding number of the options: ");
+        String temp2 = in.nextLine();
+
+        switch (temp2) {
+            case "1":
+                signUpSystem.run(username);
+                return false;
+            case "2":
+                messagingSystem.run(username);
+                return false;
+            case "3":
+                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
+                mainLevel();
+                return true;
+            default:
+                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+                return false;
         }
     }
 
     public void loggedInMenuOrganizer(String username){
+        boolean flag = true;
+        while(flag){
+            if (loggedInMenuOrganizerHelper(username)){
+                flag = false;
+            }
+        }
+    }
+
+    private boolean loggedInMenuOrganizerHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        boolean flag = true;
-        userMenu.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu \n(4) Quit");
+        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu " +
+                "\n(4) Create Speaker account \n(5) Log Out");
         String temp2 = in.nextLine();
-        if (temp2.equals("1")){
-            while (flag) {
-                signUpSystem.run();
-                flag = false;
-            }
 
-        }else if (temp2.equals("2")){
-            while(flag) {
+        switch (temp2) {
+            case "1":
+                signUpSystem.run(username);
+                return false;
+            case "2":
                 messagingSystem.run(username);
-                flag = false;
-            }
-        }else if (temp2.equals("3")){
-            while(flag){
+                return false;
+            case "3":
                 schedulingSystem.run();
-                flag = false;
-            }
-
-        }else if (temp2.equals("4")){
-            userMenu.printStatement("You have exited the program.");
-            saveProgram();
-        }else{
-            userMenu.printStatement("Please enter the corresponding number and try again");
-        }
-
-        if (! temp2.equals("4")) {
-            mainLevel();
+                return false;
+            case "4":
+                STATEMENT_PRESENTER.printStatement("Please enter a Username:");
+                String userName = in.nextLine();
+                STATEMENT_PRESENTER.printStatement("Please enter a Password:");
+                String password = in.nextLine();
+                if (userManager.createSpeakerAccount(userName, password)) {
+                    STATEMENT_PRESENTER.printStatement("You have successfully created a speaker account.");
+                } else {
+                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
+                    STATEMENT_PRESENTER.printStatement("Please enter a different username.");
+                }
+                return false;
+            case "5":
+                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
+                mainLevel();
+                return true;
+            default:
+                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+                return false;
         }
     }
 
     public void loggedInMenuSpeaker(String username){
-        Scanner in = new Scanner(System.in);
-
         boolean flag = true;
-        userMenu.printStatement("(1) Message Menu  \n(2) Quit");
-        String temp2 = in.nextLine();
-        if (temp2.equals("1")){
-            while (flag) {
-                messagingSystem.run(username);
+
+        while (flag){
+            if (loggedInMenuSpeakerHelper(username)){
                 flag = false;
             }
-
-        }else if (temp2.equals("2")){
-            userMenu.printStatement("You have exited the program.");
-            saveProgram();
-        }else{
-            userMenu.printStatement("Please enter the corresponding number and try again");
         }
+    }
 
-        if (! temp2.equals("2")) {
-            mainLevel();
+    private boolean loggedInMenuSpeakerHelper(String username){
+        Scanner in = new Scanner(System.in);
+
+        STATEMENT_PRESENTER.printStatement("(1) Message Menu \n(2) View List of Events Speaking \n(3) Log Out");
+        String temp2 = in.nextLine();
+
+        switch (temp2) {
+            case "1":
+                messagingSystem.run(username);
+                return false;
+            case "2":
+                for (String events : userManager.getEventsSpeaking(username)) {
+                    STATEMENT_PRESENTER.printStatement(events);
+                    System.out.println();
+                }
+                return false;
+            case "3":
+                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
+                mainLevel();
+                return true;
+            default:
+                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+                return false;
         }
     }
 
     /**
      * creates all necessary use cases and controllers based off whether the user loads or not
-     * @param load
+     * @param load true iff you want to call an existing TechConference.
      */
     private void createProgram(boolean load) {
         if (load) {
-            reader = new Reader();
-            chatManager = (ChatManager) reader.loadData("cm.txt");
-            eventManager = (EventManager) reader.loadData("em.txt");
-            roomManager = (RoomManager) reader.loadData("rm.txt");
-            userManager = (UserManager) reader.loadData("um.txt");
+            Reader reader = new Reader();
+            if (reader.verifySaves()) {
+                chatManager = (ChatManager) reader.loadData("cm.txt");
+                eventManager = (EventManager) reader.loadData("em.txt");
+                roomManager = (RoomManager) reader.loadData("rm.txt");
+                userManager = (UserManager) reader.loadData("um.txt");
+            } else {
+                chatManager = new ChatManager();
+                eventManager = new EventManager();
+                roomManager = new RoomManager();
+                userManager = new UserManager();
+            }
         } else {
             chatManager = new ChatManager();
             eventManager = new EventManager();
@@ -225,12 +275,10 @@ public class TechConferenceSystem {
     }
 
     private void saveProgram() {
-        writer = new Writer();
+        Writer writer = new Writer();
         writer.writeToFile("cm.txt", chatManager);
         writer.writeToFile("em.txt", eventManager);
         writer.writeToFile("rm.txt", roomManager);
         writer.writeToFile("um.txt", userManager);
     }
-
-
 }

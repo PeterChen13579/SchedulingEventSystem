@@ -12,28 +12,47 @@ import Entities.Speaker;
  *
  */
 public class UserManager implements Serializable {
-    private List <Attendee> allAttendee = new ArrayList<Attendee>();
-    private List <Organizer> allOrganizer = new ArrayList<Organizer>();
-    private List <Speaker> allSpeaker = new ArrayList<Speaker>();
+    private final List <Attendee> allAttendee = new ArrayList<>();
+    private final List <Organizer> allOrganizer = new ArrayList<>();
+    private final List <Speaker> allSpeaker = new ArrayList<>();
 
-    public UserManager() {
+    public UserManager() {}
 
+
+    /**
+     * Getter for all userName of all attendees
+     * @return A list of username that includes all attendees.
+     */
+    public List<String> getAllAttendee() {
+        List <String> list = new ArrayList<>();
+        for (Attendee attendees: allAttendee){
+            list.add(attendees.getUsername());
+        }
+        return list;
     }
 
-    public UserManager(List<Attendee> attendee, List<Organizer> organizer, List<Speaker> speaker ) {
-        allAttendee = attendee;
-        allOrganizer = organizer;
-        allSpeaker = speaker;
+    /**
+     * Getter for all userName of all Orgainzers
+     * @return A list of username that includes all Organizers
+     */
+    public List<String> getAllOrganizer() {
+        List <String> list = new ArrayList<>();
+        for (Organizer organizer: allOrganizer){
+            list.add(organizer.getUsername());
+        }
+        return list;
     }
 
-    public List<Attendee> getAllAttendee() {
-        return this.allAttendee;
-    }
-
-    public List<Organizer> getAllOrganizer(){return this.allOrganizer;}
-
-    public List<Speaker> getAllSpeaker() {
-        return this.allSpeaker;
+    /**
+     * Getter for all userName of all Speakers
+     * @return A list of username that includes all speakers.
+     */
+    public List<String> getAllSpeaker() {
+        List <String> list = new ArrayList<>();
+        for (Speaker speaker: allSpeaker){
+            list.add(speaker.getUsername());
+        }
+        return list;
     }
 
     /**
@@ -80,15 +99,6 @@ public class UserManager implements Serializable {
                 return user.getPassword().equals(enteredPassword);
             }
         }
-//        System.out.println("This user is not signed up into the system.");
-        return false;
-    }
-
-    public boolean isAttendingEvent(String username, String eventTitle){
-        User user = stringtoUser(username);
-        for(String title: user.getEventAttending()){
-            if(eventTitle.equals(title)) {return true;}
-        }
         return false;
     }
 
@@ -97,15 +107,12 @@ public class UserManager implements Serializable {
      *
      * @param username The user we wants to sign up for an event
      * @param eventTitle  The event the user wants to sign up for
-     * @return      true if user successfully booked his/her event. false otherwise
      */
-    public boolean signUpEventAttendee(String username, String eventTitle){
-        User user = stringtoUser(username);
-        if (isAttendingEvent(username, eventTitle)) {return false;}
-        List<String> eventTitles = user.getEventAttending();
-        eventTitles.add(eventTitle);
-        user.setEventAttending(eventTitles);
-        return true;
+    public void signUpEventAttendee(String username, String eventTitle){
+        User user = stringToUser(username);
+        List<String> eventList = user.getEventAttending();
+        eventList.add(eventTitle);
+        user.setEventAttending(eventList);
     }
 
     /**
@@ -113,19 +120,13 @@ public class UserManager implements Serializable {
      *
      * @param username   The user wants to cancel their event
      * @param eventTitle  The event the user wants to cancel
-     * @return       true if user successfully cancelled his/her event. false otherwise.
      */
-    public boolean cancelSpotAttendee(String username, String eventTitle){
-        User user = stringtoUser(username);
-        if (isAttendingEvent(username, eventTitle)){
-            List<String> eventTitles = user.getEventAttending();
-            eventTitles.remove(eventTitle);
-            user.setEventAttending(eventTitles);
-            return true;
-        }
-        return false;
+    public void cancelSpotAttendee(String username, String eventTitle){
+        User user = stringToUser(username);
+        List<String> eventList = user.getEventAttending();
+        eventList.remove(eventTitle);
+        user.setEventAttending(eventList);
     }
-
 
     /**
      * Creates an Attendee Account
@@ -136,11 +137,6 @@ public class UserManager implements Serializable {
      */
     public boolean createAttendeeAccount(String userName, String password){
         if(isUserExists(userName)) {return false;}
-
-        if (allAttendee.size() == 0) {
-            allAttendee.add(new Attendee(userName, password));
-            return true;
-        }
 
         allAttendee.add(new Attendee(userName, password));
         return true;
@@ -157,10 +153,6 @@ public class UserManager implements Serializable {
     public boolean createOrganizerAccount(String userName, String password){
 
         if(isUserExists(userName)){ return false; }
-        if (allOrganizer.size() == 0){
-            allOrganizer.add(new Organizer(userName, password));
-            return true;
-        }
 
         allOrganizer.add(new Organizer(userName, password));
         return true;
@@ -179,11 +171,6 @@ public class UserManager implements Serializable {
             return false;
         }
 
-        if (allSpeaker.size() == 0){
-            allSpeaker.add(new Speaker(userName, password));
-            return true;
-        }
-
         allSpeaker.add(new Speaker(userName, password));
         return true;
     }
@@ -196,7 +183,8 @@ public class UserManager implements Serializable {
      * @param Username Username that wants to be searched for
      * @return         User object that matches with Username
      */
-    private User stringtoUser(String Username){
+    private User stringToUser(String Username){
+        assert isUserExists(Username);
         for (Attendee a: allAttendee){
             if (a.getUsername().equals(Username)){
                 return a;
@@ -212,7 +200,7 @@ public class UserManager implements Serializable {
                 return c;
             }
         }
-        return null;
+        throw new IllegalArgumentException("eventTitle does not correspond to any event in event List");
     }
 
     /**
@@ -223,7 +211,7 @@ public class UserManager implements Serializable {
      */
 
     public boolean isAddFriend(String usernameA, String usernameB){
-        User userA = stringtoUser(usernameA);
+        User userA = stringToUser(usernameA);
 
         List<String> friends = userA.getFriends();
         for (String friend: friends){
@@ -242,25 +230,13 @@ public class UserManager implements Serializable {
      * @return   true if successfully added, false otherwise
      */
     public boolean addFriend(String usernameA, String usernameB){
-        User userA = stringtoUser(usernameA);
+        User userA = stringToUser(usernameA);
 
         List<String> friends = userA.getFriends();
         if (isUserExists(usernameB) && isAddFriend(usernameA, usernameB)){
             friends.add(usernameB);
             userA.setFriends(friends);
             return true;
-        }
-        return false;
-    }
-
-    /**
-     * Return whether a Speaker object with the given username has been created
-     * @param speakerUserName the username of the speaker
-     * @return true iff speaker exists; false otherwise
-     */
-    public boolean doesSpeakerExist(String speakerUserName){
-        for(Speaker speaker: allSpeaker){
-            if(speaker.getUsername().equals(speakerUserName)) return true;
         }
         return false;
     }
@@ -297,5 +273,23 @@ public class UserManager implements Serializable {
             if(username.equals(speaker.getUsername())) {return "Speaker";}
         }
         return "Invalid Username";
+    }
+
+    /**
+     * PRECONDITION: Attendee or Speaker account with this username must exist
+     * Returns a list of events names(strings) that this speaker is giving
+     *
+     * @param username String username of a specific speaker account
+     * @return         a list of events titles they are speaking(for speaker)
+     */
+    public List<String> getEventsSpeaking(String username){
+        for (Speaker speaker: allSpeaker){
+            if (speaker.getUsername().equals(username)){
+                return speaker.getEventAttending();
+            }
+        }
+        return null;
+        //This should never happen since precondition specifies that
+        //this username is an existing attendee or speaker account.
     }
 }

@@ -16,7 +16,6 @@ public class Message implements Serializable {
 
     /**
      * Creates a new Message
-     *
      * @param senderUsername the username of the sender
      * @param time the date/time of the message
      * @param content the literal string representing the message

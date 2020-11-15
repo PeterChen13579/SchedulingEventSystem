@@ -5,10 +5,8 @@ import java.io.Serializable;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import Presenters.UserMenu;
-import UseCase.EventManager;
+import Presenters.StatementPresenter;
 import UseCase.UserManager;
-import Entities.User;
 
 /**
  * How Users or any type are able to login into the app. The run method will also hold information on what Usertype it
@@ -17,6 +15,7 @@ import Entities.User;
  */
 public class LoginSystem implements Serializable {
     UserManager manager;
+    private String username;
 
     public LoginSystem(UserManager manager) {
         this.manager = manager;
@@ -25,25 +24,33 @@ public class LoginSystem implements Serializable {
     public boolean run() {
         InputStreamReader r = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(r);
-        UserMenu menu = new UserMenu();
+        StatementPresenter menu = new StatementPresenter();
         String input = "";
         boolean verified = false;
-        menu.printStatement("Type 'cancel' to exit the program; otherwise hit enter to login:");
-        try {
-            input = br.readLine();
-            if (!input.equals("cancel")) {
-                menu.printStatement("Please enter your username: ");
-                String enteredUsername = br.readLine();
-                menu.printStatement("Please enter your password: ");
-                String enteredPassword = br.readLine();
-                if (verifyLogin(enteredUsername, enteredPassword)) {
-                    String username = enteredUsername;
-                    String userType = verifyUserType(username);
-                    verified = true;
+        while (true) {
+            menu.printStatement("Type 'cancel' to exit the program; otherwise hit enter to login:");
+            try {
+                input = br.readLine();
+                if (input.equals("cancel")){
+                    break;
                 }
+                else {
+                    menu.printStatement("Please enter your username: ");
+                    String enteredUsername = br.readLine();
+                    menu.printStatement("Please enter your password: ");
+                    String enteredPassword = br.readLine();
+                    if (verifyLogin(enteredUsername, enteredPassword)) {
+                        username = enteredUsername;
+                        String userType = verifyUserType(username);
+                        verified = true;
+                        break;
+                    } else {
+                        menu.printStatement("You have entered an incorrect username or password.\n Please try again.");
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch(IOException e){
-            e.printStackTrace();
         }
         return verified;
     }
@@ -73,4 +80,6 @@ public class LoginSystem implements Serializable {
     public String verifyUserType(String username) {
         return manager.userType(username);
     }
+
+    public String getUsername() { return this.username; }
 }

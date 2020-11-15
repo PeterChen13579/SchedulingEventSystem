@@ -1,21 +1,19 @@
 package Controllers;
 
-import Entities.User;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-import Presenters.UserMenu;
+import Presenters.StatementPresenter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public class SchedulingSystem {
     EventManager em;
     RoomManager rm;
     UserManager um;
-    private UserMenu menu = new UserMenu();
+    private final StatementPresenter menu = new StatementPresenter();
 
     /**
      * Constructor for SchedulingSystem
@@ -47,7 +45,7 @@ public class SchedulingSystem {
                 } else if (temp.equals("2")) {
                     menu.printStatement("Please enter the date for the new event (in the format 'YYYYMMDD'): ");
                     String inputDate = br.readLine();
-                    menu.printStatement("Please enter the start time for the new event (24-hour time in the format 'HH:MM:SS'): ");
+                    menu.printStatement("Please enter the start time for the new event (24-hour time, between 9AM - 4PM, in the format 'HH:MM:SS'): ");
                     String inputTime = br.readLine();
                     menu.printStatement("Please enter the room number for the new event: ");
                     String inputRoom = br.readLine();
@@ -68,7 +66,7 @@ public class SchedulingSystem {
      * If satisfied, create new room and print success message.
      * @param rmNum the room number for the event
      */
-    public void addRoom(String rmNum){
+    private void addRoom(String rmNum){
         //check if room already exists
         if (rm.doesRoomExist(rmNum)){
             menu.printStatement("Room already exists!");
@@ -88,7 +86,7 @@ public class SchedulingSystem {
      * @param speakerUsername the name of the speaker for the event
      * @param title the title for the event
      */
-    public void addEvent (String date, String time, String rmNum, String speakerUsername, String title){
+    private void addEvent (String date, String time, String rmNum, String speakerUsername, String title){
         //check if date is valid format and value
         if (!em.parseStringToLocalDate(date)){
             menu.printStatement("Uh-oh! The date entered is not a valid date or not written in the correct format (YYYYMMDD)!");
@@ -106,7 +104,7 @@ public class SchedulingSystem {
             menu.printStatement("Uh-oh! Room is already booked at the given time!");
         }
         //check if speaker exists
-        else if(!um.doesSpeakerExist(speakerUsername)){
+        else if(!um.isUserExists(speakerUsername)){
             menu.printStatement("Uh-oh! Speaker does not exist! Please create an account for this speaker first!");
         }
         //check if speaker is already giving another talk at this time
@@ -138,7 +136,7 @@ public class SchedulingSystem {
      */
     private boolean canAddEvent(String date, String time, String rmNum, String speakerUserName, String title){
         return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(time) && rm.doesRoomExist(rmNum)
-                && em.isRoomAvailableAtTime(rmNum, date, time) && um.doesSpeakerExist(speakerUserName)
+                && em.isRoomAvailableAtTime(rmNum, date, time) && um.isUserExists(speakerUserName)
                 && em.isSpeakerAvailableAtTime(date, time, speakerUserName) && em.isEventTitleUnique(title);
     }
 
