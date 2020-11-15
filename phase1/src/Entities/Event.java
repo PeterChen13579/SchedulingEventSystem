@@ -7,10 +7,10 @@ import java.util.List;
 
 public class Event implements Serializable {
     private String title;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String roomNum;
-    private String speakerUserName;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
+    private final String roomNum;
+    private final String speakerUserName;
     private List<String> attendeeList;
 
     public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime, String roomNum, String speakerUserName){
@@ -28,32 +28,6 @@ public class Event implements Serializable {
      */
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    /**
-     * Setter for the start and end time of the Event
-     * @param startTime the start time of this event
-     * @param endTime the end time of this event
-     */
-    public void setTime(LocalDateTime startTime, LocalDateTime endTime) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-    /**
-     * Setter for the room number of the Event
-     * @param roomNum  The room that this event take place
-     */
-    public void setRoomNum(String roomNum) {
-        this.roomNum = roomNum;
-    }
-
-    /**
-     * Setter for speaker username of the Event
-     * @param speakerUserName  The speaker of this event
-     */
-    public void setSpeakerUserName(String speakerUserName) {
-        this.speakerUserName = speakerUserName;
     }
 
     /**

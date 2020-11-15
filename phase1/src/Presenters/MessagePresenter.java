@@ -1,11 +1,9 @@
 package Presenters;
-import Entities.Chat;
-import Entities.Message;
 import UseCase.ChatManager;
 
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.lang.Math;
@@ -16,10 +14,10 @@ import java.util.UUID;
  * @author William wang
  */
 public class MessagePresenter {
-    ChatManager userChatManager;
+    private ChatManager userChatManager;
 
     public MessagePresenter(ChatManager chatManager){
-        this.userChatManager = chatManager; // I'm not sure if it is a good idea to have the Messaging presenter get the use case from the Messaging system
+        this.userChatManager = chatManager;
     }
 
     /**
@@ -75,32 +73,24 @@ public class MessagePresenter {
         }
     }
 
-    /**
-     * Displays a chat message. Acts as a helper method for displayChat.
-     * @param messageId A chat message.
-     */
-    public void displayChatMessage(String username, UUID chatId, UUID messageId) {
+    private void displayChatMessage(String username, UUID chatId, UUID messageId) {
         String senderUsername = userChatManager.getMessageSenderUsername(chatId, messageId);
         LocalDateTime timestamp = userChatManager.getMessageTimeStamp(chatId, messageId);
         String content = userChatManager.getMessageContent(chatId, messageId);
 
         if(username.equals(senderUsername)){
-            System.out.println(senderUsername +"(Me)" + "  :  " + content + "                               at   " + timestamp);
+            System.out.println(senderUsername +"(Me)" + "  :  " + content + "                              at  " + timestamp);
         }else{
-            System.out.println(senderUsername + "  :  " + content + "                               at   " + timestamp);
+            System.out.println(senderUsername + "  :  " + content + "                              at  " + timestamp);
         }
 
     }
 
     /**
      * Displays all new Messages in a notification style (Think how new messages look on a phone notification).
-     * @param newMessages Hashmap with the chats each paired with a list of their new messages.
+     * @param newMessages Map with the chats each paired with a list of their new messages.
      */
     public void displayNewMessages(HashMap<UUID, List<UUID>> newMessages){
-        if (newMessages.size() == 0) {
-            System.out.println("\nNo new messages.");
-            return;
-        }
         System.out.println("\nNew Messages");
         boolean newMessagesExist = false;
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
