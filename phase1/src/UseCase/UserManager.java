@@ -129,6 +129,16 @@ public class UserManager implements Serializable {
     }
 
     /**
+     * Get all eventTitles for events this user signed up
+     * @param username   The userName for the user
+     * @return a list that contains all eventTitles this user have signed up
+     */
+    public List<String> getEventAttending(String username){
+        User user = stringToUser(username);
+        return user.getEventAttending();
+    }
+
+    /**
      * Creates an Attendee Account
      *
      * @param userName  Username for an Attendee Account
