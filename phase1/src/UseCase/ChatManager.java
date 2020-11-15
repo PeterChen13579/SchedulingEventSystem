@@ -45,14 +45,13 @@ public class ChatManager implements Serializable {
 
     /**
      * Send a message to one chat
+     * PRECONDITION : senderUsername is in this chat and the time is the current time
      * @param chatId The id of the chat that the message is being sent in
      * @param senderUsername The username of the sender
      * @param time The time the message was sent
      * @param content The content of the message
      */
     public void sendMessageToChat(UUID chatId, String senderUsername, LocalDateTime time, String content) {
-        // Precondition: senderUsername is in this chat and the time is the current time
-
         Message message = new Message(senderUsername, time, content);
         UUID newMessageId = UUID.randomUUID();
 
@@ -63,12 +62,11 @@ public class ChatManager implements Serializable {
 
     /**
      * Get the chat containing only the specified users. Returns null if no such chat exists
+     * PRECONDITION : There is only one chat between all the users in usernames
      * @param usernames A list of the usernames of the users in the chat
      * @return The id of the chat containing all of the given users if it exists, or null otherwise
      */
     public UUID getChatContainingUsers(List<String> usernames) {
-        // Precondition: There is only one chat between all the users in usernames
-
         for (Map.Entry<UUID, Chat> allChatsItem : allChats.entrySet()){
             UUID chatId = allChatsItem.getKey();
             Chat chat = allChatsItem.getValue();
@@ -122,13 +120,12 @@ public class ChatManager implements Serializable {
     }
 
     /**
-     * Get all messages of a chat
+     * Get all messages of a chat and updates the last viewed message.
+     * PRECONDITION : user exists in chat
      * @param chatId The id of the chat being looked at
      * @return A list of all the messages in the chat
      */
     public List<UUID> getChatMessages(String username, UUID chatId) {
-        // Precondition : user exists in chat
-
         if (isChatEmpty(chatId)){
             return new ArrayList<>(); // returns empty list if chat is empty
         }
@@ -142,13 +139,12 @@ public class ChatManager implements Serializable {
 
     /**
      * Get all new messages for a user
+     * PRECONDITION : Username is in the chat
      * @param username The username of the user
      * @param chatId The id of the chat containing the new messages
      * @return The new messages to that user
      */
     public List<UUID> getNewMessages(String username, UUID chatId) {
-        // Precondition: Username is in the chat
-
         Chat chat = allChats.get(chatId);
         UUID seenMessageId = chat.getLastViewedMessage(username);   // if the user has not seen any messages, then seenMessageId will be null.
         List<UUID> chatMessagesList = getChatMessages(username, chatId);   //get messages from helper method
@@ -190,11 +186,11 @@ public class ChatManager implements Serializable {
 
     /**
      * Add the user to the chat
+     * PRECONDITION : User does not already exist in chat.
      * @param chatId The id of the chat
      * @param username The username of the user
      */
     public void addUserToChat(UUID chatId, String username) {   //make sure you call getMessages if you want the user to see the messages
-        //Precondition: User does not already exist in chat.
         Chat chat = allChats.get(chatId);
         chat.addUser(username);
         chat.setLastViewedMessage(username, null);

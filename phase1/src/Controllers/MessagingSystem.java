@@ -291,7 +291,7 @@ public class MessagingSystem {
             messagingPresenter.displayConsoleMessage(newFriend + " added as a friend.");
             return true;
         }else if (!userManager.isUserExists(newFriend)){
-            messagingPresenter.error(newFriend + " this user doesn't exist.");
+            messagingPresenter.error("The user, " + newFriend + " does not exist.");
             return false;
         } else {
             messagingPresenter.displayConsoleMessage(newFriend + " is already added as a friend.");
