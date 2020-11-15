@@ -40,7 +40,7 @@ public class EventManager implements Serializable {
     }
 
     /**
-     * Returns a list of 2 LocalDateTime object representing the start time and end time of a potential event
+     * Returns a list of 2 LocalDateTime object re presenting the start time and end time of a potential event
      * (endTime will automatically be 1 hour after startTime)
      * @param date the date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
@@ -83,6 +83,7 @@ public class EventManager implements Serializable {
      * @return true iff the time is a valid time written in the correct format
      */
     public boolean parseStringToLocalTime(String time){
+        //source https://www.baeldung.com/java-string-valid-date
         try {
             LocalTime.parse(time);
         } catch (DateTimeParseException | NullPointerException e) {
