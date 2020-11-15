@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class EventManager implements Serializable {
-    private List<Event> allEvents;
+    private final List<Event> allEvents;
 
     public EventManager() {
         allEvents = new ArrayList<>();

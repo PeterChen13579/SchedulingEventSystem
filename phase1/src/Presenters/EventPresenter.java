@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class EventPresenter {
-    private EventManager em;
+    private final EventManager em;
 
     /**
      * Constructor for EventPresenter
