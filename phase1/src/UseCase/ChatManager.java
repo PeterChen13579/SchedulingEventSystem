@@ -221,6 +221,12 @@ public class ChatManager implements Serializable {
         return message.getContent();
     }
 
+    /**
+     * Get a message given the chat it's in and it's UUID
+     * @param chatId The UUID of the chat
+     * @param messageId The UUID of the message
+     * @return The message
+     */
     private Message getChatMessage(UUID chatId, UUID messageId){
         Chat chat = allChats.get(chatId);
         return chat.getAllMessages().get(messageId);
