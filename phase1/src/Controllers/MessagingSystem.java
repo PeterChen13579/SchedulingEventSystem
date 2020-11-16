@@ -49,16 +49,16 @@ public class MessagingSystem {
             if (choice.equals("1")){
                 viewChatNames(userName);
                 chatInteraction(userName);
-                messagingPresenter.displayConsoleMessage("Press any key to go back.");
+                messagingPresenter.printStatement("Press any key to go back.");
                 input.nextLine();
             } else if (choice.equals("2")) {
                 sendMessage(userName);
             } else if (choice.equals("3")){
                 viewAllNewMessages(userName);
-                messagingPresenter.displayConsoleMessage("Press any key to go back.");
+                messagingPresenter.printStatement("Press any key to go back.");
                 input.nextLine();
             } else if (choice.equals("4")) {
-                messagingPresenter.displayConsoleMessage("Which friend would you like to add?");
+                messagingPresenter.printStatement("Which friend would you like to add?");
                 String friendUsername = input.nextLine();
                 addPeopleToMessage(userName, friendUsername);
             } else {
@@ -77,26 +77,26 @@ public class MessagingSystem {
         while (!completed && !choice2.equals("5")) {
             choice2 = input.nextLine();
             if (choice2.equals("1")) {
-                messagingPresenter.displayConsoleMessage("Please enter the username of the user you'd like to message.");
+                messagingPresenter.printStatement("Please enter the username of the user you'd like to message.");
                 String recipient = input.nextLine();
-                messagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
+                messagingPresenter.printStatement("Please enter the message you'd like to send.");
                 String content = input.nextLine();
                 this.messageOneUser(userName, recipient, LocalDateTime.now(), content);
                 completed = true;
             } else if (choice2.equals("2")) {
-                messagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
+                messagingPresenter.printStatement("Please enter the message you'd like to send.");
                 String content = input.nextLine();
                 this.organizerMessageAllAttendees(userName, LocalDateTime.now(), content);
                 completed = true;
             } else if (choice2.equals("3")) {
-                messagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
+                messagingPresenter.printStatement("Please enter the message you'd like to send.");
                 String content = input.nextLine();
                 this.organizerMessageAllSpeakers(userName, LocalDateTime.now(), content);
                 completed = true;
             } else if (choice2.equals("4")) {
-                messagingPresenter.displayConsoleMessage("Please enter a list of titles of the events, each title separated by one \"+\" sign.");
+                messagingPresenter.printStatement("Please enter a list of titles of the events, each title separated by one \"+\" sign.");
                 List<String> titles = Arrays.asList(input.nextLine().split("\\+"));
-                messagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
+                messagingPresenter.printStatement("Please enter the message you'd like to send.");
                 String content = input.nextLine();
                 this.speakerMessageEventAttendees(userName, titles, LocalDateTime.now(), content);
                 completed = true;
@@ -116,7 +116,7 @@ public class MessagingSystem {
         List<UUID> userChats = userChatManager.getUserChats(userName);
         //int numChats = userChats.size();
 
-        this.messagingPresenter.displayConsoleMessage("Please enter the number of the chat that you would like to view. Press 0 to cancel.");
+        this.messagingPresenter.printStatement("Please enter the number of the chat that you would like to view. Press 0 to cancel.");
         String chatChoice = input.nextLine();  //choose a number for which chat to go to
         int index = Integer.parseInt(chatChoice) - 1;
         while (index >= userChats.size()){
@@ -189,7 +189,7 @@ public class MessagingSystem {
 
             this.userChatManager.sendMessageToChat(chat, senderUsername, time, content);
         }
-        messagingPresenter.displayConsoleMessage("Message sent!");
+        messagingPresenter.printStatement("Message sent!");
     }
 
     private void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content) {
@@ -282,16 +282,21 @@ public class MessagingSystem {
      */
     private boolean addPeopleToMessage(String mainUserUsername, String newFriend){
         if (userManager.userType(mainUserUsername).equals("Speaker")) {
-            messagingPresenter.displayConsoleMessage("Speakers may not add friends.");
+            messagingPresenter.error("Speakers may not add friends.");
             return false;
         } else if (userManager.userType(newFriend).equals("Organizer")) {
-            messagingPresenter.displayConsoleMessage("You may not add an organizer as a friend.");
+            messagingPresenter.error("You may not add an organizer as a friend.");
             return false;
-        } else if (userManager.addFriend(mainUserUsername, newFriend)) {
-            messagingPresenter.displayConsoleMessage("Added " + newFriend + " to your friends list.");
+        }
+
+        if (userManager.addFriend(mainUserUsername, newFriend)) {
+            messagingPresenter.printStatement("Added " + newFriend + " to your friends list.");
             return true;
+        } else if (userManager.isUserExists(newFriend)){
+            messagingPresenter.error("The user, "+ newFriend + " does not exist.");
+            return false;
         } else {
-            messagingPresenter.displayConsoleMessage(newFriend + " is already a friend.");
+            messagingPresenter.printStatement(newFriend + " is already a friend.");
             return true;
         }
     }
