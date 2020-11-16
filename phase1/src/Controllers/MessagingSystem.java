@@ -190,12 +190,11 @@ public class MessagingSystem {
         String content = input.nextLine();
         List<String> recipients = new ArrayList<String>();
         recipients.add(recipient);
-        if (! userManager.isAddFriend(senderUsername, recipient)) {
-            if (! addPeopleToMessage(senderUsername, recipient)) {
-                return;
-            }
+        if (userManager.isAddFriend(senderUsername, recipient)) {
+            this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content);
+        } else {
+            messagingPresenter.error(recipient + " is not your friend.");
         }
-        this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content);
     }
 
     /**
@@ -276,13 +275,14 @@ public class MessagingSystem {
      * Add friends to message
      * @param mainUserUsername the current user
      * @param newFriend new user they want to add
+     * @return True if the friend is added or already your friend, false otherwise
      */
     private boolean addPeopleToMessage(String mainUserUsername, String newFriend){
         if (userManager.userType(mainUserUsername).equals("Speaker")) {
             if (userManager.userType(newFriend).equals("Attendee")) {
                 UUID chat = userChatManager.getChatContainingUsers(Arrays.asList(mainUserUsername, newFriend));
                 if (chat == null || !userChatManager.doesChatHaveMessageFrom(chat, newFriend)) {
-                    messagingPresenter.error("You may not add attendees as a friend (or message them) until they have messaged you.");
+                    messagingPresenter.error("You may not add attendees as a friend until they have messaged you.");
                     return false;
                 }
             } else {
