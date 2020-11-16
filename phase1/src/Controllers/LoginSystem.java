@@ -28,7 +28,7 @@ public class LoginSystem implements Serializable {
         String input = "";
         boolean verified = false;
         while (true) {
-            menu.printStatement("Type 'cancel' to exit the program; otherwise hit enter to login:");
+            menu.printStatement("Type 'cancel' to return to the main menu; otherwise hit enter to login:");
             try {
                 input = br.readLine();
                 if (input.equals("cancel")){
