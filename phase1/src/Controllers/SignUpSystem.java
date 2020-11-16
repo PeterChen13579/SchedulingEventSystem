@@ -9,6 +9,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * A class that allow Users to sign up/cancel spot for an event
+ */
 public class SignUpSystem {
     EventManager em;
     UserManager um;

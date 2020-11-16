@@ -1,5 +1,8 @@
 package Presenters;
 
+/**
+ * Presents information by directly printing the statement to the screen
+ */
 public class StatementPresenter {
 
 
