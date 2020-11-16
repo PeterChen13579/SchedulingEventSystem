@@ -13,7 +13,7 @@ public class SchedulingSystem {
     EventManager em;
     RoomManager rm;
     UserManager um;
-    private final StatementPresenter menu = new StatementPresenter();
+    StatementPresenter menu = new StatementPresenter();
 
     /**
      * Constructor for SchedulingSystem
@@ -45,7 +45,7 @@ public class SchedulingSystem {
                 } else if (temp.equals("2")) {
                     menu.printStatement("Please enter the date for the new event (in the format 'YYYYMMDD'): ");
                     String inputDate = br.readLine();
-                    menu.printStatement("Please enter the start time for the new event (24-hour time, between 9AM - 4PM, in the format 'HH:MM:SS'): ");
+                    menu.printStatement("Please enter the start time for the new event (24-hour time, between 09:00 - 16:00, in the format 'HH:MM:SS'): ");
                     String inputTime = br.readLine();
                     menu.printStatement("Please enter the room number for the new event: ");
                     String inputRoom = br.readLine();
@@ -93,7 +93,10 @@ public class SchedulingSystem {
         }
         //check if time is valid format and value
         else if (!em.parseStringToLocalTime(time)){
-            menu.printStatement("Uh-oh! The date entered is not a valid date or not written in the correct format (HH:MM:SS)!");
+            menu.printStatement("Uh-oh! The start time entered is not a valid date or not written in the correct format (24-hour time, HH:MM:SS)!");
+        }
+        else if (!em.isTimeAvailable(time)){
+            menu.printStatement("Uh-oh! The start time entered must be between 09:00 - 16:00!");
         }
         //check if room exists
         else if(!rm.doesRoomExist(rmNum)){
@@ -135,9 +138,10 @@ public class SchedulingSystem {
      * @return true iff the event can be created
      */
     private boolean canAddEvent(String date, String time, String rmNum, String speakerUserName, String title){
-        return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(time) && rm.doesRoomExist(rmNum)
-                && em.isRoomAvailableAtTime(rmNum, date, time) && um.isUserExists(speakerUserName)
-                && em.isSpeakerAvailableAtTime(date, time, speakerUserName) && em.isEventTitleUnique(title);
+        return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(time) && em.isTimeAvailable(time)
+                && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, date, time)
+                && um.isUserExists(speakerUserName) && em.isSpeakerAvailableAtTime(date, time, speakerUserName)
+                && em.isEventTitleUnique(title);
     }
 
 }

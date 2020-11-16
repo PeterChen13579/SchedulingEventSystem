@@ -6,7 +6,7 @@ import UseCase.UserManager;
 import java.util.List;
 
 
-public class EventPresenter {
+public class EventPresenter extends StatementPresenter{
     private final EventManager em;
     private final UserManager um;
 
@@ -25,10 +25,10 @@ public class EventPresenter {
     public void displayEvents(){
         List<String> eventList = em.getAllEventTitle();
         if(em.getAllEventTitle().isEmpty()){
-            System.out.println("There are no events yet!");
+            printStatement("There are no events yet!");
         }
         for(String event:eventList){
-            System.out.println(em.getEventInfo(event));
+            printStatement(em.getEventInfo(event));
         }
 
     }
@@ -40,10 +40,10 @@ public class EventPresenter {
     public void displaySignedUpEvents(String username){
         List<String> eventList = um.getEventAttending(username);
         if(eventList.isEmpty()){
-            System.out.println("You Haven't signed up for any event yet!");
+            printStatement("You haven't signed up for any event yet!");
         }
         for(String event:eventList){
-            System.out.println(em.getEventInfo(event));
+            printStatement(em.getEventInfo(event));
         }
 
     }
