@@ -5,7 +5,9 @@ import UseCase.UserManager;
 
 import java.util.List;
 
-
+/**
+ * Presents information by presenting event info to the screen
+ */
 public class EventPresenter extends StatementPresenter{
     private EventManager em;
     private UserManager um;

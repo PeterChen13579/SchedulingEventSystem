@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Event in our program
+ */
 public class Event implements Serializable {
     private String title;
     private final LocalDateTime startTime;
