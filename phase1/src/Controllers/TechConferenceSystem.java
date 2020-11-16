@@ -1,6 +1,5 @@
 package Controllers;
 
-import Entities.Event;
 import Presenters.EventPresenter;
 import UseCase.ChatManager;
 import UseCase.EventManager;
@@ -154,9 +153,9 @@ public class TechConferenceSystem {
     private boolean loggedInMenuAttendeeHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        STATEMENT_PRESENTER.printStatement("What do you want to do? ");
+        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
+        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
         STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Log Out");
-        STATEMENT_PRESENTER.printStatement("Please type the corresponding number of the options: ");
         String temp2 = in.nextLine();
 
         switch (temp2) {
@@ -188,6 +187,8 @@ public class TechConferenceSystem {
     private boolean loggedInMenuOrganizerHelper(String username){
         Scanner in = new Scanner(System.in);
 
+        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
+        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
         STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu " +
                 "\n(4) Create Speaker account \n(5) Log Out");
         String temp2 = in.nextLine();
@@ -237,6 +238,8 @@ public class TechConferenceSystem {
     private boolean loggedInMenuSpeakerHelper(String username){
         Scanner in = new Scanner(System.in);
 
+        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
+        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
         STATEMENT_PRESENTER.printStatement("(1) Message Menu \n(2) View List of Events Speaking \n(3) Log Out");
         String temp2 = in.nextLine();
 
