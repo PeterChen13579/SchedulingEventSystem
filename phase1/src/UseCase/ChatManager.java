@@ -102,14 +102,6 @@ public class ChatManager implements Serializable {
     }
 
     /**
-     * Getter for all chats
-     * @return List of all chats
-     */
-    public List<UUID> getAllChats() {
-        return new ArrayList<>(allChats.keySet());
-    }
-
-    /**
      * Checks if a chat has no messages
      * @param chatId The id of the chat being checked
      * @return A boolean to represent whether or not the chat is empty
@@ -184,17 +176,17 @@ public class ChatManager implements Serializable {
         chat.setChatName(newName);
     }
 
-    /**
-     * Add the user to the chat
-     * PRECONDITION : User does not already exist in chat.
-     * @param chatId The id of the chat
-     * @param username The username of the user
-     */
-    public void addUserToChat(UUID chatId, String username) {   //make sure you call getMessages if you want the user to see the messages
-        Chat chat = allChats.get(chatId);
-        chat.addUser(username);
-        chat.setLastViewedMessage(username, null);
-    }
+//    /**
+//     * Add the user to the chat
+//     * PRECONDITION : User does not already exist in chat.
+//     * @param chatId The id of the chat
+//     * @param username The username of the user
+//     */
+//    public void addUserToChat(UUID chatId, String username) {   //make sure you call getMessages if you want the user to see the messages
+//        Chat chat = allChats.get(chatId);
+//        chat.addUser(username);
+//        chat.setLastViewedMessage(username, null);
+//    }
 
     /**
      * Get the message sender's username
@@ -234,6 +226,12 @@ public class ChatManager implements Serializable {
         return chat.getAllMessages().get(messageId);
     }
 
+    /**
+     * Checks if the chat has at least one message sent by one specific user
+     * @param chatId The id of the chat
+     * @param username The username of the sender
+     * @return True iff the user has sent a message in this chat before, False otherwise.
+     */
     public boolean doesChatHaveMessageFrom(UUID chatId, String username) {
         Chat chat = allChats.get(chatId);
         LinkedHashMap<UUID,Message> messages = chat.getAllMessages();

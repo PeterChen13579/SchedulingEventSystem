@@ -1,5 +1,4 @@
 package Controllers;
-import Entities.*;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.UserManager;
@@ -47,7 +46,6 @@ public class MessagingSystem {
             messagingPresenter.displayOptions(options);
             choice = input.nextLine();
             if (choice.equals("1")){
-                viewChatNames(userName);
                 chatInteraction(userName);
             } else if (choice.equals("2")) {
                 sendMessage(userName);
@@ -63,7 +61,6 @@ public class MessagingSystem {
                 messagingPresenter.error("Please enter a number from 1 to 5.");
             }
         }
-        //input.close();
     }
 
     private void sendMessage(String userName) {
@@ -82,25 +79,35 @@ public class MessagingSystem {
      */
     private void chatInteraction(String userName) {
         Scanner input = new Scanner(System.in);
-        List<UUID> userChats = userChatManager.getUserChats(userName);
-        //int numChats = userChats.size();
+        viewChatNames(userName);   // show chats
 
-        this.messagingPresenter.printStatement("Please enter the number of the chat that you would like to view. Press 0 to cancel.");
-        String chatChoice = input.nextLine();  //choose a number for which chat to go to
-        int index = Integer.parseInt(chatChoice) - 1;
-        while (index >= userChats.size()){
-            messagingPresenter.error("Please enter a number that corresponds to a chat or 0 to cancel.");
-            chatChoice = input.nextLine();
-            index = Integer.parseInt(chatChoice) - 1;
+        List<UUID> userChats = userChatManager.getUserChats(userName);
+        String chatChoice;
+        int index = 0;
+        boolean inputError = true;
+        while (inputError){       //shows chat names until valid input is given
+            messagingPresenter.printStatement("Please enter the number of the chat that you would like to view. Press 0 to cancel.");
+            chatChoice = input.nextLine(); //choose a number for which chat to go to
+
+            try{   //checks to see if input is an integer and it corresponds to a chat
+                index = Integer.parseInt(chatChoice) - 1;
+                if (index >= userChats.size()){
+                    messagingPresenter.error("Please enter a number that corresponds to a chat or 0 to cancel.");
+                    inputError = true;
+                }else{
+                    inputError = false;
+                }
+            } catch (NumberFormatException e){
+                messagingPresenter.error("Please enter an integer.");
+            }
         }
 
-        if (index != -1) {
+        if (index != -1) {   //retrieves the chat
             UUID chosenChat = userChats.get(index);
             viewChat(userName, userChatManager.getChatMemberUsernames(chosenChat));
             messagingPresenter.printStatement("Press enter to go back.");
             input.nextLine();
         }
-
     }
 
     /**
@@ -126,7 +133,7 @@ public class MessagingSystem {
     private void attendeeSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
-        List<String> options = new ArrayList<String>(Arrays.asList("(1) Message one user", "(2) Cancel"));
+        List<String> options = new ArrayList<>(Arrays.asList("(1) Message one user", "(2) Cancel"));
         while (!choice.equals("2")) {
             messagingPresenter.displayOptions(options);
             choice = input.nextLine();
@@ -141,7 +148,7 @@ public class MessagingSystem {
     private void organizerSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
-        List<String> options = new ArrayList<String>(Arrays.asList("(1) Message one user", "(2) Message all attendees", "(3) Message all speakers", "(4) Cancel"));
+        List<String> options = new ArrayList<>(Arrays.asList("(1) Message one user", "(2) Message all attendees", "(3) Message all speakers", "(4) Cancel"));
         while (!choice.equals("4")) {
             messagingPresenter.displayOptions(options);
             choice = input.nextLine();
@@ -164,7 +171,7 @@ public class MessagingSystem {
     private void speakerSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
-        List<String> options = new ArrayList<String>(Arrays.asList("(1) Message one user", "(2) Message attendees of your events", "(3) Cancel"));
+        List<String> options = new ArrayList<>(Arrays.asList("(1) Message one user", "(2) Message attendees of your events", "(3) Cancel"));
         while (!choice.equals("3")) {
             messagingPresenter.displayOptions(options);
             choice = input.nextLine();
@@ -188,7 +195,7 @@ public class MessagingSystem {
         String recipient = input.nextLine();
         messagingPresenter.printStatement("Please enter the message you'd like to send.");
         String content = input.nextLine();
-        List<String> recipients = new ArrayList<String>();
+        List<String> recipients = new ArrayList<>();
         recipients.add(recipient);
         if (userManager.isAddFriend(senderUsername, recipient)) {
             this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content);
@@ -221,7 +228,7 @@ public class MessagingSystem {
     private void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content) {
         for (String username : usernames) {
 
-            List<String> thisChatUsernames = new ArrayList<String>();
+            List<String> thisChatUsernames = new ArrayList<>();
             thisChatUsernames.add(senderUsername);
             thisChatUsernames.add(username);
             UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
@@ -246,7 +253,7 @@ public class MessagingSystem {
 
     private void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content) {
         List<String> allEvents = eventManager.getAllEventTitle();
-        List<String> recipients = new ArrayList<String>();
+        List<String> recipients = new ArrayList<>();
 
         for (String title: eventTitles) {
             boolean found = false;
@@ -296,6 +303,9 @@ public class MessagingSystem {
 
         if (!userManager.isUserExists(newFriend)) {
             messagingPresenter.error("The user " + newFriend + " does not exist.");
+            return false;
+        } else if (mainUserUsername.equals(newFriend)){
+            messagingPresenter.error("You cannot add yourself as a friend");
             return false;
         } else if (userManager.addFriend(mainUserUsername, newFriend)) {
             messagingPresenter.printStatement("Added " + newFriend + " to your friends list.");

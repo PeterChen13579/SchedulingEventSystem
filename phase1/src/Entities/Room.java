@@ -7,8 +7,8 @@ import java.util.List;
  */
 
 public class Room implements Serializable {
-    private String roomNum;
-    private Integer capacity = 2;
+    private final String roomNum;
+    private final Integer capacity = 2;
     private List<String> eventTitles;
 
     public Room(String roomNum){

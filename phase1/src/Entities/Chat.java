@@ -88,14 +88,14 @@ public class Chat implements Serializable {
         lastViewedMessage.put(username, lastMessageId);
     }
 
-    /**
-     * Add a user to this chat
-     * PRECONDITION : the user does not already exist in this chat
-     * @param username The username of the user being added
-     */
-    public void addUser(String username){
-        memberUsernames.add(username);
-    }
+//    /**
+//     * Add a user to this chat
+//     * PRECONDITION : the user does not already exist in this chat
+//     * @param username The username of the user being added
+//     */
+//    public void addUser(String username){
+//        memberUsernames.add(username);
+//    }
 
     /**
      * Change the name of the chat
