@@ -43,13 +43,13 @@ public class Chat implements Serializable {
     }
 
     /**
-     * getter for last viewed message for the user
+     * getter for last viewed message for the user. If there are no messages in this chat, or the user has not viewed any messages, this will return null.
+     * PRECONDITION : Username is in this chat
      * @param username The user who we are referencing
      * @return The last viewed message id of the user
      */
     public UUID getLastViewedMessage(String username){
-        // Preconditions : Username is in this chat
-        return lastViewedMessage.get(username);   //If there are no messages in this chat or the user has not viewed any messages, this will return null
+        return lastViewedMessage.get(username);
     }
 
     /**
@@ -70,30 +70,30 @@ public class Chat implements Serializable {
 
     /**
      * Add a message to the chat
+     * PRECONDITION : Added message has a timestamp after the last message in the chat, message does not already exist in this chat or another one
      * @param newMessageId The message id being added to the chat
      * @param message The message being added to the chat
      */
     public void addChatMessage(UUID newMessageId, Message message) {
-        // Preconditions : Added message has a timestamp after the last message in the chat, message does not already exist in this chat or another one
         chatMessages.put(newMessageId, message); // the use case needs to update the last viewed message (since sending a message probably means they view the previous ones)
     }
 
     /**
      * Change the last viewed message for this user.
+     * PRECONDITION : the user and the message exist in this chat
      * @param username The username of the user being changed
      * @param lastMessageId The message id that is being set to the last viewed one
      */
     public void setLastViewedMessage(String username, UUID lastMessageId) {
-        // Precondition: the user and the message exist in this chat
         lastViewedMessage.put(username, lastMessageId);
     }
 
     /**
      * Add a user to this chat
+     * PRECONDITION : the user does not already exist in this chat
      * @param username The username of the user being added
      */
     public void addUser(String username){
-        // Precondition: the user does not already exist in this chat
         memberUsernames.add(username);
     }
 

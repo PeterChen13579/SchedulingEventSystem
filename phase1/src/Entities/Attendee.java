@@ -6,6 +6,10 @@ import java.util.List;
  */
 public class Attendee extends User {
 
+
+    /**
+     * Class Constructor specifying Attendee's username and password
+     */
     public Attendee(String username, String password){
         super(username, password);
     }

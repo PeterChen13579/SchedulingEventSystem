@@ -1,5 +1,7 @@
 package Controllers;
 
+import Entities.Event;
+import Presenters.EventPresenter;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
@@ -7,21 +9,36 @@ import UseCase.UserManager;
 import Presenters.StatementPresenter;
 import java.util.Scanner;
 
+/**
+ * Determines all the behaviour for the text-based UI
+ * @author Joyce Huang, Peter Chen, and Amy Miao
+ */
 public class TechConferenceSystem {
 
-    private static LoginSystem loginSystem;
-    private static MessagingSystem messagingSystem;
-    private static SchedulingSystem schedulingSystem;
-    private static SignUpSystem signUpSystem;
-    private static UserManager userManager;
-    private static ChatManager chatManager;
-    private static EventManager eventManager;
-    private static RoomManager roomManager;
-    private static final StatementPresenter STATEMENT_PRESENTER = new StatementPresenter();
+    private LoginSystem loginSystem;
+    private MessagingSystem messagingSystem;
+    private SchedulingSystem schedulingSystem;
+    private SignUpSystem signUpSystem;
+    private UserManager userManager;
+    private ChatManager chatManager;
+    private EventManager eventManager;
+    private RoomManager roomManager;
+    private final StatementPresenter STATEMENT_PRESENTER = new StatementPresenter();
 
+
+    /**
+     * Constructor for the entire controller, begins the program
+     */
     public TechConferenceSystem(){
-
         //Basically controller does all the logic, presenter PRINTS to screen.
+        run();
+    }
+
+
+    /**
+     * Runs the initial controls to start the program
+     */
+    private void run() {
         boolean flag = true;
         while(flag){
             if (start()) {
@@ -57,8 +74,7 @@ public class TechConferenceSystem {
         }
     }
 
-
-    public void mainLevel(){
+    private void mainLevel(){
         boolean flag = true;
         while(flag){
             if(mainLevelHelper()) {
@@ -128,7 +144,7 @@ public class TechConferenceSystem {
         return false;
     }
 
-    public void loggedInMenuAttendee(String username){
+    private void loggedInMenuAttendee(String username){
         boolean flag = true;
         while (flag){
             if (loggedInMenuAttendeeHelper(username)) { flag = false; }
@@ -160,7 +176,7 @@ public class TechConferenceSystem {
         }
     }
 
-    public void loggedInMenuOrganizer(String username){
+    private void loggedInMenuOrganizer(String username){
         boolean flag = true;
         while(flag){
             if (loggedInMenuOrganizerHelper(username)){
@@ -208,7 +224,7 @@ public class TechConferenceSystem {
         }
     }
 
-    public void loggedInMenuSpeaker(String username){
+    private void loggedInMenuSpeaker(String username){
         boolean flag = true;
 
         while (flag){
@@ -229,9 +245,11 @@ public class TechConferenceSystem {
                 messagingSystem.run(username);
                 return false;
             case "2":
-                for (String events : userManager.getEventsSpeaking(username)) {
-                    STATEMENT_PRESENTER.printStatement(events);
-                    System.out.println();
+                if (userManager.getEventsSpeaking(username).isEmpty()){
+                    STATEMENT_PRESENTER.printStatement("You do not have any events scheduled to speak in.");
+                }else{
+                    EventPresenter eventPresenter = new EventPresenter(eventManager, userManager);
+                    eventPresenter.displaySignedUpEvents(username);
                 }
                 return false;
             case "3":
@@ -244,10 +262,6 @@ public class TechConferenceSystem {
         }
     }
 
-    /**
-     * creates all necessary use cases and controllers based off whether the user loads or not
-     * @param load true iff you want to call an existing TechConference.
-     */
     private void createProgram(boolean load) {
         if (load) {
             Reader reader = new Reader();
