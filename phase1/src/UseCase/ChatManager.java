@@ -233,4 +233,16 @@ public class ChatManager implements Serializable {
         Chat chat = allChats.get(chatId);
         return chat.getAllMessages().get(messageId);
     }
+
+    public boolean doesChatHaveMessageFrom(UUID chatId, String username) {
+        Chat chat = allChats.get(chatId);
+        LinkedHashMap<UUID,Message> messages = chat.getAllMessages();
+        for (Map.Entry<UUID, Message> entry: messages.entrySet()) {
+            Message message = entry.getValue();
+            if (message.getSenderUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
