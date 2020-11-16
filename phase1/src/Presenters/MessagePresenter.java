@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * Presents information given by MessagingSystem by formatting and printing information to screen.
  * @author William wang
  */
-public class MessagePresenter {
+public class MessagePresenter extends StatementPresenter{
     private ChatManager userChatManager;
 
     public MessagePresenter(ChatManager chatManager){
@@ -26,15 +26,7 @@ public class MessagePresenter {
      * @param errorMessage The error message that is printed
      */
     public void error(String errorMessage) {
-        System.out.println("\n" +errorMessage);
-    }
-
-    /**
-     * Displays a system message to the console.
-     * @param consoleMessage System message sent to the console
-     */
-    public void displayConsoleMessage(String consoleMessage){
-        System.out.println("\n" + consoleMessage);
+        System.out.println("\nERROR : " +errorMessage);
     }
 
     /**
