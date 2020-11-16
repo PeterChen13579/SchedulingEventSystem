@@ -34,6 +34,10 @@ public class TechConferenceSystem {
         run();
     }
 
+
+    /**
+     * Runs the initial controls to start the program
+     */
     private void run() {
         boolean flag = true;
         while(flag){
