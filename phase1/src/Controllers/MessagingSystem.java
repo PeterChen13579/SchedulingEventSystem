@@ -94,8 +94,8 @@ public class MessagingSystem {
                 this.organizerMessageAllSpeakers(userName, LocalDateTime.now(), content);
                 completed = true;
             } else if (choice2.equals("4")) {
-                messagingPresenter.displayConsoleMessage("Please enter a list of titles of the events, each title separated by one space.");
-                List<String> titles = Arrays.asList(input.nextLine().split(" "));
+                messagingPresenter.displayConsoleMessage("Please enter a list of titles of the events, each title separated by one \"+\" sign.");
+                List<String> titles = Arrays.asList(input.nextLine().split("\\+"));
                 messagingPresenter.displayConsoleMessage("Please enter the message you'd like to send.");
                 String content = input.nextLine();
                 this.speakerMessageEventAttendees(userName, titles, LocalDateTime.now(), content);
@@ -165,7 +165,7 @@ public class MessagingSystem {
         }
         messagingPresenter.displayNewMessages(newMessages);
     }
-    
+
     /**
      * Helper method to send a message to a list of users
      * @param usernames The usernames that the message is being sent to
@@ -175,11 +175,11 @@ public class MessagingSystem {
      */
     private void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content) {
 
-        for (int i=0; i<usernames.size(); i++) {
+        for (String username : usernames) {
 
             List<String> thisChatUsernames = new ArrayList<String>();
             thisChatUsernames.add(senderUsername);
-            thisChatUsernames.add(usernames.get(i));
+            thisChatUsernames.add(username);
 
             UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
 
@@ -295,6 +295,5 @@ public class MessagingSystem {
             return true;
         }
     }
-
 
 }

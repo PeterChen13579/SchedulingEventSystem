@@ -237,13 +237,13 @@ public class UserManager implements Serializable {
      *
      * @param usernameA  user wants to add user b
      * @param usernameB  user that is being added
-     * @return   true if successfully added, false otherwise
+     * @return   true if successfully added (iff the user b exists and they aren't already a friend), false otherwise
      */
     public boolean addFriend(String usernameA, String usernameB){
         User userA = stringToUser(usernameA);
 
         List<String> friends = userA.getFriends();
-        if (isUserExists(usernameB) && isAddFriend(usernameA, usernameB)){
+        if (isUserExists(usernameB) && !isAddFriend(usernameA, usernameB)){
             friends.add(usernameB);
             userA.setFriends(friends);
             return true;

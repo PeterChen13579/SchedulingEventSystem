@@ -1,30 +1,29 @@
 package Controllers;
 
-import Entities.Attendee;
-import Entities.Chat;
-import Entities.Event;
-import Entities.Organizer;
-import Entities.Room;
-import Entities.Speaker;
 import UseCase.UserManager;
 import UseCase.RoomManager;
 import UseCase.EventManager;
 import UseCase.ChatManager;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
- * A class that reads data from a file and converts said data to lists
+ * A class that reads data from a file and converts said data to their original form
+ * @author Joyce Huang
  */
 public class Reader {
 
     /**
-     * A method that loads all the information from a previous session from a .txt file
+     * A method that information from a previous session from a .txt file
      * @param filename the name of the file to open
      * @return a list of lists that contains all the data needed
-     * @throws ClassNotFoundException
      */
     public Object loadData(String filename) {
         File file = new File(filename);
@@ -41,9 +40,9 @@ public class Reader {
                 }
             }
         } catch (IOException e) {
-            System.out.println(":(");
+            System.out.println("Load failed due to IOException. Creating new conference.");
         } catch (ClassNotFoundException h) {
-            System.out.println(":(((");
+            System.out.println("Load failed due to ClassNotFoundException. Creating new conference.");
         }
         System.out.println(helper);
         return helper;
@@ -86,16 +85,16 @@ public class Reader {
 
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Load failed. Creating new conference.");
+            System.out.println("Load failed due to FileNotFoundException. Creating new conference.");
             return false;
         } catch (ClassCastException cc) {
-            System.out.println("Load failed. Creating new conference.");
+            System.out.println("Load failed due to ClassCastException. Creating new conference.");
             return false;
         } catch (IOException er) {
-            System.out.println("Load failed. Creating new conference.");
+            System.out.println("Load failed due to IOException. Creating new conference.");
             return false;
         } catch (ClassNotFoundException cnf) {
-            System.out.println("Load failed. Creating new conference.");
+            System.out.println("Load failed due to ClassNotFoundException. Creating new conference.");
             return false;
         }
         return true;

@@ -1,19 +1,21 @@
 package Controllers;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
 /**
  * A class that deals with the output of data into separate .txt files
+ * @author Joyce Huang
  */
 public class Writer {
-    // users, conferences, events, messages, rooms
 
     /**
      * A method that saves an object to a .txt file
      * @param filename name of the file to save to
      * @param thing the object being saved
-     * @throws IOException
      */
     public void writeToFile(String filename, Object thing) {
         try {
@@ -25,7 +27,7 @@ public class Writer {
 
             output.close();
         } catch (IOException e) {
-            System.out.println(":((");
+            System.out.println("Save failed due to IOException.");
         }
     }
 

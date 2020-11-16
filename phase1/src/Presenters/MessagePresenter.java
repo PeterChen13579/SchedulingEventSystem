@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.Duration;
 import java.lang.Math;
 import java.util.UUID;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Presents information given by MessagingSystem by formatting and printing information to screen.
@@ -53,7 +54,7 @@ public class MessagePresenter {
      * @param chatIds The chats to be displayed.
      */
     public void displayChatNames(List<UUID> chatIds){
-        System.out.println("\nChats\n");
+        System.out.println("\nChats");
         for (int i = 0; i < chatIds.size(); i++){
             String chatName = userChatManager.getChatName(chatIds.get(i));
             System.out.println((i+1) + ". " + chatName);
@@ -78,12 +79,14 @@ public class MessagePresenter {
         LocalDateTime timestamp = userChatManager.getMessageTimeStamp(chatId, messageId);
         String content = userChatManager.getMessageContent(chatId, messageId);
 
-        if(username.equals(senderUsername)){
-            System.out.println(senderUsername +"(Me)" + "  :  " + content + "                              at  " + timestamp);
-        }else{
-            System.out.println(senderUsername + "  :  " + content + "                              at  " + timestamp);
-        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , yyyy-MM-dd");    //format time
+        String formattedTimestamp = timestamp.format(formatter);
 
+        if(username.equals(senderUsername)){
+            System.out.println(senderUsername +"(Me)" + "  :  " + content + "                              at  " + formattedTimestamp);
+        }else{
+            System.out.println(senderUsername + "  :  " + content + "                              at  " + formattedTimestamp);
+        }
     }
 
     /**
@@ -106,8 +109,8 @@ public class MessagePresenter {
 
                 //showing time difference from now and last message
                 LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
-                Duration timeDifference = Duration.between(LocalDateTime.now(), lastMessageTime);
-                System.out.println(timeDifference.toHours() + " hours ago");          // might change the format to be more clearer
+                Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
+                System.out.println(timeDifference.toMinutes() + " minutes ago");        // might change the format to be more clearer. Also, only prints integers
 
                 //showing last eight messages
                 List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
@@ -121,6 +124,5 @@ public class MessagePresenter {
             System.out.println("\nNo new messages.");
         }
     }
-
 
 }

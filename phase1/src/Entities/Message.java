@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  */
 public class Message implements Serializable {
     private final String senderUsername;
-    // I removed the reciever since if we have chats, the chat will include all members of the chat
+    // I removed the receiver since if we have chats, the chat will include all members of the chat
     private final LocalDateTime time;
     private final String content;
 

@@ -7,6 +7,9 @@ public class Speaker extends User {
     private List<String> EventAttending = new ArrayList<>();
 
 
+    /**
+     * Constructor specifying Speaker's Username and Password
+     */
     public Speaker(String username, String password){
         super(username, password);
     }
