@@ -2,6 +2,9 @@ package Entities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Speaker is a class that gives talks and communicates with attendees.
+ */
 public class Speaker extends User {
     // list of talks the speaker gives
     private List<String> EventAttending = new ArrayList<>();

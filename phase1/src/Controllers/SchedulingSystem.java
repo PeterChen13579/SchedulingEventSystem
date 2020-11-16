@@ -9,6 +9,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+
+/**
+ * A controller class that interacts with use cases and presenters to prompt and
+ * allow the user to schedule an event or add a room.
+ * @author Xinyi Chen
+ */
 public class SchedulingSystem {
     EventManager em;
     RoomManager rm;

@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Manages all the events for the program. Calls methods in Event or Room or RoomManager.
+ * @author Xinyi Chen and Xinpeng Shan
+ */
 public class EventManager implements Serializable {
     private final List<Event> allEvents;
 
