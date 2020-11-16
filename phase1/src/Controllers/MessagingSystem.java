@@ -60,13 +60,7 @@ public class MessagingSystem {
             } else if (choice.equals("4")) {
                 messagingPresenter.displayConsoleMessage("Which friend would you like to add?");
                 String friendUsername = input.nextLine();
-                if (userManager.isAddFriend(userName, friendUsername)) {
-                    messagingPresenter.displayConsoleMessage(friendUsername + " is already your friend.");
-                } else if (addPeopleToMessage(userName, friendUsername)) {
-                    messagingPresenter.displayConsoleMessage("Friend added");
-                } else {
-                    messagingPresenter.displayConsoleMessage("You may not add this friend.");
-                }
+                addPeopleToMessage(userName, friendUsername);
             } else {
                 messagingPresenter.error("Please enter a number from 1 to 5.");
             }
@@ -190,14 +184,6 @@ public class MessagingSystem {
             UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
 
             if (chat == null) {
-                if (!userManager.isAddFriend(senderUsername, usernames.get(i))) {
-                    if (addPeopleToMessage(senderUsername, usernames.get(i))) {
-                        messagingPresenter.displayConsoleMessage(usernames.get(i) + " added as a friend.");
-                    } else {
-                        messagingPresenter.displayConsoleMessage(usernames.get(i) + " is not a friend and cannot be added.");
-                        return;
-                    }
-                }
                 chat = userChatManager.createChat(thisChatUsernames); // If no such chat exists, create it
             }
 
@@ -209,14 +195,15 @@ public class MessagingSystem {
     private void messageOneUser(String senderUsername, String recipientUsername, LocalDateTime time, String content) {
         List<String> recipients = new ArrayList<String>();
         recipients.add(recipientUsername);
-        // User sender = this.userManager.stringtoUser(senderUsername);    //think this can be deleted
 
         if (this.userManager.userType(recipientUsername).equals("Invalid Username")) {
             messagingPresenter.error("Invalid recipient.");
             return;
         }
 
-        if (this.userManager.userType(senderUsername).equals("Speaker")) {
+        if (userManager.userType(senderUsername) == null) {
+            messagingPresenter.error("Invalid sender username.");
+        } else if (this.userManager.userType(senderUsername).equals("Speaker")) {
             List<String> chatUsers = new ArrayList<String>();
             chatUsers.add(senderUsername);
             chatUsers.add(recipientUsername);
@@ -226,14 +213,13 @@ public class MessagingSystem {
             } else {
                 messagingPresenter.error("Speakers may only reply to a user that has already started the chat.");
             }
-        } else if (userManager.userType(senderUsername).equals("Attendee") || userManager.userType(senderUsername).equals("Organizer")) {
-            if (!(userManager.userType(recipientUsername).equals("Organizer"))) {
-                this.sendMessageToUsers(recipients, senderUsername, time, content);
-            } else {
-                messagingPresenter.error("You may not message an organizer.");
-            }
         } else {
-            messagingPresenter.error("Invalid sender username.");
+            if (! userManager.isAddFriend(senderUsername, recipientUsername)) {
+                if (! addPeopleToMessage(senderUsername, recipientUsername)) {
+                    return;
+                }
+            }
+            this.sendMessageToUsers(recipients, senderUsername, time, content);
         }
     }
 
@@ -294,12 +280,20 @@ public class MessagingSystem {
      * @param mainUserUsername the current user
      * @param newFriend new user they want to add
      */
-    private boolean addPeopleToMessage(String mainUserUsername, String newFriend){ //NOTE : doesn't check if the friend is allowed to be messaged for now
-        if (userManager.userType(newFriend).equals("Organizer") || userManager.userType(mainUserUsername).equals("Speaker")) {
+    private boolean addPeopleToMessage(String mainUserUsername, String newFriend){
+        if (userManager.userType(mainUserUsername).equals("Speaker")) {
+            messagingPresenter.displayConsoleMessage("Speakers may not add friends.");
             return false;
+        } else if (userManager.userType(newFriend).equals("Organizer")) {
+            messagingPresenter.displayConsoleMessage("You may not add an organizer as a friend.");
+            return false;
+        } else if (userManager.addFriend(mainUserUsername, newFriend)) {
+            messagingPresenter.displayConsoleMessage("Added " + newFriend + " to your friends list.");
+            return true;
+        } else {
+            messagingPresenter.displayConsoleMessage(newFriend + " is already a friend.");
+            return true;
         }
-        userManager.addFriend(mainUserUsername, newFriend);
-        return true;
     }
 
 
