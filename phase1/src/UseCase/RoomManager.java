@@ -13,14 +13,14 @@ public class RoomManager implements Serializable {
     private List<Room> allRoom;
 
     /**
-     * A constructor for a RoomManager that will initialize the list of all room as an empty list.
+     * A constructor for a RoomManager that initializes the list of all room as an empty list.
      */
     public RoomManager() {
         allRoom = new ArrayList<>();
     }
 
     /**
-     * A constructor for a RoomManager that will initialize the list of all rooms as the given list.
+     * A constructor for a RoomManager that initializes the list of all rooms as the given list.
      * @param room a list of room.
      */
     public RoomManager(List<Room> room) {
