@@ -32,18 +32,6 @@ public class UserManager implements Serializable {
     }
 
     /**
-     * Getter for all userName of all Organizers
-     * @return A list of username that includes all Organizers
-     */
-    public List<String> getAllOrganizer() {
-        List <String> list = new ArrayList<>();
-        for (Organizer organizer: allOrganizer){
-            list.add(organizer.getUsername());
-        }
-        return list;
-    }
-
-    /**
      * Getter for all userName of all Speakers
      * @return A list of username that includes all speakers.
      */
