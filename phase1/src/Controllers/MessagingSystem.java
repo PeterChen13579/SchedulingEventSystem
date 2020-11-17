@@ -6,10 +6,11 @@ import Presenters.MessagePresenter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -37,6 +38,7 @@ public class MessagingSystem {
      * @param userName The username of the current user
      */
     public void run(String userName){
+        //Precondition: userName is a valid username
 
         List<String> options = new ArrayList<>(Arrays.asList("(1) View Chats", "(2) Send Message", "(3) View all new Messages ", "(4) Add friend", "(5) Exit"));
 
@@ -51,18 +53,18 @@ public class MessagingSystem {
                 sendMessage(userName);
             } else if (choice.equals("3")){
                 viewAllNewMessages(userName);
-                messagingPresenter.printStatement("Press enter to go back.");
-                input.nextLine();
             } else if (choice.equals("4")) {
-                messagingPresenter.printStatement("Which friend would you like to add?");
-                String friendUsername = input.nextLine();
-                addPeopleToMessage(userName, friendUsername);
+                addPeopleToMessage(userName);
             } else if (!choice.equals("5")) {
                 messagingPresenter.error("Please enter a number from 1 to 5.");
             }
         }
     }
 
+    /**
+     * Calls the appropriate methods for sending messages based on the user type
+     * @param userName The username of the current user
+     */
     private void sendMessage(String userName) {
         if (userManager.userType(userName).equals("Attendee")) {
             attendeeSendMessage(userName);
@@ -130,6 +132,10 @@ public class MessagingSystem {
         messagingPresenter.displayChat(username, userChat, messages);
     }
 
+    /**
+     * Sending messages for attendees
+     * @param userName The username of the current user
+     */
     private void attendeeSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
@@ -145,6 +151,10 @@ public class MessagingSystem {
         }
     }
 
+    /**
+     * Sending messages for organizers
+     * @param userName The username of the current user
+     */
     private void organizerSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
@@ -157,17 +167,21 @@ public class MessagingSystem {
             } else if (choice.equals("2")) {
                 messagingPresenter.printStatement("Please enter the message you'd like to send.");
                 String content = input.nextLine();
-                organizerMessageAllAttendees(userName, LocalDateTime.now(), content);
+                organizerMessageAllAttendees(userName, content);
             } else if (choice.equals("3")) {
                 messagingPresenter.printStatement("Please enter the message you'd like to send.");
                 String content = input.nextLine();
-                organizerMessageAllSpeakers(userName, LocalDateTime.now(), content);
+                organizerMessageAllSpeakers(userName, content);
             } else if (! choice.equals("4")) {
                 messagingPresenter.error("Please enter a number from 1 to 4.");
             }
         }
     }
 
+    /**
+     * Sending messages for organizers
+     * @param userName The username of the current user
+     */
     private void speakerSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
@@ -182,13 +196,17 @@ public class MessagingSystem {
                 List<String> titles = Arrays.asList(input.nextLine().split("\\+"));
                 messagingPresenter.printStatement("Please enter the message you'd like to send.");
                 String content = input.nextLine();
-                speakerMessageEventAttendees(userName, titles, LocalDateTime.now(), content);
+                speakerMessageEventAttendees(userName, titles, content);
             } else if (! choice.equals("3")) {
                 messagingPresenter.error("Please enter a number from 1 to 3.");
             }
         }
     }
 
+    /**
+     * Helper method for sending a message to one user. Checks if the recipient is a friend before sending
+     * @param senderUsername The username of the user sending the message
+     */
     private void messageOneUser(String senderUsername) {
         Scanner input = new Scanner(System.in);
         messagingPresenter.printStatement("Please enter the username of the user you'd like to message.");
@@ -197,7 +215,9 @@ public class MessagingSystem {
         String content = input.nextLine();
         List<String> recipients = new ArrayList<>();
         recipients.add(recipient);
-        if (userManager.isAddFriend(senderUsername, recipient)) {
+        if (!userManager.isUserExists(recipient)) {
+            messagingPresenter.error("The user " + recipient + " does not exist.");
+        } else if (userManager.isAddFriend(senderUsername, recipient)) {
             this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content);
         } else {
             messagingPresenter.error(recipient + " is not your friend.");
@@ -209,13 +229,16 @@ public class MessagingSystem {
      * @param userName The username of the current user
      */
     private void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
+        Scanner input = new Scanner(System.in);
         List<UUID> userChats = userChatManager.getUserChats(userName);
-        HashMap<UUID, List<UUID>> newMessages = new HashMap<>();
+        Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
             List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
             newMessages.put(id, chatNewMessages);
         }
         messagingPresenter.displayNewMessages(newMessages);
+        messagingPresenter.printStatement("Press enter to go back.");
+        input.nextLine();
     }
 
     /**
@@ -241,17 +264,32 @@ public class MessagingSystem {
         messagingPresenter.printStatement("Message sent!");
     }
 
-    private void organizerMessageAllAttendees(String senderUsername, LocalDateTime time, String content) {
+    /**
+     * Helper method for organizers to send a message to all attendees
+     * @param senderUsername Username of the sender
+     * @param content Content of message
+     */
+    private void organizerMessageAllAttendees(String senderUsername, String content) {
         List<String> allAttendees = userManager.getAllAttendee();
-        this.sendMessageToUsers(allAttendees, senderUsername, time, content);
+        this.sendMessageToUsers(allAttendees, senderUsername, LocalDateTime.now(), content);
     }
 
-    private void organizerMessageAllSpeakers(String senderUsername, LocalDateTime time, String content) {
+    /**
+     * Helper method for organizers to send a message to all spoeakers
+     * @param senderUsername Username of the sender
+     * @param content Content of message
+     */
+    private void organizerMessageAllSpeakers(String senderUsername, String content) {
         List<String> allSpeakers = userManager.getAllSpeaker();
-        this.sendMessageToUsers(allSpeakers, senderUsername, time, content);
+        this.sendMessageToUsers(allSpeakers, senderUsername, LocalDateTime.now(), content);
     }
 
-    private void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, LocalDateTime time, String content) {
+    /**
+     * Helper method for speakers to send a message to attendees of their events
+     * @param senderUsername Username of the sender
+     * @param content Content of message
+     */
+    private void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content) {
         List<String> allEvents = eventManager.getAllEventTitle();
         List<String> recipients = new ArrayList<>();
 
@@ -275,16 +313,19 @@ public class MessagingSystem {
                 messagingPresenter.error("No event with title " + title + " found.");
             }
         }
-        this.sendMessageToUsers(recipients, senderUsername, time, content);
+        this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content);
     }
 
     /**
      * Add friends to message
      * @param mainUserUsername the current user
-     * @param newFriend new user they want to add
      * @return True if the friend is added or already your friend, false otherwise
      */
-    private boolean addPeopleToMessage(String mainUserUsername, String newFriend){
+    private boolean addPeopleToMessage(String mainUserUsername){
+        Scanner input = new Scanner(System.in);
+        messagingPresenter.printStatement("Which friend would you like to add?");
+        String newFriend = input.nextLine();
+
         if (userManager.userType(mainUserUsername).equals("Speaker")) {
             if (userManager.userType(newFriend).equals("Attendee")) {
                 UUID chat = userChatManager.getChatContainingUsers(Arrays.asList(mainUserUsername, newFriend));

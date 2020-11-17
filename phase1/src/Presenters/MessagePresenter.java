@@ -3,7 +3,6 @@ import UseCase.ChatManager;
 
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.lang.Math;
@@ -85,7 +84,7 @@ public class MessagePresenter extends StatementPresenter{
      * Displays all new Messages in a notification style (Think how new messages look on a phone notification).
      * @param newMessages Map with the chats each paired with a list of their new messages.
      */
-    public void displayNewMessages(HashMap<UUID, List<UUID>> newMessages){
+    public void displayNewMessages(Map<UUID, List<UUID>> newMessages){
         System.out.println("\nNew Messages");
         boolean newMessagesExist = false;
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
