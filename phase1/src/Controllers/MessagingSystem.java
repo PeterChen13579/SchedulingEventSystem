@@ -4,13 +4,13 @@ import UseCase.EventManager;
 import UseCase.UserManager;
 import Presenters.MessagePresenter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -231,7 +231,7 @@ public class MessagingSystem {
     private void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
         Scanner input = new Scanner(System.in);
         List<UUID> userChats = userChatManager.getUserChats(userName);
-        HashMap<UUID, List<UUID>> newMessages = new HashMap<>();
+        Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
             List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
             newMessages.put(id, chatNewMessages);
