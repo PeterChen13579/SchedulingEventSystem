@@ -1,11 +1,12 @@
 package Controllers;
 
+import GUI.Dashboard;
+import GUI.Viewable;
 import Presenters.EventPresenter;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-import Presenters.StatementPresenter;
 import java.util.Scanner;
 
 /**
@@ -22,7 +23,7 @@ public class TechConferenceSystem {
     private ChatManager chatManager;
     private EventManager eventManager;
     private RoomManager roomManager;
-    private final StatementPresenter STATEMENT_PRESENTER = new StatementPresenter();
+    private final Viewable gui = new Dashboard();
 
 
     /**
@@ -49,9 +50,7 @@ public class TechConferenceSystem {
 
     private boolean start(){
 
-        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-        STATEMENT_PRESENTER.printStatement("(1) Load Existing Conference \n(2) Create New Conference");
-
+        gui.loadMenu();
 
         Scanner input = new Scanner(System.in);
         String temp = input.nextLine();
@@ -61,14 +60,14 @@ public class TechConferenceSystem {
                 createProgram(true);
                 return true;
             } catch (ClassCastException exception) {
-                STATEMENT_PRESENTER.printStatement("There is no existing Conference, please create a new one. ");
+//                STATEMENT_PRESENTER.printStatement("There is no existing Conference, please create a new one. ");
                 return false;
             }
         } else if (temp.equals("2")) {
             createProgram(false);
             return true;
         } else {
-            STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+//            STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
             return false;
         }
     }
@@ -85,9 +84,9 @@ public class TechConferenceSystem {
     private boolean mainLevelHelper(){
         Scanner in = new Scanner(System.in);
 
-        STATEMENT_PRESENTER.printStatement("What do you want to do? ;)");
-        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-        STATEMENT_PRESENTER.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
+//        STATEMENT_PRESENTER.printStatement("What do you want to do? ;)");
+//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
+//        STATEMENT_PRESENTER.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
         String temp2 = in.nextLine();
 
         switch (temp2) {
@@ -107,37 +106,37 @@ public class TechConferenceSystem {
                 }
 
             case "2": {
-                STATEMENT_PRESENTER.printStatement("Please enter a username:");
+//                STATEMENT_PRESENTER.printStatement("Please enter a username:");
                 String userName = in.nextLine();
-                STATEMENT_PRESENTER.printStatement("Please enter a password:");
+//                STATEMENT_PRESENTER.printStatement("Please enter a password:");
                 String password = in.nextLine();
                 if (userManager.createAttendeeAccount(userName, password)) {
-                    STATEMENT_PRESENTER.printStatement("You have successfully created an Attendee Account!");
+//                    STATEMENT_PRESENTER.printStatement("You have successfully created an Attendee Account!");
                 } else {
-                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
-                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
+//                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
+//                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
                 }
                 return false;
             }
             case "3": {
-                STATEMENT_PRESENTER.printStatement("Please enter a username:");
+//                STATEMENT_PRESENTER.printStatement("Please enter a username:");
                 String userName = in.nextLine();
-                STATEMENT_PRESENTER.printStatement("Please enter a password:");
+//                STATEMENT_PRESENTER.printStatement("Please enter a password:");
                 String password = in.nextLine();
                 if (userManager.createOrganizerAccount(userName, password)) {
-                    STATEMENT_PRESENTER.printStatement("You have successfully created an Organizer Account!");
+//                    STATEMENT_PRESENTER.printStatement("You have successfully created an Organizer Account!");
                 } else {
-                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
-                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
+//                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
+//                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
                 }
                 return false;
             }
             case "4":
-                STATEMENT_PRESENTER.printStatement("You have exited the program.");
+//                STATEMENT_PRESENTER.printStatement("You have exited the program.");
                 saveProgram();
                 return true;
             default:
-                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
                 break;
         }
         return false;
@@ -153,9 +152,9 @@ public class TechConferenceSystem {
     private boolean loggedInMenuAttendeeHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
-        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Log Out");
+//        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
+//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
+//        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Log Out");
         String temp2 = in.nextLine();
 
         switch (temp2) {
@@ -166,11 +165,11 @@ public class TechConferenceSystem {
                 messagingSystem.run(username);
                 return false;
             case "3":
-                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
+//                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
                 mainLevel();
                 return true;
             default:
-                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
                 return false;
         }
     }
@@ -187,10 +186,10 @@ public class TechConferenceSystem {
     private boolean loggedInMenuOrganizerHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
-        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu " +
-                "\n(4) Create Speaker account \n(5) Log Out");
+//        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
+//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
+//        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu " +
+//                "\n(4) Create Speaker account \n(5) Log Out");
         String temp2 = in.nextLine();
 
         switch (temp2) {
@@ -204,23 +203,23 @@ public class TechConferenceSystem {
                 schedulingSystem.run();
                 return false;
             case "4":
-                STATEMENT_PRESENTER.printStatement("Please enter a Username:");
+//                STATEMENT_PRESENTER.printStatement("Please enter a Username:");
                 String userName = in.nextLine();
-                STATEMENT_PRESENTER.printStatement("Please enter a Password:");
+//                STATEMENT_PRESENTER.printStatement("Please enter a Password:");
                 String password = in.nextLine();
                 if (userManager.createSpeakerAccount(userName, password)) {
-                    STATEMENT_PRESENTER.printStatement("You have successfully created a speaker account.");
+//                    STATEMENT_PRESENTER.printStatement("You have successfully created a speaker account.");
                 } else {
-                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
-                    STATEMENT_PRESENTER.printStatement("Please enter a different username.");
+//                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
+//                    STATEMENT_PRESENTER.printStatement("Please enter a different username.");
                 }
                 return false;
             case "5":
-                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
+//                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
                 mainLevel();
                 return true;
             default:
-                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
                 return false;
         }
     }
@@ -238,9 +237,9 @@ public class TechConferenceSystem {
     private boolean loggedInMenuSpeakerHelper(String username){
         Scanner in = new Scanner(System.in);
 
-        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
-        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-        STATEMENT_PRESENTER.printStatement("(1) Message Menu \n(2) View List of Events Speaking \n(3) Log Out");
+//        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
+//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
+//        STATEMENT_PRESENTER.printStatement("(1) Message Menu \n(2) View List of Events Speaking \n(3) Log Out");
         String temp2 = in.nextLine();
 
         switch (temp2) {
@@ -249,18 +248,18 @@ public class TechConferenceSystem {
                 return false;
             case "2":
                 if (userManager.getEventsSpeaking(username).isEmpty()){
-                    STATEMENT_PRESENTER.printStatement("You do not have any events scheduled to speak in.");
+//                    STATEMENT_PRESENTER.printStatement("You do not have any events scheduled to speak in.");
                 }else{
                     EventPresenter eventPresenter = new EventPresenter(eventManager, userManager);
                     eventPresenter.displaySignedUpEvents(username);
                 }
                 return false;
             case "3":
-                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
+//                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
                 mainLevel();
                 return true;
             default:
-                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
+//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
                 return false;
         }
     }
