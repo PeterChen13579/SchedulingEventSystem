@@ -59,8 +59,7 @@ public class Dashboard{
         frame.setVisible(true);
         createButtons();
         currentMenu = "";
-        //TODO: TO PETER change loginType between attendee/organizer/speaker to test different logins
-        loginType = "attendee";
+        loginType = "";
         loadMenu();
     }
 
@@ -144,6 +143,7 @@ public class Dashboard{
 
 
     public void loggedInAttendee() {
+        loginType = "Attendee";
         currentMenu = "loggedinattendee";
         buttonPanel.removeAll();
         buttonPanel.add(signUpMenu);
@@ -151,6 +151,29 @@ public class Dashboard{
         buttonPanel.add(logout);
         frame.pack();
     }
+
+    public void loggedInOrganizer() {
+        loginType = "Organizer";
+        currentMenu = "loggedinorganizer";
+        buttonPanel.removeAll();
+        buttonPanel.add(signUpMenu);
+        buttonPanel.add(messageMenu);
+        buttonPanel.add(scheduleMenu);
+        buttonPanel.add(createSpeaker);
+        buttonPanel.add(logout);
+        frame.pack();
+    }
+
+    public void loggedInSpeaker() {
+        loginType = "Speaker";
+        currentMenu = "loggedinspeaker";
+        buttonPanel.removeAll();
+        buttonPanel.add(messageMenu);
+        buttonPanel.add(seeListEvents);
+        buttonPanel.add(logout);
+        frame.pack();
+    }
+
 
     public void signUpEventMenu() {
         currentMenu = "signupevent";
@@ -182,16 +205,6 @@ public class Dashboard{
         frame.pack();
     }
 
-    public void loggedInOrganizer() {
-        currentMenu = "loggedinorganizer";
-        buttonPanel.removeAll();
-        buttonPanel.add(signUpMenu);
-        buttonPanel.add(messageMenu);
-        buttonPanel.add(scheduleMenu);
-        buttonPanel.add(createSpeaker);
-        buttonPanel.add(logout);
-        frame.pack();
-    }
 
     public void schedulingMenu() {
         currentMenu = "scheduling";
@@ -202,14 +215,6 @@ public class Dashboard{
         frame.pack();
     }
 
-    public void loggedInSpeaker() {
-        currentMenu = "loggedinspeaker";
-        buttonPanel.removeAll();
-        buttonPanel.add(messageMenu);
-        buttonPanel.add(seeListEvents);
-        buttonPanel.add(logout);
-        frame.pack();
-    }
 
     public void sendMessageMenu() {
         currentMenu = "sendmessage";
