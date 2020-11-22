@@ -2,7 +2,6 @@ package UseCase;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import Entities.User;
 import Entities.Attendee;
 import Entities.Organizer;
 import Entities.Speaker;
@@ -74,7 +73,7 @@ public class UserManager implements Serializable {
     public boolean credentialAuthorization(String enteredUsername, String enteredPassword){
 
         if(isUserExists(enteredUsername)){
-            User user = stringToUser(enteredUsername);
+            Attendee user = stringToAttendee(enteredUsername);
             return user.getPassword().equals(enteredPassword);
         }
 
@@ -89,7 +88,7 @@ public class UserManager implements Serializable {
      */
     public void signUpEventAttendee(String username, String eventTitle){
         // This method is called only when the user have logged in to the system, thus the user must exist.
-        User user = stringToUser(username);
+        Attendee user = stringToAttendee(username);
         List<String> eventList = user.getEventAttending();
         eventList.add(eventTitle);
         user.setEventAttending(eventList);
@@ -103,7 +102,7 @@ public class UserManager implements Serializable {
      */
     public void cancelSpotAttendee(String username, String eventTitle){
         // This method is called only when the user have logged in to the system, thus the user must exist.
-        User user = stringToUser(username);
+        Attendee user = stringToAttendee(username);
         List<String> eventList = user.getEventAttending();
         eventList.remove(eventTitle);
         user.setEventAttending(eventList);
@@ -116,7 +115,7 @@ public class UserManager implements Serializable {
      */
     public List<String> getEventAttending(String username){
         // This method is called only when the user have logged in to the system, thus, the user must exist.
-        User user = stringToUser(username);
+        Attendee user = stringToAttendee(username);
         return user.getEventAttending();
     }
 
@@ -173,27 +172,38 @@ public class UserManager implements Serializable {
      * Precondition: Username exists in database
      * Returns a User object that corresponds to Username
      *
-     * @param Username Username that wants to be searched for
-     * @return         User object that matches with Username
+     * @param username Username of an Attendee or Organizer that wants to be searched for
+     * @return         User object that matches with username
      */
-    private User stringToUser(String Username){
-        assert isUserExists(Username);
-        for (Attendee a: allAttendee){
-            if (a.getUsername().equals(Username)){
-                return a;
+    private Attendee stringToAttendee(String username){
+        assert isUserExists(username);
+        for (Attendee attendee: allAttendee){
+            if (attendee.getUsername().equals(username)){
+                return attendee;
             }
         }
-        for (Organizer b: allOrganizer){
-            if (b.getUsername().equals(Username)){
-                return b;
+        for (Organizer organizer: allOrganizer){
+            if (organizer.getUsername().equals(username)){
+                return organizer;
             }
         }
-        for (Speaker c: allSpeaker) {
-            if (c.getUsername().equals(Username)) {
-                return c;
+        throw new IllegalArgumentException("There is no such an attendee or organizer with the username. ");
+    }
+
+    /**
+     * Precondition: Username exists in the database, and it is a username of a speaker.
+     * @param username Username of a speaker that wants to be searched for
+     * @return         Speaker object that matches with username
+     */
+
+    private Speaker stringToSpeaker(String username){
+        assert isUserExists(username) && userType(username).equals("Speaker");
+        for (Speaker speaker: allSpeaker) {
+            if (speaker.getUsername().equals(username)) {
+                return speaker;
             }
         }
-        throw new IllegalArgumentException("There is no such a user with the username. ");
+        throw new IllegalArgumentException("There is no such a speaker with the username. ");
     }
 
     /**
@@ -205,7 +215,7 @@ public class UserManager implements Serializable {
 
     public boolean isAddFriend(String usernameA, String usernameB){
         // This method is called only when the user have logged in to the system, thus the user must exist.
-        User userA = stringToUser(usernameA);
+        Attendee userA = stringToAttendee(usernameA);
 
         List<String> friends = userA.getFriends();
         for (String friend: friends){
@@ -225,7 +235,7 @@ public class UserManager implements Serializable {
      */
     public boolean addFriend(String usernameA, String usernameB){
         // This method is called only when the user have logged in to the system, thus the user must exist.
-        User userA = stringToUser(usernameA);
+        Attendee userA = stringToAttendee(usernameA);
 
         List<String> friends = userA.getFriends();
         if (isUserExists(usernameB) && !isAddFriend(usernameA, usernameB) && !usernameA.equals(usernameB)){
@@ -242,11 +252,8 @@ public class UserManager implements Serializable {
      * @param speakerUserName the username of the speaker
      */
     public void addEventToSpeaker(String title, String speakerUserName){
-        for (Speaker s: allSpeaker) {
-            if (s.getUsername().equals(speakerUserName)) {
-                s.addEventToSpeaker(title);
-            }
-        }
+        Speaker speaker = stringToSpeaker(speakerUserName);
+        speaker.addEventToSpeaker(title);
     }
 
     /**
@@ -280,7 +287,7 @@ public class UserManager implements Serializable {
      */
     public List<String> getEventsSpeaking(String username){
         // This method is called only when the user have logged in to the system, thus the speaker must exist.
-        User speaker = stringToUser(username);
-        return speaker.getEventAttending();
+        Speaker speaker = stringToSpeaker(username);
+        return speaker.getTalkTitles();
     }
 }

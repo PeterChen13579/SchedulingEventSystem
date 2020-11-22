@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class Speaker extends User {
     // list of talks the speaker gives
-    private List<String> EventAttending = new ArrayList<>();
+    private final List<String> talkTitles = new ArrayList<>();
 
 
     /**
@@ -20,19 +20,19 @@ public class Speaker extends User {
      * Getter for the list of EventAttending.
      * @return the EventAttending of this Speaker.
      */
-    public List<String> getEventAttending() {return EventAttending;}
+    public List<String> getTalkTitles() {return talkTitles;}
 
-    /**
-     * Setter for the list of EventAttending.
-     * @param EventAttending the new EventAttending that you wan to set.
-     */
-    public void setEventAttending(List<String> EventAttending){this.EventAttending = EventAttending;}
+//    /**
+//     * Setter for the list of EventAttending.
+//     * @param talkTitles the new EventAttending that you wan to set.
+//     */
+//    public void setEventAttending(List<String> talkTitles){this.talkTitles = talkTitles;}
 
     /**
      * Add the given event title to list of events the speaker is attending/hosting.
      * @param title the title of the new event
      */
     public void addEventToSpeaker(String title){
-        EventAttending.add(title);
+        talkTitles.add(title);
     }
 }

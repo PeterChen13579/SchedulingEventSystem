@@ -10,7 +10,6 @@ public abstract class User implements Serializable {
     private final String username;
     private final String password;
     private List <String> friends;
-    private List<String> eventAttending;
 
 
     /**
@@ -20,7 +19,6 @@ public abstract class User implements Serializable {
     public User(String username, String password){
         this.username = username;
         this.password = password;
-        this.eventAttending = new ArrayList<>();
         this.friends = new ArrayList<>();
     }
 
@@ -50,24 +48,6 @@ public abstract class User implements Serializable {
     public void setPassword(String newPassword) {
         password = newPassword;
     }  */
-
-    /**
-     * Getter for this <User></User>'s list of events they are attending
-     *
-     * @return  </User>'s list of events
-     */
-    public List<String> getEventAttending() {
-        return eventAttending;
-    }
-
-
-    /**
-     * Setter for this <User></User>'s Events they are attending
-     * @param eventAttending list of events attending
-     */
-    public void setEventAttending(List<String> eventAttending) {
-        this.eventAttending = eventAttending;
-    }
 
 
     /**
