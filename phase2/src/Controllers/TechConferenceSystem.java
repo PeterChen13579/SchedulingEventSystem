@@ -13,7 +13,7 @@ import java.util.Scanner;
  * Determines all the behaviour for the text-based UI
  * @author Joyce Huang, Peter Chen, and Amy Miao
  */
-public class TechConferenceSystem {
+public class TechConferenceSystem implements Viewable{
 
     private LoginSystem loginSystem;
     private MessagingSystem messagingSystem;
@@ -23,15 +23,82 @@ public class TechConferenceSystem {
     private ChatManager chatManager;
     private EventManager eventManager;
     private RoomManager roomManager;
-    private final Viewable gui = new Dashboard();
+    private final Dashboard dashboard;
 
 
     /**
      * Constructor for the entire controller, begins the program
      */
-    public TechConferenceSystem(){
-        //Basically controller does all the logic, presenter PRINTS to screen.
+    public TechConferenceSystem(final Dashboard dashboard){
+        this.dashboard = dashboard;
+        dashboard.setView(this);
+        createProgram(true);
         run();
+    }
+
+    /**
+     * A method that determines if an attendee account can be successfully created or not.
+     *
+     * @param username  The username the user wants to create
+     * @param password  The Password the user wants for their account
+     * @return          True if Attendee account successfully created. False Otherwise
+     */
+    public boolean createAttendeeButton(String username, String password){
+        return userManager.createAttendeeAccount(username, password);
+    }
+
+    /**
+     * A method that determines if an organizer account can be successfully created or not.
+     *
+     * @param username  The username the user wants to create
+     * @param password  The Password the user wants for their account
+     * @return          True if Organizer account successfully created. False Otherwise
+     */
+    public boolean createOrganizerButton(String username, String password){
+        return userManager.createOrganizerAccount(username, password);
+    }
+
+    /**
+     * A method that determines if a Speaker account can be successfully created or not.
+     *
+     * @param username  The username the user wants to create
+     * @param password  The Password the user wants for their account
+     * @return          True if Speaker account successfully created. False Otherwise
+     */
+    public boolean createSpeakerButton(String username, String password){
+        return userManager.createSpeakerAccount(username, password);
+    }
+
+
+    /**
+     * A method that loads an existing conference; Method runs when the user clicks the "load conference" button
+     */
+    public boolean loadConferenceButton(){
+        createProgram(true);
+        System.out.println("loaded");
+        return true;
+    }
+
+    /**
+     * A method that creates an existing conference; Method runs when the user clicks the "new conference" button
+     */
+
+    public void newConferenceButton(){
+        createProgram(false);
+    }
+
+
+    public String LogInButton(String username, String password){
+        String userType = userManager.userType(username);
+        if (userType.equals("Invalid Username")){
+            return "false";
+        }else{
+            if (loginSystem.verifyLogin(username, password)){
+                return loginSystem.verifyUserType(username);
+            }else{
+                return "false";
+            }
+        }
     }
 
 
@@ -50,7 +117,8 @@ public class TechConferenceSystem {
 
     private boolean start(){
 
-        gui.loadMenu();
+        dashboard.loadMenu();
+
 
         Scanner input = new Scanner(System.in);
         String temp = input.nextLine();
@@ -80,6 +148,9 @@ public class TechConferenceSystem {
             }
         }
     }
+
+
+
 
     private boolean mainLevelHelper(){
         Scanner in = new Scanner(System.in);

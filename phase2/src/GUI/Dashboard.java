@@ -1,11 +1,14 @@
 package GUI;
 
+import Controllers.TechConferenceSystem;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JLabel;
 
-public class Dashboard implements Viewable {
+public class Dashboard{
 
     private static JFrame frame;
     private JPanel buttonPanel;
@@ -35,11 +38,16 @@ public class Dashboard implements Viewable {
     private JButton seeListEvents;
     private JButton sendOne;
     private JButton sendAll;
-    private JButton confirm;
+    private JButton confirmAttendeeSignUp;
+    private JButton confirmOrganizerSignUp;
+    private JButton confirmSpeakerSignUp;
+    private JButton confirmLogIn;
+    private JButton nextPanel;
     private JTextField username;
     private JPasswordField password;
     private String currentMenu;
     private String loginType;
+    private Viewable sendsInfo;
 
     public Dashboard() {
         frame = new JFrame("Tech Conference System");
@@ -61,11 +69,22 @@ public class Dashboard implements Viewable {
         buttonPanel.removeAll();
         buttonPanel.add(load);
         buttonPanel.add(newConference);
+        frame.setBounds(300, 130, 800, 600);
+        frame.getContentPane().setBackground(Color.BLUE);
+
+    }
+
+    //To Joyce, w/e button you need to add to the load Conference, I'm not touching this.
+    public void loadConference(){
+        currentMenu = "Loading Conference";
+        buttonPanel.removeAll();
+        sendsInfo.loadConferenceButton();
         frame.pack();
+
     }
 
     public void loginSignup() {
-        currentMenu = "loginsignup";
+        currentMenu = "LoginSignUp";
         buttonPanel.removeAll();
         buttonPanel.add(login);
         buttonPanel.add(createAttendee);
@@ -73,6 +92,56 @@ public class Dashboard implements Viewable {
         buttonPanel.add(exit);
         frame.pack();
     }
+
+    public void createAttendeeAccount(){
+        buttonPanel.removeAll();
+        buttonPanel.add(username);
+        buttonPanel.add(password);
+        buttonPanel.add(confirmAttendeeSignUp);
+        frame.pack();
+    }
+
+
+    public void createOrganizerAccount(){
+        buttonPanel.removeAll();
+        buttonPanel.add(username);
+        buttonPanel.add(password);
+        buttonPanel.add(confirmOrganizerSignUp);
+        frame.pack();
+    }
+
+
+    public void createSpeakerAccount(){
+        currentMenu = "CreateSpeaker";
+        buttonPanel.removeAll();
+        buttonPanel.add(username);
+        buttonPanel.add(password);
+        buttonPanel.add(confirmOrganizerSignUp);
+        frame.pack();
+    }
+
+
+    public void failedAccountLogin(){
+        buttonPanel.removeAll();
+        JLabel failedMsgOne = new JLabel ("You have entered an invalid username/password or");
+        JLabel failedMsgTwo = new JLabel("the username does not exist in the database.");
+        buttonPanel.add(nextPanel);
+        buttonPanel.add(failedMsgOne);
+        buttonPanel.add(failedMsgTwo);
+        frame.pack();
+    }
+
+    public void failedAccountCreate(){
+        buttonPanel.removeAll();
+        JLabel failedMsgOne = new JLabel ("The existing username is in our database.");
+        JLabel failedMsgTwo = new JLabel("Please try again");
+        buttonPanel.add(nextPanel);
+        buttonPanel.add(failedMsgOne);
+        buttonPanel.add(failedMsgTwo);
+        frame.pack();
+    }
+
+
 
     public void loggedInAttendee() {
         currentMenu = "loggedinattendee";
@@ -155,16 +224,17 @@ public class Dashboard implements Viewable {
         buttonPanel.removeAll();
         buttonPanel.add(username);
         buttonPanel.add(password);
-        buttonPanel.add(confirm);
+        buttonPanel.add(confirmLogIn);
         frame.pack();
     }
+
 
     private void createButtons() {
         load = new JButton("Load Existing Conference");
         load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loginSignup();
+                loadConference();
             }
         });
         newConference = new JButton("CreateNewConference");
@@ -186,14 +256,14 @@ public class Dashboard implements Viewable {
         createAttendee.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                usernamePassword();
+                createAttendeeAccount();
             }
         });
         createOrganizer = new JButton("Create Organizer Account");
         createOrganizer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                usernamePassword();
+                createOrganizerAccount();
             }
         });
         exit = new JButton("Exit");
@@ -259,6 +329,21 @@ public class Dashboard implements Viewable {
                 //TODO: some other event display
             }
         });
+        nextPanel = new JButton("Next");
+        nextPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch(currentMenu){
+                    case "Organizer":
+                        loggedInOrganizer();
+                        break;
+                    case "LoginSignUp":
+                        loginSignup();
+                        break;
+                }
+            }
+        });
+
         quit = new JButton("Quit");
         quit.addActionListener(new ActionListener() {
             @Override
@@ -330,7 +415,7 @@ public class Dashboard implements Viewable {
         createSpeaker.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                usernamePassword();
+                createSpeakerAccount();
             }
         });
         addRoom = new JButton("Add Room");
@@ -368,35 +453,69 @@ public class Dashboard implements Viewable {
                 //TODO: send to all user display
             }
         });
-        confirm = new JButton("Confirm");
-        confirm.addActionListener(new ActionListener() {
+        confirmAttendeeSignUp = new JButton("Confirm");
+        confirmAttendeeSignUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: this button confirms input idk man
-                switch (currentMenu) {
-                    case "login":
-                        switch (loginType) {
-                            case "attendee":
-                                loggedInAttendee();
-                                break;
-                            case "organizer":
-                                loggedInOrganizer();
-                                break;
-                            case "speaker":
-                                loggedInSpeaker();
-                                break;
-                        }
+                if (sendsInfo.createAttendeeButton("username", "password")) {
+                    loginSignup();
+                    System.out.println("hi2");
+                }else{
+                    failedAccountCreate();
+                    System.out.println("hi3");
+                }
+            }
+        });
+        confirmOrganizerSignUp = new JButton("Confirm");
+        confirmOrganizerSignUp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (sendsInfo.createOrganizerButton("username", "password")) {
+                    loginSignup();
+                    System.out.println("hi2");
+                }else{
+                    failedAccountCreate();
+                    System.out.println("hi3");
+                }
+            }
+        });
+        confirmSpeakerSignUp = new JButton("Confirm");
+        confirmSpeakerSignUp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (sendsInfo.createSpeakerButton("username", "password")) {
+                    loginSignup();
+                }else{
+                    failedAccountCreate();
+                }
+            }
+        });
+        confirmLogIn = new JButton("Confirm Log In");
+        confirmLogIn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String status = sendsInfo.LogInButton("username", "password");
+                switch (status) {
+                    case "false":
+                        failedAccountLogin();
                         break;
-                    case "loginsignup":
-                        loginSignup();
+                    case "Attendee":
+                        loggedInAttendee();
                         break;
-                    case "loggedinorganizer":
+                    case "Organizer":
                         loggedInOrganizer();
+                        break;
+                    case "Speaker":
+                        loggedInSpeaker();
                         break;
                 }
             }
         });
         username = new JTextField("username", 20);
         password = new JPasswordField(20);
+    }
+
+    public void setView(final Viewable sendsInfo) {
+        this.sendsInfo = sendsInfo;
     }
 }
