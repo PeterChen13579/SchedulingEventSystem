@@ -23,5 +23,6 @@ public interface Viewable {
     void saveProgram(String filename);
     String[] displayAllEvents();
     String[] displaySignedUpEvents(String username);
+    boolean confirmRoom(String roomNumber);
 
 }

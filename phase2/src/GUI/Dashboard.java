@@ -46,7 +46,10 @@ public class Dashboard{
     private JButton confirmFilename;
     private JButton save;
     private JButton confirmSave;
+    private JButton confirmRoomNumber;
+    private JLabel addRoomLabel;
     private JTextField textInput;
+    private JTextField roomNumber;
     private JPasswordField password;
     private String currentMenu;
     private String previousMenu;
@@ -55,6 +58,7 @@ public class Dashboard{
     private JTextField filename;
     private JLabel errorText;
     private JList displayList;
+    private String currentUsername, currentPassword;
 
     public Dashboard() {
         frame = new JFrame("Tech Conference System");
@@ -71,8 +75,10 @@ public class Dashboard{
         loadMenu();
     }
 
+//---------------------------------------Loading conference to Main Menu ---------------------------------------;
+
     public void loadMenu() {
-        currentMenu = "load";
+        currentMenu = "LoadOrNewConference";
         buttonPanel.removeAll();
         buttonPanel.add(load);
         buttonPanel.add(newConference);
@@ -81,23 +87,38 @@ public class Dashboard{
     }
 
     public void loadConference(){
-        currentMenu = "Loading Conference";
+        currentMenu = "LoadingConference";
         buttonPanel.removeAll();
         buttonPanel.add(filename);
         buttonPanel.add(confirmFilename);
+        buttonPanel.add(quit);
         frame.pack();
     }
 
-    public void loginSignup() {
+
+
+//---------------------------------------Main Menu Features/options ---------------------------------------;
+
+
+    private void loginSignup() {
         currentMenu = "LoginSignUp";
         buttonPanel.removeAll();
         buttonPanel.add(login);
-        buttonPanel.add(createAttendee);
         buttonPanel.add(createOrganizer);
         buttonPanel.add(save);
         buttonPanel.add(exit);
         frame.pack();
     }
+
+
+    public void usernamePassword() {
+        buttonPanel.removeAll();
+        buttonPanel.add(textInput);
+        buttonPanel.add(password);
+        buttonPanel.add(confirmLogIn);
+        frame.pack();
+    }
+
 
     public void createAttendeeAccount(){
         buttonPanel.removeAll();
@@ -122,18 +143,21 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(textInput);
         buttonPanel.add(password);
-        buttonPanel.add(confirmOrganizerSignUp);
+        buttonPanel.add(confirmSpeakerSignUp);
         frame.pack();
     }
 
-    public void failedMenu(String failedMessage) {
-        currentMenu = "FailedMenu";
+    public void saveMenu() {
         buttonPanel.removeAll();
-        errorText.setText(failedMessage);
-        buttonPanel.add(nextPanel);
-        buttonPanel.add(errorText);
+        buttonPanel.add(textInput);
+        buttonPanel.add(confirmSave);
         frame.pack();
     }
+
+
+
+//---------------------------------------LoggedInUsers ---------------------------------------;
+
 
     public void loggedInAttendee() {
         loginType = "Attendee";
@@ -154,6 +178,7 @@ public class Dashboard{
         buttonPanel.add(messageMenu);
         buttonPanel.add(scheduleMenu);
         buttonPanel.add(createSpeaker);
+        buttonPanel.add(createAttendee);
         buttonPanel.add(save);
         buttonPanel.add(logout);
         frame.pack();
@@ -170,6 +195,8 @@ public class Dashboard{
         frame.pack();
     }
 
+//---------------------------------------Event Menu ---------------------------------------;
+
 
     public void signUpEventMenu() {
         currentMenu = "signupevent";
@@ -177,17 +204,6 @@ public class Dashboard{
         buttonPanel.add(browseEvent);
         buttonPanel.add(signUpEvent);
         buttonPanel.add(cancelAttendEvent);
-        buttonPanel.add(quit);
-        frame.pack();
-    }
-
-    public void messagingMenu() {
-        currentMenu = "messaging";
-        buttonPanel.removeAll();
-        buttonPanel.add(viewChat);
-        buttonPanel.add(sendMessage);
-        buttonPanel.add(viewNewMessages);
-        buttonPanel.add(addFriend);
         buttonPanel.add(quit);
         frame.pack();
     }
@@ -211,23 +227,18 @@ public class Dashboard{
         frame.pack();
     }
 
-
-    public void sendMessageMenu() {
-        currentMenu = "sendmessage";
+    public void addRoom(){
+        currentMenu = "AddRoom";
         buttonPanel.removeAll();
-        buttonPanel.add(sendOne);
-        buttonPanel.add(sendAll);
+        addRoomLabel.setText("Please enter the room number you want to add.");
+        buttonPanel.add(addRoomLabel);
+        buttonPanel.add(roomNumber);
+        buttonPanel.add(confirmRoomNumber);
         buttonPanel.add(quit);
         frame.pack();
+
     }
 
-    public void usernamePassword() {
-        buttonPanel.removeAll();
-        buttonPanel.add(textInput);
-        buttonPanel.add(password);
-        buttonPanel.add(confirmLogIn);
-        frame.pack();
-    }
 
     public void displayEvents(boolean allOrNot) {
         buttonPanel.removeAll();
@@ -249,12 +260,41 @@ public class Dashboard{
         frame.pack();
     }
 
-    public void saveMenu() {
+
+//---------------------------------------Messaging Menu ---------------------------------------;
+    public void messagingMenu() {
+        currentMenu = "messaging";
         buttonPanel.removeAll();
-        buttonPanel.add(textInput);
-        buttonPanel.add(confirmSave);
+        buttonPanel.add(viewChat);
+        buttonPanel.add(sendMessage);
+        buttonPanel.add(viewNewMessages);
+        buttonPanel.add(addFriend);
+        buttonPanel.add(quit);
         frame.pack();
     }
+
+
+    public void sendMessageMenu() {
+        currentMenu = "sendmessage";
+        buttonPanel.removeAll();
+        buttonPanel.add(sendOne);
+        buttonPanel.add(sendAll);
+        buttonPanel.add(quit);
+        frame.pack();
+    }
+
+
+//---------------------------------------Failed Menu ---------------------------------------;
+
+    public void failedMenu(String failedMessage) {
+        buttonPanel.removeAll();
+        errorText.setText(failedMessage);
+        buttonPanel.add(nextPanel);
+        buttonPanel.add(errorText);
+        frame.pack();
+    }
+
+
 
     private void createButtons() {
         load = new JButton("Load Existing Conference");
@@ -269,6 +309,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginSignup();
+                //Add techconferenceSystem to check it loads successfully or not
             }
         });
         login = new JButton("Login");
@@ -364,11 +405,17 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 switch(currentMenu){
-                    case "Organizer":
-                        loggedInOrganizer();
+                    case "LoadingConference":
+                        loadMenu();
                         break;
                     case "LoginSignUp":
                         loginSignup();
+                        break;
+                    case "Organizer":
+                        loggedInOrganizer();
+                        break;
+                    case "AddRoom":
+                        addRoom();
                         break;
                 }
             }
@@ -428,7 +475,7 @@ public class Dashboard{
         addRoom.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: add room adding display
+                addRoom();
             }
         });
         addEvent = new JButton("Add Event");
@@ -459,6 +506,19 @@ public class Dashboard{
                 //TODO: send to all user display
             }
         });
+        confirmRoomNumber = new JButton("Confirm");
+        confirmRoomNumber.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (sendsInfo.confirmRoom(roomNumber.getText())){
+                    loggedInOrganizer();
+                }else{
+                    failedMenu("You have entered an invalid room number or the room " +
+                            "has already been created");
+                }
+            }
+        });
+
         confirmAttendeeSignUp = new JButton("Confirm");
         confirmAttendeeSignUp.addActionListener(new ActionListener() {
             @Override
@@ -467,7 +527,7 @@ public class Dashboard{
                 //which returns a char array instead of a string. idk if anyone wants to change
                 //user/pass verification to use char array for the password but i'm not doing it so
                 if (sendsInfo.createAttendeeButton(textInput.getText(), password.getText())) {
-                    loginSignup();
+                    loggedInOrganizer();
                     System.out.println("hi2");
                 }else{
                     failedMenu("The existing username is in our database. Please try again.");
@@ -495,7 +555,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (sendsInfo.createSpeakerButton(textInput.getText(), password.getText())) {
-                    loginSignup();
+                    loggedInOrganizer();
                 }else{
                     failedMenu("The existing username is in our database. Please try again.");
                 }
@@ -538,6 +598,7 @@ public class Dashboard{
 
             }
         });
+
         save = new JButton("Save");
         save.addActionListener(new ActionListener() {
             @Override
@@ -558,6 +619,9 @@ public class Dashboard{
         password = new JPasswordField(20);
         errorText = new JLabel();
         displayList = new JList();
+        filename = new JTextField("File Name", 20);
+        roomNumber = new JTextField("Enter room number", 20);
+        addRoomLabel = new JLabel();
     }
 
     public void setView(final Viewable sendsInfo) {
@@ -571,6 +635,9 @@ public class Dashboard{
 
     private void previousMenu() {
         switch (currentMenu) {
+            case "LoadingConference":
+                loadMenu();
+
             case "signupevent":
             case "messaging":
                 switch (loginType) {
@@ -605,6 +672,9 @@ public class Dashboard{
                 break;
             case "LoginSignUp":
                 loginSignup();
+                break;
+            case "AddRoom":
+                loggedInOrganizer();
                 break;
         }
     }

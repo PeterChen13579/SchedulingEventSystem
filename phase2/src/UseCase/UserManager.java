@@ -73,6 +73,11 @@ public class UserManager implements Serializable {
     public boolean credentialAuthorization(String enteredUsername, String enteredPassword){
 
         if(isUserExists(enteredUsername)){
+            String userType = userType(enteredUsername);
+            if (userType.equals("Speaker")){
+                Speaker user = stringToSpeaker(enteredUsername);
+                return user.getPassword().equals(enteredPassword);
+            }
             Attendee user = stringToAttendee(enteredUsername);
             return user.getPassword().equals(enteredPassword);
         }

@@ -383,4 +383,14 @@ public class TechConferenceSystem implements Viewable{
         String[] toReturn = events.toArray(new String[0]);
         return toReturn;
     }
+
+    public boolean confirmRoom(String roomNumber){
+        if (roomManager.doesRoomExist(roomNumber)){
+            return false;
+        }else{
+            roomManager.createRoom(roomNumber);
+            return true;
+        }
+
+    }
 }
