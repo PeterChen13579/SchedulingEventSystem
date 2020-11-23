@@ -15,6 +15,7 @@ public class Event implements Serializable {
     private final String roomNum;
     private final String speakerUserName;
     private List<String> attendeeList;
+    private boolean VIP;
 
     public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime, String roomNum, String speakerUserName){
     this.title = eventTitle;
@@ -23,6 +24,7 @@ public class Event implements Serializable {
     this.roomNum = roomNum;
     this.speakerUserName = speakerUserName;
     this.attendeeList = new ArrayList<>();
+    this.VIP = false;
     }
 
     /**
@@ -39,6 +41,14 @@ public class Event implements Serializable {
      */
     public void setAttendeeList(List<String> attendeeList) {
         this.attendeeList = attendeeList;
+    }
+
+    /**
+     * Setter for the vip status of the Event. A default event is non VIP.
+     * @param VIP whether or not to set the event to be vip
+     */
+    public void setVIP(boolean VIP){
+        this.VIP = VIP;
     }
 
     /**
@@ -87,5 +97,13 @@ public class Event implements Serializable {
      */
     public LocalDateTime getEndTime() {
         return endTime;
+    }
+
+    /**
+     * Getter for the the vip status of the Event
+     * @return true iff it is a vip event
+     */
+    public boolean isVIP() {
+        return VIP;
     }
 }
