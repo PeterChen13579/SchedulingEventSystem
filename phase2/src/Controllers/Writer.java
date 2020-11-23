@@ -17,13 +17,15 @@ public class Writer {
      * @param filename name of the file to save to
      * @param thing the object being saved
      */
-    public void writeToFile(String filename, Object thing) {
+    public void writeToFile(String filename, Object thing[]) {
         try {
             OutputStream file = new FileOutputStream(filename);
             OutputStream buffer = new BufferedOutputStream(file);
             ObjectOutput output = new ObjectOutputStream(buffer);
 
-            output.writeObject(thing);
+            for (int i = 0; i < thing.length; i++) {
+                output.writeObject(thing[i]);
+            }
 
             output.close();
         } catch (IOException e) {

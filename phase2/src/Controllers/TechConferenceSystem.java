@@ -7,6 +7,8 @@ import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
+
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -32,7 +34,7 @@ public class TechConferenceSystem implements Viewable{
     public TechConferenceSystem(final Dashboard dashboard){
         this.dashboard = dashboard;
         dashboard.setView(this);
-        createProgram(true);
+        createProgram();
         run();
     }
 
@@ -73,9 +75,18 @@ public class TechConferenceSystem implements Viewable{
     /**
      * A method that loads an existing conference; Method runs when the user clicks the "load conference" button
      */
-    public boolean loadConferenceButton(){
-        createProgram(true);
-        System.out.println("loaded");
+    public boolean loadConferenceButton(String filename){
+        Reader reader = new Reader();
+        if (reader.verifySaves(filename)) {
+            Object loadedObjects[] = reader.loadData(filename);
+            chatManager = (ChatManager) loadedObjects[0];
+            eventManager = (EventManager) loadedObjects[1];
+            roomManager = (RoomManager) loadedObjects[2];
+            userManager = (UserManager) loadedObjects[3];
+        } else {
+            return false;
+        }
+        initializeManagers();
         return true;
     }
 
@@ -84,7 +95,7 @@ public class TechConferenceSystem implements Viewable{
      */
 
     public void newConferenceButton(){
-        createProgram(false);
+        createProgram();
     }
 
 
@@ -125,14 +136,14 @@ public class TechConferenceSystem implements Viewable{
 
         if (temp.equals("1")) {
             try {
-                createProgram(true);
+                createProgram();
                 return true;
             } catch (ClassCastException exception) {
 //                STATEMENT_PRESENTER.printStatement("There is no existing Conference, please create a new one. ");
                 return false;
             }
         } else if (temp.equals("2")) {
-            createProgram(false);
+            createProgram();
             return true;
         } else {
 //            STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
@@ -204,7 +215,7 @@ public class TechConferenceSystem implements Viewable{
             }
             case "4":
 //                STATEMENT_PRESENTER.printStatement("You have exited the program.");
-                saveProgram();
+                saveProgram("hi.txt");
                 return true;
             default:
 //                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
@@ -335,37 +346,41 @@ public class TechConferenceSystem implements Viewable{
         }
     }
 
-    private void createProgram(boolean load) {
-        if (load) {
-            Reader reader = new Reader();
-            if (reader.verifySaves()) {
-                chatManager = (ChatManager) reader.loadData("cm.txt");
-                eventManager = (EventManager) reader.loadData("em.txt");
-                roomManager = (RoomManager) reader.loadData("rm.txt");
-                userManager = (UserManager) reader.loadData("um.txt");
-            } else {
-                chatManager = new ChatManager();
-                eventManager = new EventManager();
-                roomManager = new RoomManager();
-                userManager = new UserManager();
-            }
-        } else {
-            chatManager = new ChatManager();
-            eventManager = new EventManager();
-            roomManager = new RoomManager();
-            userManager = new UserManager();
-        }
+    public boolean createProgram() {
+        chatManager = new ChatManager();
+        eventManager = new EventManager();
+        roomManager = new RoomManager();
+        userManager = new UserManager();
+        initializeManagers();
+        return true;
+    }
+
+    private void initializeManagers() {
         loginSystem = new LoginSystem(userManager);
         messagingSystem = new MessagingSystem(chatManager, userManager, eventManager);
         schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager);
         signUpSystem = new SignUpSystem(eventManager, userManager);
     }
 
-    private void saveProgram() {
+    public void saveProgram(String filename) {
         Writer writer = new Writer();
-        writer.writeToFile("cm.txt", chatManager);
-        writer.writeToFile("em.txt", eventManager);
-        writer.writeToFile("rm.txt", roomManager);
-        writer.writeToFile("um.txt", userManager);
+        Object saveObjects[] = new Object[4];
+        saveObjects[0] = chatManager;
+        saveObjects[1] = eventManager;
+        saveObjects[2] = roomManager;
+        saveObjects[3] = userManager;
+        writer.writeToFile(filename, saveObjects);
+    }
+
+    public String[] displayAllEvents() {
+        List<String> events = eventManager.getAllEventTitle();
+        String[] toReturn = events.toArray(new String[0]);
+        return toReturn;
+    }
+
+    public String[] displaySignedUpEvents(String username) {
+        List<String> events = userManager.getEventAttending(username);
+        String[] toReturn = events.toArray(new String[0]);
+        return toReturn;
     }
 }

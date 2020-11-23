@@ -43,11 +43,18 @@ public class Dashboard{
     private JButton confirmSpeakerSignUp;
     private JButton confirmLogIn;
     private JButton nextPanel;
-    private JTextField username;
+    private JButton confirmFilename;
+    private JButton save;
+    private JButton confirmSave;
+    private JTextField textInput;
     private JPasswordField password;
     private String currentMenu;
+    private String previousMenu;
     private String loginType;
     private Viewable sendsInfo;
+    private JTextField filename;
+    private JLabel errorText;
+    private JList displayList;
 
     public Dashboard() {
         frame = new JFrame("Tech Conference System");
@@ -59,6 +66,7 @@ public class Dashboard{
         frame.setVisible(true);
         createButtons();
         currentMenu = "";
+        previousMenu = "";
         loginType = "";
         loadMenu();
     }
@@ -70,16 +78,14 @@ public class Dashboard{
         buttonPanel.add(newConference);
         frame.setBounds(300, 130, 800, 600);
         frame.getContentPane().setBackground(Color.BLUE);
-
     }
 
-    //To Joyce, w/e button you need to add to the load Conference, I'm not touching this.
     public void loadConference(){
         currentMenu = "Loading Conference";
         buttonPanel.removeAll();
-        sendsInfo.loadConferenceButton();
+        buttonPanel.add(filename);
+        buttonPanel.add(confirmFilename);
         frame.pack();
-
     }
 
     public void loginSignup() {
@@ -88,13 +94,14 @@ public class Dashboard{
         buttonPanel.add(login);
         buttonPanel.add(createAttendee);
         buttonPanel.add(createOrganizer);
+        buttonPanel.add(save);
         buttonPanel.add(exit);
         frame.pack();
     }
 
     public void createAttendeeAccount(){
         buttonPanel.removeAll();
-        buttonPanel.add(username);
+        buttonPanel.add(textInput);
         buttonPanel.add(password);
         buttonPanel.add(confirmAttendeeSignUp);
         frame.pack();
@@ -103,7 +110,7 @@ public class Dashboard{
 
     public void createOrganizerAccount(){
         buttonPanel.removeAll();
-        buttonPanel.add(username);
+        buttonPanel.add(textInput);
         buttonPanel.add(password);
         buttonPanel.add(confirmOrganizerSignUp);
         frame.pack();
@@ -113,34 +120,20 @@ public class Dashboard{
     public void createSpeakerAccount(){
         currentMenu = "CreateSpeaker";
         buttonPanel.removeAll();
-        buttonPanel.add(username);
+        buttonPanel.add(textInput);
         buttonPanel.add(password);
         buttonPanel.add(confirmOrganizerSignUp);
         frame.pack();
     }
 
-
-    public void failedAccountLogin(){
+    public void failedMenu(String failedMessage) {
+        currentMenu = "FailedMenu";
         buttonPanel.removeAll();
-        JLabel failedMsgOne = new JLabel ("You have entered an invalid username/password or");
-        JLabel failedMsgTwo = new JLabel("the username does not exist in the database.");
+        errorText.setText(failedMessage);
         buttonPanel.add(nextPanel);
-        buttonPanel.add(failedMsgOne);
-        buttonPanel.add(failedMsgTwo);
+        buttonPanel.add(errorText);
         frame.pack();
     }
-
-    public void failedAccountCreate(){
-        buttonPanel.removeAll();
-        JLabel failedMsgOne = new JLabel ("The existing username is in our database.");
-        JLabel failedMsgTwo = new JLabel("Please try again");
-        buttonPanel.add(nextPanel);
-        buttonPanel.add(failedMsgOne);
-        buttonPanel.add(failedMsgTwo);
-        frame.pack();
-    }
-
-
 
     public void loggedInAttendee() {
         loginType = "Attendee";
@@ -148,6 +141,7 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(signUpMenu);
         buttonPanel.add(messageMenu);
+        buttonPanel.add(save);
         buttonPanel.add(logout);
         frame.pack();
     }
@@ -160,6 +154,7 @@ public class Dashboard{
         buttonPanel.add(messageMenu);
         buttonPanel.add(scheduleMenu);
         buttonPanel.add(createSpeaker);
+        buttonPanel.add(save);
         buttonPanel.add(logout);
         frame.pack();
     }
@@ -170,6 +165,7 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(messageMenu);
         buttonPanel.add(seeListEvents);
+        buttonPanel.add(save);
         buttonPanel.add(logout);
         frame.pack();
     }
@@ -227,12 +223,38 @@ public class Dashboard{
 
     public void usernamePassword() {
         buttonPanel.removeAll();
-        buttonPanel.add(username);
+        buttonPanel.add(textInput);
         buttonPanel.add(password);
         buttonPanel.add(confirmLogIn);
         frame.pack();
     }
 
+    public void displayEvents(boolean allOrNot) {
+        buttonPanel.removeAll();
+        String[] info;
+        if (allOrNot) {
+            info = sendsInfo.displayAllEvents();
+        } else {
+            // save current username I guess to run this
+//            info = sendsInfo.displaySignedUpEvents();
+            info = new String[1];
+        }
+        if (info.length == 0) {
+            errorText.setText("no events :(");
+            buttonPanel.add(errorText);
+        } else {
+            displayList.setListData(info);
+            buttonPanel.add(displayList);
+        }
+        frame.pack();
+    }
+
+    public void saveMenu() {
+        buttonPanel.removeAll();
+        buttonPanel.add(textInput);
+        buttonPanel.add(confirmSave);
+        frame.pack();
+    }
 
     private void createButtons() {
         load = new JButton("Load Existing Conference");
@@ -275,6 +297,7 @@ public class Dashboard{
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sendsInfo.saveProgram("hi.txt.");
                 System.exit(0);
             }
         });
@@ -325,6 +348,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: some event display
+                displayEvents(true);
             }
         });
         seeSignedEvent = new JButton("See Signed Up Events");
@@ -332,6 +356,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: some other event display
+                displayEvents(false);
             }
         });
         nextPanel = new JButton("Next");
@@ -354,31 +379,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: move back one menu
-                switch (currentMenu) {
-                    case "signupevent":
-                    case "messaging":
-                        switch (loginType) {
-                            case "attendee":
-                                loggedInAttendee();
-                                break;
-                            case "organizer":
-                                loggedInOrganizer();
-                                break;
-                            case "speaker":
-                                loggedInSpeaker();
-                                break;
-                        }
-                        break;
-                    case "browseevent":
-                        signUpEventMenu();
-                        break;
-                    case "scheduling":
-                        loggedInOrganizer();
-                        break;
-                    case "sendmessage":
-                        messagingMenu();
-                        break;
-                }
+                previousMenu();
             }
         });
         viewChat = new JButton("View All Chats");
@@ -462,47 +463,54 @@ public class Dashboard{
         confirmAttendeeSignUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sendsInfo.createAttendeeButton("username", "password")) {
+                //fyi password.getText() is deprecated bc java prefers password.getPassword()
+                //which returns a char array instead of a string. idk if anyone wants to change
+                //user/pass verification to use char array for the password but i'm not doing it so
+                if (sendsInfo.createAttendeeButton(textInput.getText(), password.getText())) {
                     loginSignup();
                     System.out.println("hi2");
                 }else{
-                    failedAccountCreate();
+                    failedMenu("The existing username is in our database. Please try again.");
                     System.out.println("hi3");
                 }
+                clearTextField();
             }
         });
         confirmOrganizerSignUp = new JButton("Confirm");
         confirmOrganizerSignUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sendsInfo.createOrganizerButton("username", "password")) {
+                if (sendsInfo.createOrganizerButton(textInput.getText(), password.getText())) {
                     loginSignup();
                     System.out.println("hi2");
                 }else{
-                    failedAccountCreate();
+                    failedMenu("The existing username is in our database. Please try again.");
                     System.out.println("hi3");
                 }
+                clearTextField();
             }
         });
         confirmSpeakerSignUp = new JButton("Confirm");
         confirmSpeakerSignUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sendsInfo.createSpeakerButton("username", "password")) {
+                if (sendsInfo.createSpeakerButton(textInput.getText(), password.getText())) {
                     loginSignup();
                 }else{
-                    failedAccountCreate();
+                    failedMenu("The existing username is in our database. Please try again.");
                 }
+                clearTextField();
             }
         });
         confirmLogIn = new JButton("Confirm Log In");
         confirmLogIn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String status = sendsInfo.LogInButton("username", "password");
+                String status = sendsInfo.LogInButton(textInput.getText(), password.getText());
                 switch (status) {
                     case "false":
-                        failedAccountLogin();
+                        failedMenu("You have entered an invalid username/password or " +
+                                "the username does not exist in the database.");
                         break;
                     case "Attendee":
                         loggedInAttendee();
@@ -514,13 +522,90 @@ public class Dashboard{
                         loggedInSpeaker();
                         break;
                 }
+                clearTextField();
             }
         });
-        username = new JTextField("username", 20);
+        confirmFilename = new JButton("Confirm");
+        confirmFilename.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String desiredFile = filename.getText();
+                if (sendsInfo.loadConferenceButton(desiredFile)) {
+                    loginSignup();
+                } else {
+                    failedMenu("Load failed.");
+                }
+
+            }
+        });
+        save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveMenu();
+            }
+        });
+        confirmSave = new JButton("Confirm");
+        confirmSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendsInfo.saveProgram(textInput.getText());
+                clearTextField();
+                previousMenu();
+            }
+        });
+        textInput = new JTextField("username", 20);
         password = new JPasswordField(20);
+        errorText = new JLabel();
+        displayList = new JList();
     }
 
     public void setView(final Viewable sendsInfo) {
         this.sendsInfo = sendsInfo;
+    }
+
+    private void clearTextField() {
+        textInput.setText("");
+        password.setText("");
+    }
+
+    private void previousMenu() {
+        switch (currentMenu) {
+            case "signupevent":
+            case "messaging":
+                switch (loginType) {
+                    case "Attendee":
+                        loggedInAttendee();
+                        break;
+                    case "Organizer":
+                        loggedInOrganizer();
+                        break;
+                    case "Speaker":
+                        loggedInSpeaker();
+                        break;
+                }
+                break;
+            case "browseevent":
+                signUpEventMenu();
+                break;
+            case "scheduling":
+                loggedInOrganizer();
+                break;
+            case "sendmessage":
+                messagingMenu();
+                break;
+            case "loggedinattendee":
+                loggedInAttendee();
+                break;
+            case "loggedinorganizer":
+                loggedInOrganizer();
+                break;
+            case "loggedinspeaker":
+                loggedInSpeaker();
+                break;
+            case "LoginSignUp":
+                loginSignup();
+                break;
+        }
     }
 }

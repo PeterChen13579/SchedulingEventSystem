@@ -1,5 +1,7 @@
 package GUI;
 
+import java.util.List;
+
 public interface Viewable {
 
     //public void loadMenu();
@@ -17,6 +19,9 @@ public interface Viewable {
     boolean createOrganizerButton(String username, String password);
     boolean createSpeakerButton(String username, String password);
     String LogInButton(String username, String password);
-    boolean loadConferenceButton();
+    boolean loadConferenceButton(String filename);
+    void saveProgram(String filename);
+    String[] displayAllEvents();
+    String[] displaySignedUpEvents(String username);
 
 }
