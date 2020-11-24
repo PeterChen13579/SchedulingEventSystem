@@ -50,7 +50,10 @@ public class SchedulingSystem {
                 temp = br.readLine();
                 if (temp.equals("1")) {
                     menu.printStatement("Please enter the room number you want to add: ");
-                    addRoom(br.readLine());
+                    String roomNum = br.readLine();
+                    menu.printStatement("Please enter the capacity of the room: ");
+                    int capacity = Integer.parseInt(br.readLine());
+                    addRoom(roomNum, capacity);
                 } else if (temp.equals("2")) {
                     String inputEventType = "";
                     while(!inputEventType.equals("4")) {
@@ -71,13 +74,13 @@ public class SchedulingSystem {
      * If satisfied, create new room and print success message.
      * @param rmNum the room number for the event
      */
-    private void addRoom(String rmNum){
+    private void addRoom(String rmNum, int capacity){
         //check if room already exists
         if (rm.doesRoomExist(rmNum)){
             menu.printStatement("Room already exists!");
         }else{
             //create the new room
-            rm.createRoom(rmNum);
+            rm.createRoom(rmNum, capacity);
             menu.printStatement("Room successfully created!");
         }
     }
@@ -107,7 +110,9 @@ public class SchedulingSystem {
                         "\n(Please type different speaker usernames in separate lines, click enter twice to end)");
                 while (!br.readLine().isEmpty() ){ inputSpeakerList.add(br.readLine());}
             }
-            addEvent(inputVIP, inputDate, inputStartTime,inputEndTime, inputRoom, inputSpeakerList, inputTitle);
+            menu.printStatement("Please enter the maximum number (positive integer) of people who can attend the event: ");
+            String maxNum = br.readLine();
+            helper_addEvent(inputVIP, inputDate, inputStartTime, inputEndTime, inputRoom, inputSpeakerList, inputTitle, maxNum);
         }catch (IOException e){
             menu.printStatement("Oops! Something unexpected happened!");
         }
@@ -125,7 +130,7 @@ public class SchedulingSystem {
      * @param speakerUsernames the names of the speaker for the event
      * @param title the title for the event
      */
-    private void addEvent (Boolean VIP, String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title){
+    private void helper_addEvent (Boolean VIP, String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, String maxNum){
 
         //check if date is valid format and value
         if (!em.parseStringToLocalDate(date)){
@@ -155,13 +160,34 @@ public class SchedulingSystem {
         else if(!em.isEventTitleUnique(title)){
             menu.printStatement("Uh-oh! The event title has already been taken!");
         }
+        // Check if the maxNum is an integer.
+        else if (!helper_isMaxNumInt(maxNum)){
+            menu.printStatement("Uh-oh! The maximum number of people who can attend should be an integer. ");
+        }
+        else if (Integer.parseInt(maxNum) <= 0){
+            menu.printStatement("Uh-oh! The maximum number of people who can attend should be a positive integer. ");
+        }
+        // check if the maximum number of the people who can attend the event exceeds the assigned room capacity.
+        else if (Integer.parseInt(maxNum) > rm.getCapacity(rmNum)){
+            menu.printStatement("Uh-oh! The maximum number of  people who can attend the event exceeds the room capacity.");
+        }
         //if everything works out
         else if(canAddEvent(date, startTime, endTime, rmNum, speakerUsernames, title)){
-            em.createEvent(VIP, title, date, startTime, endTime, rmNum, speakerUsernames);
+            em.createEvent(VIP, title, date, startTime, endTime, rmNum, Integer.parseInt(maxNum), speakerUsernames);
             //update the speaker's list of events
             for (String speakerUsername : speakerUsernames){ um.addEventToSpeaker(title, speakerUsername);}
             menu.printStatement("Event successfully created!");}
         }
+
+
+    private boolean helper_isMaxNumInt(String maxNum){
+        try {
+            Integer.parseInt(maxNum);
+        }catch (Exception NumberFormatException){
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Helper method to check if all speakers in the list exists
