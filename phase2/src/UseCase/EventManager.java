@@ -312,4 +312,8 @@ public class EventManager implements Serializable {
         Event event = helperEventTitle(eventTitle);
         return event.getSpeakerUserName();
     }
+
+    public String eventType(String eventTitle){
+        return " ";
+    }
 }
