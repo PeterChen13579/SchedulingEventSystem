@@ -24,5 +24,7 @@ public interface Viewable {
     String[] displayAllEvents();
     String[] displaySignedUpEvents(String username);
     boolean confirmRoom(String roomNumber);
+    int signUpForEvent(String username, String eventTitle);
+    int cancelAttendEvent(String username, String eventTitle);
 
 }

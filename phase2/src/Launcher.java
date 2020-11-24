@@ -8,9 +8,8 @@ import GUI.Dashboard;
  */
 public class Launcher {
 
-
-
     public static void main(String[] args) {
+
         final Dashboard dashboard = new Dashboard();
         new TechConferenceSystem(dashboard);
     }

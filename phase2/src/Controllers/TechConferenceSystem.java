@@ -127,10 +127,6 @@ public class TechConferenceSystem implements Viewable{
     }
 
     private boolean start(){
-
-        dashboard.loadMenu();
-
-
         Scanner input = new Scanner(System.in);
         String temp = input.nextLine();
 
@@ -392,5 +388,44 @@ public class TechConferenceSystem implements Viewable{
             return true;
         }
 
+    }
+
+    public int signUpForEvent(String username, String eventTitle) {
+        try {
+            if (eventManager.isAttendeeAdded(username, eventTitle)) {
+//            sp.printStatement("You have signed up for this event before.");
+                return 1;
+            }
+            if (eventManager.canAddAttendee(username, eventTitle)) {
+                eventManager.addAttendee(username, eventTitle);
+                userManager.signUpEventAttendee(username, eventTitle);
+//            sp.printStatement("You have successfully signed up for this event.");
+            }
+            if (!eventManager.roomNotFull(eventTitle)) {
+//            sp.printStatement("The event you have entered is already full.");
+                return 2;
+            }
+        } catch (IllegalArgumentException e) {
+//            sp.printStatement("The event title you have entered is invalid.");
+            return 3;
+        }
+        return 0;
+    }
+    
+    public int cancelAttendEvent(String username, String eventTitle) {
+        try {
+            if (!eventManager.isAttendeeAdded(username, eventTitle)) {
+//            sp.printStatement("You haven't signed up for this event yet.");
+                return 1;
+            }
+            if (eventManager.canDeleteAttendee(username, eventTitle)) {
+                eventManager.deleteAttendee(username, eventTitle);
+                userManager.cancelSpotAttendee(username, eventTitle);
+//            sp.printStatement("You have cancelled the spot for this event.");
+            }
+        } catch (IllegalArgumentException e) {
+            return 2;
+        }
+        return 0;
     }
 }
