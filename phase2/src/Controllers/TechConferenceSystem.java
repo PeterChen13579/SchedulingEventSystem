@@ -355,7 +355,7 @@ public class TechConferenceSystem implements Viewable{
         loginSystem = new LoginSystem(userManager);
         messagingSystem = new MessagingSystem(chatManager, userManager, eventManager);
         schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager);
-        signUpSystem = new SignUpSystem(eventManager, userManager);
+        signUpSystem = new SignUpSystem(eventManager, userManager, roomManager);
     }
 
     public void saveProgram(String filename) {
@@ -401,7 +401,7 @@ public class TechConferenceSystem implements Viewable{
                 userManager.signUpEventAttendee(username, eventTitle);
 //            sp.printStatement("You have successfully signed up for this event.");
             }
-            if (!eventManager.roomNotFull(eventTitle)) {
+            if (!signUpSystem.roomNotFull(eventTitle)) {
 //            sp.printStatement("The event you have entered is already full.");
                 return 2;
             }

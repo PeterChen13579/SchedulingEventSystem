@@ -3,6 +3,7 @@ package Controllers;
 import Presenters.EventPresenter;
 import Presenters.StatementPresenter;
 import UseCase.EventManager;
+import UseCase.RoomManager;
 import UseCase.UserManager;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 public class SignUpSystem {
     EventManager em;
     UserManager um;
+    RoomManager rm;
     EventPresenter ep;
     StatementPresenter sp;
 
@@ -23,9 +25,10 @@ public class SignUpSystem {
      * @param em the EventManager for this execution of the program
      * @param um the UserManager for this execution of the program
      */
-    public SignUpSystem(EventManager em, UserManager um) {
+    public SignUpSystem(EventManager em, UserManager um, RoomManager rm) {
         this.em = em;
         this.um = um;
+        this.rm = rm;
         this.ep = new EventPresenter(em, um);
         this.sp = new StatementPresenter();
     }
@@ -74,6 +77,14 @@ public class SignUpSystem {
         }
     }
 
+
+    public boolean roomNotFull(String eventTitle){
+        int attendeeNum = em.attendeeNum(eventTitle);
+        String roomNum = em.getRoomNum(eventTitle);
+        int roomCapacity = rm.getCapacity(roomNum);
+        return roomCapacity > attendeeNum;
+    }
+
     /**
      * Method that calls methods in EventManager and UserManager to sign up for an event
      * @param userName the username of this Attendee
@@ -83,15 +94,17 @@ public class SignUpSystem {
         if (em.isAttendeeAdded(userName, eventTitle)){
             sp.printStatement("You have signed up for this event before.");
         }
-        if(em.canAddAttendee(userName, eventTitle)){
+        else if (!roomNotFull(eventTitle)){
+            sp.printStatement("The event you have entered is already full.");
+        }
+        else if (!um.isAttendeeVIP(userName) & em.VIP(eventTitle)){
+            sp.printStatement("Sorry, you are not a VIP user, so you cannot sign up for a VIP event.");
+        }
+        else{
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
             sp.printStatement("You have successfully signed up for this event.");
         }
-        if (!em.roomNotFull(eventTitle)){
-            sp.printStatement("The event you have entered is already full.");
-        }
-
     }
 
     /**

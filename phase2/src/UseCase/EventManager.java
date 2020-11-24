@@ -224,7 +224,7 @@ public class EventManager implements Serializable {
      * @return true iff we can add the username of this attendee to the attendeeList of this event
      */
     public boolean canAddAttendee(String userName, String eventTitle){
-        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle) && roomNotFull(eventTitle);
+        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle);
     }
 
     /**
@@ -256,18 +256,25 @@ public class EventManager implements Serializable {
 
     }
 
-//    /**
-//     * Returns whether or not the room of this event is full
-//     * @param eventTitle the event title that we want to check
-//     * @return true iff the room is not full
-//     */
-//    public boolean roomNotFull(String eventTitle){
-//        Event event = helperEventTitle(eventTitle);
-//        int attendeeNum = event.getAttendeeList().size();
-//        event.getRoomNum();
-//        Room exampleRoom = new Room("exampleRoom");
-//        return exampleRoom.getCapacity() > attendeeNum;
-//    }
+    /**
+     * get the number of attendee who have signed up for this event
+     * @param eventTitle the event title that we want to check
+     * @return the number of attendee currently, who have signed up for this event
+     */
+    public int attendeeNum(String eventTitle){
+        Event event = helperEventTitle(eventTitle);
+        return event.getAttendeeList().size();
+    }
+
+    /**
+     * get the room number of this event
+     * @param eventTitle the event title that we want to check
+     * @return the room number of this event
+     */
+    public String getRoomNum(String eventTitle){
+        Event event = helperEventTitle(eventTitle);
+        return event.getRoomNum();
+    }
 
     /**
      * Add attendee to the attendeeList stored in Event

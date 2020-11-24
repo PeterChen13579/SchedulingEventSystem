@@ -295,4 +295,16 @@ public class UserManager implements Serializable {
         Speaker speaker = stringToSpeaker(username);
         return speaker.getTalkTitles();
     }
+
+    /**
+     * PRECONDITION: Attendee account with this username must exist
+     * Returns whether this Attendee is VIP
+     *
+     * @param userName String username of a Attendee account
+     * @return         true iff this attendee is VIP
+     */
+    public boolean isAttendeeVIP(String userName){
+        Attendee attendee = stringToAttendee(userName);
+        return attendee.isVIP();
+    }
 }
