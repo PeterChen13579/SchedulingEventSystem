@@ -4,7 +4,7 @@ import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
 import Presenters.StatementPresenter;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+//import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -209,11 +209,11 @@ public class SchedulingSystem {
      * @return true iff all speakers in the list are available
      */
     private Boolean helperAreSpeakersAvailable(String date, String startTime, String endTime, List<String> speakerUsernames){
-        for(String speakerUsername : speakerUsernames){
-            if(!em.isSpeakerAvailableAtTime(date,startTime,endTime, speakerUsername)){
-                return false;
-            }
-        }
+        //for(String speakerUsername : speakerUsernames){
+            //if(!em.isSpeakerAvailableAtTime(date,startTime,endTime, speakerUsername)){
+                //return false;
+            //}
+        //}
         return true;
     }
 

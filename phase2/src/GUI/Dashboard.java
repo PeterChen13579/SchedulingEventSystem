@@ -57,13 +57,16 @@ public class Dashboard{
     private JLabel addRoomLabel;
     private JTextField textInput;
     private JTextField roomNumber;
+    private JTextField roomCapacity;
     private JPasswordField password;
     private String currentMenu;
     private String previousMenu;
     private String loginType;
+    private JLabel displayCapacity;
     private Viewable sendsInfo;
     private JTextField filename;
     private JLabel errorText;
+    private JLabel displayUsername, displayPassword;
     private JList displayList;
     private String currentUsername, currentPassword;
     private SynthLookAndFeel style = new SynthLookAndFeel();
@@ -127,7 +130,9 @@ public class Dashboard{
     private void usernamePassword() {
         currentMenu = "UsernamePassword";
         buttonPanel.removeAll();
+        buttonPanel.add(displayUsername);
         buttonPanel.add(textInput);
+        buttonPanel.add(displayPassword);
         buttonPanel.add(password);
         buttonPanel.add(confirmLogIn);
         buttonPanel.add(back);
@@ -138,7 +143,9 @@ public class Dashboard{
     private void createAttendeeAccount(){
         currentMenu = "CreateAttendee";
         buttonPanel.removeAll();
+        buttonPanel.add(displayUsername);
         buttonPanel.add(textInput);
+        buttonPanel.add(displayPassword);
         buttonPanel.add(password);
         buttonPanel.add(confirmAttendeeSignUp);
         buttonPanel.add(back);
@@ -149,7 +156,9 @@ public class Dashboard{
     private void createOrganizerAccount(){
         currentMenu = "CreateOrganizer";
         buttonPanel.removeAll();
+        buttonPanel.add(displayUsername);
         buttonPanel.add(textInput);
+        buttonPanel.add(displayPassword);
         buttonPanel.add(password);
         buttonPanel.add(confirmOrganizerSignUp);
         buttonPanel.add(back);
@@ -158,9 +167,12 @@ public class Dashboard{
 
 
     private void createSpeakerAccount(){
+        System.out.println("Create Speaker");
         currentMenu = "CreateSpeaker";
         buttonPanel.removeAll();
+        buttonPanel.add(displayUsername);
         buttonPanel.add(textInput);
+        buttonPanel.add(displayPassword);
         buttonPanel.add(password);
         buttonPanel.add(confirmSpeakerSignUp);
         buttonPanel.add(back);
@@ -180,6 +192,7 @@ public class Dashboard{
 
 
     private void loggedInAttendee() {
+        System.out.println("this happened");
         loginType = "Attendee";
         currentMenu = "LoggedInAttendee";
         buttonPanel.removeAll();
@@ -354,9 +367,10 @@ public class Dashboard{
     private void addRoom(){
         currentMenu = "AddRoom";
         buttonPanel.removeAll();
-        addRoomLabel.setText("Please enter the room number you want to add.");
         buttonPanel.add(addRoomLabel);
         buttonPanel.add(roomNumber);
+        buttonPanel.add(displayCapacity);
+        buttonPanel.add(roomCapacity);
         buttonPanel.add(confirmRoomNumber);
         buttonPanel.add(back);
         frame.pack();
@@ -600,8 +614,11 @@ public class Dashboard{
         confirmRoomNumber.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sendsInfo.confirmRoom(roomNumber.getText())){
-                    loggedInOrganizer();
+                int capacity = tryParse(roomCapacity.getText());
+                if (capacity != -1){
+                    if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
+                        loggedInOrganizer();
+                    }
                 }else{
                     failedMenu("You have entered an invalid room number or the room " +
                             "has already been created");
@@ -773,13 +790,17 @@ public class Dashboard{
                 //TODO: connect phase 1 add event
             }
         });
-        textInput = new JTextField(20);
-        password = new JPasswordField(20);
+        textInput = new JTextField(15);
+        password = new JPasswordField(15);
         errorText = new JLabel();
         displayList = new JList();
-        filename = new JTextField("File Name", 20);
-        roomNumber = new JTextField("Enter room number", 20);
-        addRoomLabel = new JLabel();
+        filename = new JTextField("File Name", 15);
+        roomNumber = new JTextField(15);
+        roomCapacity = new JTextField(15);
+        addRoomLabel = new JLabel("Room Number:");
+        displayCapacity = new JLabel("Capacity");
+        displayUsername = new JLabel("Username");
+        displayPassword = new JLabel("Password:");
     }
 
     public void setView(final Viewable sendsInfo) {
@@ -827,6 +848,12 @@ public class Dashboard{
 
     private void returnToSameMenu() {
         switch (currentMenu) {
+            case "CreateSpeaker":
+                createSpeakerAccount();
+                break;
+            case "CreateAttendee":
+                createAttendeeAccount();
+                break;
             case "LoggedInAttendee":
                 loggedInAttendee();
                 break;
@@ -871,6 +898,14 @@ public class Dashboard{
             case "Speaker":
                 loggedInSpeaker();
                 break;
+        }
+    }
+
+    public Integer tryParse(String text){
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return -1;
         }
     }
 }

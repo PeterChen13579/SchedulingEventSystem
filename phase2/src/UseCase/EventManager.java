@@ -148,7 +148,7 @@ public class EventManager implements Serializable {
      * @param startTime the start time for the potential event (HH:mm:ss)
      * @return true iff the room given is not booked by another event at the same time
      */
-    public boolean isRoomAvailableAtTime(String roomNum, String date, String startTime){
+    public boolean isRoomAvailableAtTime(String roomNum, String date, String startTime, String endTime){
         LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
         //check if room is booked at the time
         for(Event e: allEvents){

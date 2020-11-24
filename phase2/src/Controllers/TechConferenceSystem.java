@@ -90,13 +90,7 @@ public class TechConferenceSystem implements Viewable{
         return true;
     }
 
-    /**
-     * A method that creates an existing conference; Method runs when the user clicks the "new conference" button
-     */
 
-    public void newConferenceButton(){
-        createProgram();
-    }
 
 
     public String LogInButton(String username, String password){
@@ -375,16 +369,21 @@ public class TechConferenceSystem implements Viewable{
     }
 
     public String[] displaySignedUpEvents(String username) {
-        List<String> events = userManager.getEventAttending(username);
+        List<String> events;
+        if (userManager.userType(username).equals("Speaker")){
+            events = userManager.getEventsSpeaking(username);
+        }else {
+            events = userManager.getEventAttending(username);
+        }
         String[] toReturn = events.toArray(new String[0]);
         return toReturn;
     }
 
-    public boolean confirmRoom(String roomNumber){
+    public boolean confirmRoom(String roomNumber, int capacity){
         if (roomManager.doesRoomExist(roomNumber)){
             return false;
         }else{
-            roomManager.createRoom(roomNumber);
+            roomManager.createRoom(roomNumber, capacity);
             return true;
         }
 
