@@ -1,0 +1,38 @@
+<synth>
+	<style id="uoftears">
+		<font name="Century Gothic" size="18"/>
+		<state>
+			<color value="WHITE" type="BACKGROUND"/>
+			<color value="BLACK" type="FOREGROUND"/>
+		</state>
+	</style>
+	<bind style="uoftears" type="region" key=".*"/>
+
+	<style id="buttons">
+		<opaque value="TRUE"/>
+		<font name="Century Gothic" size="18"/>
+		<insets top="15" left="20" bottom="15" right="20"/>
+		<state>
+			<color value="PINK" type="BACKGROUND"/>
+			<color value="BLACK" type="FOREGROUND"/>
+		</state>
+
+		<state value="MOUSE_OVER">
+			<color value="#f98686" type="BACKGROUND"/>
+		</state>
+
+	</style>
+	<bind style="buttons" type="region" key="Button"/>
+
+	<style id="textfield">
+		<opaque value="TRUE"/>
+		<font name="Century Gothic" size="18"/>
+		<insets top="15" left="20" bottom="15" right="20"/>
+		<state>
+			<color value="PINK" type="BACKGROUND"/>
+			<color value="BLACK" type="FOREGROUND"/>
+		</state>
+	</style>
+	<bind style="textfield" type="region" key="TextField"/>
+	<bind style="textfield" type="region" key="PasswordField"/>
+</synth>

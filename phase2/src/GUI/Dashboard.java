@@ -6,9 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 
@@ -73,14 +70,13 @@ public class Dashboard{
 
     public Dashboard() {
         //@peter dw about this lmao
-//        try {
-//            style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
-//            UIManager.setLookAndFeel(style);
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
+        try {
+            style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
+            UIManager.setLookAndFeel(style);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         frame = new JFrame("Tech Conference System");
-        frame.setLayout(new CardLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         buttonPanel = new JPanel();
@@ -100,8 +96,7 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(load);
         buttonPanel.add(newConference);
-        frame.setBounds(300, 130, 800, 600);
-        frame.getContentPane().setBackground(Color.BLUE);
+        frame.pack();
     }
 
     private void loadConference(){
@@ -395,6 +390,7 @@ public class Dashboard{
                 loadConference();
             }
         });
+        load.setName("button");
         newConference = new JButton("Create New Conference");
         newConference.addActionListener(new ActionListener() {
             @Override
@@ -796,7 +792,6 @@ public class Dashboard{
     }
 
     private void previousMenu() {
-        System.out.println(previousMenu);
         switch (previousMenu) {
             case "LoggedIn":
                 loginType();
