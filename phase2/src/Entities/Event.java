@@ -8,23 +8,24 @@ import java.util.List;
 /**
  * A Event in our program
  */
-public class Event implements Serializable {
+public abstract class Event implements Serializable {
     private String title;
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
     private final String roomNum;
-    private final String speakerUserName;
     private List<String> attendeeList;
-    private boolean VIP;
+    private final boolean VIP;
+    private final int maxNum;
 
-    public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime, String roomNum, String speakerUserName){
+    public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime,
+                 String roomNum, boolean VIP, int maxNum){
     this.title = eventTitle;
     this.startTime = startTime;
     this.endTime = endTime;
     this.roomNum = roomNum;
-    this.speakerUserName = speakerUserName;
     this.attendeeList = new ArrayList<>();
-    this.VIP = false;
+    this.VIP = VIP;
+    this.maxNum = maxNum;
     }
 
     /**
@@ -44,14 +45,6 @@ public class Event implements Serializable {
     }
 
     /**
-     * Setter for the vip status of the Event. A default event is non VIP.
-     * @param VIP whether or not to set the event to be vip
-     */
-    public void setVIP(boolean VIP){
-        this.VIP = VIP;
-    }
-
-    /**
      * Getter for title of the Event
      * @return the title of the Event
      */
@@ -65,14 +58,6 @@ public class Event implements Serializable {
      */
     public String getRoomNum() {
         return roomNum;
-    }
-
-    /**
-     * Getter for speaker username of the Event
-     * @return the speaker username for the Event
-     */
-    public String getSpeakerUserName() {
-        return speakerUserName;
     }
 
     /**
@@ -100,10 +85,14 @@ public class Event implements Serializable {
     }
 
     /**
-     * Getter for the the vip status of the Event
-     * @return true iff it is a vip event
+     * Getter for the type of the event.
+     * @return return true iff this event is a VIP event.
      */
-    public boolean isVIP() {
-        return VIP;
-    }
+    public boolean getVIP() { return VIP; }
+
+    /**
+     * Getter for the maximum number of people who can attend this event.
+     * @return the maximum number of people who can attend this event.
+     */
+    public int getMaxNum() { return maxNum; }
 }
