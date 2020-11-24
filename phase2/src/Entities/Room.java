@@ -8,11 +8,12 @@ import java.util.List;
 
 public class Room implements Serializable {
     private final String roomNum;
-    private final Integer capacity = 2;
+    private final Integer capacity;
     private List<String> eventTitles;
 
-    public Room(String roomNum){
+    public Room(String roomNum, int capacity){
         this.roomNum = roomNum;
+        this.capacity = capacity;
     }
 
     /**

@@ -8,24 +8,26 @@ import java.util.List;
 /**
  * A Event in our program
  */
-public abstract class Event implements Serializable {
+public class Event implements Serializable {
     private String title;
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
     private final String roomNum;
     private List<String> attendeeList;
+    private List<String> speakerUserNames;
     private final boolean VIP;
     private final int maxNum;
 
     public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime,
-                 String roomNum, boolean VIP, int maxNum){
-    this.title = eventTitle;
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.roomNum = roomNum;
-    this.attendeeList = new ArrayList<>();
-    this.VIP = VIP;
-    this.maxNum = maxNum;
+                 String roomNum, boolean VIP, int maxNum, List<String> speakerUserNames){
+        this.title = eventTitle;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.roomNum = roomNum;
+        this.speakerUserNames = speakerUserNames;
+        this.attendeeList = new ArrayList<>();
+        this.VIP = VIP;
+        this.maxNum = maxNum;
     }
 
     /**
@@ -95,4 +97,21 @@ public abstract class Event implements Serializable {
      * @return the maximum number of people who can attend this event.
      */
     public int getMaxNum() { return maxNum; }
+
+
+    /**
+     * Getter for the speaker username of this event
+     * @return the speaker username of this event
+     */
+    public List<String> getSpeakerUserNames() {
+        return speakerUserNames;
+    }
+
+    /**
+     * Setter for the speaker username of this event
+     * @param speakerUserNames the new speaker username of this event
+     */
+    public void setSpeakerUserName(List<String> speakerUserNames) {
+        this.speakerUserNames = speakerUserNames;
+    }
 }

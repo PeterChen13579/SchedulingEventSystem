@@ -208,7 +208,7 @@ public class UserManager implements Serializable {
                 return speaker;
             }
         }
-        throw new IllegalArgumentException("There is no such a speaker with the username. ");
+        throw new IllegalArgumentException("There is no such a speaker with the username " + username + ". ");
     }
 
     /**

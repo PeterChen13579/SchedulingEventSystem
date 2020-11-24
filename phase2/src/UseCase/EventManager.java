@@ -18,33 +18,60 @@ import java.time.LocalTime;
  * @author Xinyi Chen and Xinpeng Shan
  */
 public class EventManager implements Serializable {
+    // The list allEvents including all events created including all parties, talks and panels.
     private final List<Event> allEvents;
+    private final List<Event> allParties;
+    private final List<Event> allTalks;
+    private final List<Event> allPanels;
 
     public EventManager() {
         allEvents = new ArrayList<>();
+        allParties = new ArrayList<>();
+        allTalks = new ArrayList<>();
+        allPanels = new ArrayList<>();
     }
 
-    public EventManager(List<Event> event) {
-        allEvents = event;
+    /**
+     * Initialize a new EventManager with given lists parties, talks and panels.
+     * @param parties the list of parties (no-speaker events)
+     * @param talks   the list of talks (one-speaker events)
+     * @param panels  the list of panels (multi-speaker events)
+     */
+    public EventManager(List<Event> parties, List<Event> talks, List<Event> panels) {
+        this.allEvents = new ArrayList<>();
+        allEvents.addAll(parties);
+        allEvents.addAll(talks);
+        allEvents.addAll(panels);
+        this.allParties = parties;
+        this.allTalks = talks;
+        this.allPanels = panels;
     }
 
     /**
      * Create an Event object based on the parameters and add it into the list of allEvents variable.
-     * @param title the title for the event
+     * @param partyTitle the title for the party
      * @param date the date for the event (YYYYMMDD)
-     * @param startTime the start time for the event (HH:mm:ss)
-     * @param rmNum the room number for the event
-     * @param speakerUserName the name of the speaker for the event
+     * @param startTime the start time for the party (HH:mm:ss)
+     * @param rmNum the room number for the party
      */
-    public void createEvent(String title, String date, String startTime, String rmNum, String speakerUserName){
+    public void createEvent(boolean VIP, String partyTitle, String date, String startTime, String endTime,
+                               String rmNum, int maxNum, List<String> speakerUserNames){
         List<LocalDateTime> time = parseStringToLocalDateTime(date, startTime);
-        //create event & add to list
-        Event event = new Event(title, time.get(0), time.get(1), rmNum, speakerUserName);
+
+        // Create and add party to the list allParty.
+        Event event = new Event(partyTitle, time.get(0), time.get(1), rmNum, VIP, maxNum, speakerUserNames);
         allEvents.add(event);
+        if (speakerUserNames.size() == 0) {
+            allParties.add(event);
+        } else if(speakerUserNames.size() == 1){
+            allTalks.add(event);
+        }else {
+            allPanels.add(event);
+        }
     }
 
     /**
-     * Returns a list of 2 LocalDateTime object re presenting the start time and end time of a potential event
+     * Returns a list of 2 LocalDateTime object representing the start time and end time of a potential event
      * (endTime will automatically be 1 hour after startTime)
      * @param date the date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
@@ -142,8 +169,8 @@ public class EventManager implements Serializable {
     public boolean isSpeakerAvailableAtTime(String date, String startTime, String speakerUserName){
         LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
         //check if speaker is booked at the time
-        for(Event e: allEvents){
-            if (e.getStartTime().isEqual(time) && e.getSpeakerUserName().equals(speakerUserName)){
+        for(Event event: allEvents){
+            if (event.getStartTime().isEqual(time) && event.getSpeakerUserNames().contains(speakerUserName)){
                 return false;
             }
         }
@@ -188,7 +215,9 @@ public class EventManager implements Serializable {
     }
 
     /**
-     * Returns whether or not we can add the username of this attendee to the attendeeList of this event,
+     * Returns whether or not we can
+     *
+     * add the username of this attendee to the attendeeList of this event,
      * calls the above helper methods (isEventExist isAttendeeAdded roomNotFull)
      * @param userName the username of the attendee that we want to add
      * @param eventTitle the event title that we want to check if we can add this attendee
@@ -227,20 +256,21 @@ public class EventManager implements Serializable {
 
     }
 
-    /**
-     * Returns whether or not the room of this event is full
-     * @param eventTitle the event title that we want to check
-     * @return true iff the room is not full
-     */
-    public boolean roomNotFull(String eventTitle){
-        Event event = helperEventTitle(eventTitle);
-        int attendeeNum = event.getAttendeeList().size();
-        Room exampleRoom = new Room("exampleRoom");
-        return exampleRoom.getCapacity() > attendeeNum;
-    }
+//    /**
+//     * Returns whether or not the room of this event is full
+//     * @param eventTitle the event title that we want to check
+//     * @return true iff the room is not full
+//     */
+//    public boolean roomNotFull(String eventTitle){
+//        Event event = helperEventTitle(eventTitle);
+//        int attendeeNum = event.getAttendeeList().size();
+//        event.getRoomNum();
+//        Room exampleRoom = new Room("exampleRoom");
+//        return exampleRoom.getCapacity() > attendeeNum;
+//    }
 
     /**
-     * Add attendee to the attendeelist stored in Event
+     * Add attendee to the attendeeList stored in Event
      * @param attendeeUserName the username of attendee that is added to the attendeeList
      * @param eventTitle the event that this attendee sign up to
      */
@@ -285,10 +315,17 @@ public class EventManager implements Serializable {
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT);
         String startTime = event.getStartTime().format(formatter);
         String endTime = event.getEndTime().format(formatter);
-        String speaker = event.getSpeakerUserName();
+        String speakers = "";
+        if (eventType(eventTitle).equals("Party")){
+            speakers = "No speaker";
+        }else {
+            for (String speaker: event.getSpeakerUserNames()){
+                speakers += speaker + " ";
+            }
+        }
         String roomNum = event.getRoomNum();
         return eventTitle + ": " + startTime + " - " + endTime + ", in Room " + roomNum +
-                ". Speaker: " + speaker;
+                ". Speaker: " + speakers;
     }
 
     /**
@@ -308,12 +345,37 @@ public class EventManager implements Serializable {
      * Get speaker username for the given event title
      * @return the speaker username for the given event title
      */
-    public String getSpeakerUsernameByTitle(String eventTitle){
+    public List<String> getSpeakerUsernameByTitle(String eventTitle){
         Event event = helperEventTitle(eventTitle);
-        return event.getSpeakerUserName();
+        return event.getSpeakerUserNames();
     }
 
+    /**
+     * Precondition: THe event with the input event title exists.
+     * Check the event type by event title
+     * @param eventTitle the event title that you want to check
+     * @return return "Party"
+     */
     public String eventType(String eventTitle){
-        return " ";
+        assert isEventExist(eventTitle);
+
+        Event event = helperEventTitle(eventTitle);
+        if (event.getSpeakerUserNames().size() == 0) { return "Party"; }
+        if (event.getSpeakerUserNames().size() == 1) { return "Talk"; }
+        if (event.getSpeakerUserNames().size() > 1)  { return "Panel"; }
+
+        throw new IllegalArgumentException("There is no such an event with the event title " + eventTitle);
+    }
+
+    /**
+     * Check whether the event is a VIP-only event.
+     * @param eventTitle the event title of the event that you want to check
+     * @return return true iff the this event exists and is a VIP-only event, otherwise, return false.
+     */
+    public boolean VIP(String eventTitle){
+        if (isEventExist(eventTitle)){
+            return helperEventTitle(eventTitle).getVIP();
+        }
+        return false;
     }
 }
