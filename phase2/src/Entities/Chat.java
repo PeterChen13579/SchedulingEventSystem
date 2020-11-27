@@ -79,6 +79,15 @@ public class Chat implements Serializable {
     }
 
     /**
+     * Remove a message from the chat
+     * PRECONDITION : The message id must exist in this chat, the last viewed message should be updated to the previous, chronological message
+     * @param newMessageId The message id being added to the chat
+     */
+    public void removeMessage(UUID newMessageId){
+        chatMessages.remove(newMessageId); // the use case needs to update the last viewed message before running this
+    }
+
+    /**
      * Change the last viewed message for this user.
      * PRECONDITION : the user and the message exist in this chat
      * @param username The username of the user being changed

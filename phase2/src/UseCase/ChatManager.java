@@ -1,5 +1,4 @@
 package UseCase;
-
 import Entities.Chat;
 import Entities.Message;
 
@@ -58,6 +57,35 @@ public class ChatManager implements Serializable {
         Chat chosenChat = allChats.get(chatId);
         chosenChat.addChatMessage(newMessageId, message);
         chosenChat.setLastViewedMessage(senderUsername, newMessageId);
+    }
+
+    /**
+     * Deletes a message from a chat
+     * PRECONDITION : message exists in this chat
+     * @param chatId The id of the chat
+     * @param messageId The id of the message to be deleted
+     */
+    public void deleteMessageFromChat(UUID chatId, UUID messageId){
+        Chat chosenChat = allChats.get(chatId);
+
+        // get index of message and the id of the previous chronological message
+        LinkedHashMap<UUID, Message> chatMessages = chosenChat.getAllMessages();
+        List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
+        int messageIndex = chatMessagesList.indexOf(messageId);
+        UUID previousMessageId;
+        if (messageIndex > 0){
+            previousMessageId = chatMessagesList.get(messageIndex - 1);
+        }else{
+            previousMessageId = null;
+        }
+
+        // set the last viewed message of the users who had seen the deletable message to the previous message
+        for (String userName: chosenChat.getMemberUsernames()){
+            if (chosenChat.getLastViewedMessage(userName).equals(messageId)){
+                chosenChat.setLastViewedMessage(userName, previousMessageId);
+            }
+        }
+        chosenChat.removeMessage(messageId);
     }
 
     /**
@@ -249,4 +277,5 @@ public class ChatManager implements Serializable {
         }
         return false;
     }
+
 }

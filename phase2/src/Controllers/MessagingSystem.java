@@ -275,7 +275,7 @@ public class MessagingSystem {
     }
 
     /**
-     * Helper method for organizers to send a message to all spoeakers
+     * Helper method for organizers to send a message to all speakers
      * @param senderUsername Username of the sender
      * @param content Content of message
      */
