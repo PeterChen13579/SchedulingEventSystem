@@ -19,13 +19,20 @@ public class MessagingDashboard {
     private JButton addFriend;
     private JButton confirmFriend;
     private JButton sendOne;
-    private JButton sendAll;
+    private JButton sendAllAttendee;
+    private JButton sendAllSpeaker;
+    private JButton sendAllAttendeeEvent;
+    private JButton confirmEventTitle;
     private JButton confirmOneMessage;
     private JButton confirmAllMessage;
     private JButton confirmChatNumber;
     private JButton back;
+    private JLabel usernameLabel;
+    private JLabel msgContentLabel;
     private JTextField textInput;
     private JTextField chatNumber;
+    private JTextField usernameTextfield;
+    private JTextField content;
     private JLabel displayChatNumber;
     private SynthLookAndFeel style = new SynthLookAndFeel();
     private Viewable sendsInfo;
@@ -65,10 +72,13 @@ public class MessagingDashboard {
     private void sendMessageMenu() {
         currentMenu = "SendMessage";
         buttonPanel.removeAll();
-        sendOne.setText("Send One");
-        // make sure to block users that aren't speakers from sending to all eventually
         buttonPanel.add(sendOne);
-        buttonPanel.add(sendAll);
+        if (loginType.equals("Organizer")) {
+            buttonPanel.add(sendAllAttendee);
+            buttonPanel.add(sendAllSpeaker);
+        }else if (loginType.equals("Speaker")){
+            buttonPanel.add(sendAllAttendeeEvent);
+        }
         buttonPanel.add(back);
         frame.pack();
     }
@@ -76,9 +86,28 @@ public class MessagingDashboard {
     //TODO: fill in
     private void sendOneMessage() {
         buttonPanel.removeAll();
+        buttonPanel.add(usernameLabel);
+        buttonPanel.add(usernameTextfield);
+        buttonPanel.add(msgContentLabel);
+        buttonPanel.add(content);
         buttonPanel.add(confirmOneMessage);
         buttonPanel.add(back);
         frame.pack();
+    }
+
+    private void sendAllAttendee(){
+        buttonPanel.removeAll();
+        buttonPanel.add(back);
+    }
+
+    private void sendAllSpeaker(){
+        buttonPanel.removeAll();
+        buttonPanel.add(back);
+    }
+
+    private void sendAllAttendeeEvent(){
+        buttonPanel.removeAll();
+        buttonPanel.add(back);
     }
 
     //TODO: fill in, will most likely be just sendOneMessage repeated I guess
@@ -150,11 +179,25 @@ public class MessagingDashboard {
                 sendOneMessage();
             }
         });
-        sendAll = new JButton("Send To All Users");
-        sendAll.addActionListener(new ActionListener() {
+        sendAllAttendee = new JButton("Msg All Attendees");
+        sendAllAttendee.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendAllEventMessage();
+                sendAllAttendee();
+            }
+        });
+        sendAllSpeaker = new JButton("Msg all Speaker");
+        sendAllSpeaker.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendAllSpeaker();
+            }
+        });
+        sendAllAttendeeEvent = new JButton("Msg all Attendees at Event");
+        sendAllAttendeeEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendAllAttendeeEvent();
             }
         });
         confirmFriend = new JButton("Confirm");
@@ -192,9 +235,13 @@ public class MessagingDashboard {
                 previousMenu();
             }
         });
-        textInput = new JTextField();
-        chatNumber = new JTextField();
+        textInput = new JTextField(12);
+        chatNumber = new JTextField(12);
+        usernameTextfield = new JTextField(12);
+        content = new JTextField(12);
         displayChatNumber = new JLabel("Chat number:");
+        usernameLabel = new JLabel("Recipient username");
+        msgContentLabel = new JLabel("Msg");
     }
 
 
@@ -203,12 +250,15 @@ public class MessagingDashboard {
             case "Messaging":
                 frame.dispose();
                 new Dashboard(loginType, currentUsername);
-            case "MessageMenu":
+                break;
+            case "ViewChat":
+            case "SendMessage":
+            case "ViewNewMessage":
                 messagingMenu();
                 break;
-            case "SendMessageMenu":
+            default:
                 sendMessageMenu();
-                break;
+
         }
     }
 }

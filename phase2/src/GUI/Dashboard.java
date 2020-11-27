@@ -96,10 +96,13 @@ public class Dashboard{
         switch (loginType) {
             case "Attendee":
                 loggedInAttendee();
+                break;
             case "Organizer":
                 loggedInOrganizer();
+                break;
             case "Speaker":
                 loggedInSpeaker();
+                break;
         }
 
     }
@@ -679,13 +682,13 @@ public class Dashboard{
                 //TODO: connect phase 1 add event
             }
         });
-        textInput = new JTextField(15);
-        password = new JPasswordField(15);
+        textInput = new JTextField(12);
+        password = new JPasswordField(12);
         errorText = new JLabel();
         displayList = new JList();
-        filename = new JTextField("File Name", 15);
-        roomNumber = new JTextField(15);
-        roomCapacity = new JTextField(15);
+        filename = new JTextField("File Name", 12);
+        roomNumber = new JTextField(12);
+        roomCapacity = new JTextField(12);
         addRoomLabel = new JLabel("Room Number:");
         displayCapacity = new JLabel("Capacity");
         displayUsername = new JLabel("Username");
