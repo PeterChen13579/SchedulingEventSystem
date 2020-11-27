@@ -24,6 +24,9 @@ public class EventManager implements Serializable {
     private final List<Event> allTalks;
     private final List<Event> allPanels;
 
+
+
+    //DON'T NEED THIS????
     public EventManager() {
         allEvents = new ArrayList<>();
         allParties = new ArrayList<>();
@@ -48,19 +51,24 @@ public class EventManager implements Serializable {
     }
 
     /**
-     * Create an Event object based on the parameters and add it into the list of allEvents variable.
-     * @param partyTitle the title for the party
+     * Create an Event object based on the parameters and add it into the list of talks/panels/parties accordingly.
+     * @param VIP whether or not the event is VIP
+     * @param title the title for the event
      * @param date the date for the event (YYYYMMDD)
      * @param startTime the start time for the party (HH:mm:ss)
+     * @param endTime the start time for the party (HH:mm:ss)
      * @param rmNum the room number for the party
+     * @param maxNum the maximum number of people that can attend this event
+     * @param speakerUserNames the list of speaker usernames for this event
      */
-    public void createEvent(boolean VIP, String partyTitle, String date, String startTime, String endTime,
+    public void createEvent(boolean VIP, String title, String date, String startTime, String endTime,
                                String rmNum, int maxNum, List<String> speakerUserNames){
-        List<LocalDateTime> time = parseStringToLocalDateTime(date, startTime);
+        List<LocalDateTime> time = parseStringToLocalDateTime(date, startTime, endTime);
 
-        // Create and add party to the list allParty.
-        Event event = new Event(partyTitle, time.get(0), time.get(1), rmNum, VIP, maxNum, speakerUserNames);
+        // Create an event object with the specification
+        Event event = new Event(title, time.get(0), time.get(1), rmNum, VIP, maxNum, speakerUserNames);
         allEvents.add(event);
+        //also need to add to corresponding list variables
         if (speakerUserNames.size() == 0) {
             allParties.add(event);
         } else if(speakerUserNames.size() == 1){
@@ -75,16 +83,17 @@ public class EventManager implements Serializable {
      * (endTime will automatically be 1 hour after startTime)
      * @param date the date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
+     * @param endTime the start time for the event (HH:mm:ss)
      * @return a list of LocalDateTime objects parsed from the date and startTime parameters
      */
-    public List<LocalDateTime> parseStringToLocalDateTime (String date, String startTime){
+    public List<LocalDateTime> parseStringToLocalDateTime (String date, String startTime, String endTime){
         //parse date to LocalDate format
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
         LocalDate localDate = LocalDate.parse(date, formatter);
 
         //parse startTime and endTime to LocalTime format (end time will be 1 hour later)
         LocalTime localStartTime = LocalTime.parse(startTime);
-        LocalTime localEndTime = localStartTime.plusHours(1);
+        LocalTime localEndTime = LocalTime.parse(endTime);
 
         //create LocalDateTime objects for start time and end time
         LocalDateTime sTime = LocalDateTime.of(localDate, localStartTime);
@@ -123,36 +132,41 @@ public class EventManager implements Serializable {
         return true;
     }
 
-    /**
-     * Returns whether or not the given start time is between 9am and 4pm
-     * @param startTime the start time for the potential event (HH:mm:ss)
-     * @return true iff the time is within 9am to 4pm
-     */
-    public boolean isTimeAvailable(String startTime){
-        //create LocalDateTime object for potential start time and valid start times
-        LocalTime potentialTime = LocalTime.parse(startTime);
-        LocalTime validTime9 = LocalTime.parse("09:00:00");
-        LocalTime validTime16 = LocalTime.parse("16:00:00");
 
-        if (potentialTime.compareTo(validTime9) == 0 || potentialTime.compareTo(validTime16) == 0){
-            return true;
-        }else{
-            return potentialTime.compareTo(validTime9) > 0 && potentialTime.compareTo(validTime16) < 0;
-        }
-    }
+//    //returns true if this time frame has already been booked
+//    private boolean isTimeConflict(String date, String startTime, String endTime){
+//        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
+//        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
+//
+//        for (Event e : allEvents){
+//            // lower and upper limits
+//            LocalDateTime lower = e.getStartTime();
+//            LocalDateTime upper = e.getEndTime();
+//            if ((start.isAfter(lower) || start.equals(lower)) && (end.isBefore(upper) || end.equals(upper))) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * Returns whether or not the given room is booked at the given date and time
      * @param roomNum the room number for the potential event
      * @param date the date for the potential event (YYYYMMDD)
      * @param startTime the start time for the potential event (HH:mm:ss)
+     * @param endTime the start time for the potential event (HH:mm:ss)
      * @return true iff the room given is not booked by another event at the same time
      */
     public boolean isRoomAvailableAtTime(String roomNum, String date, String startTime, String endTime){
-        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
+        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
+        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
         //check if room is booked at the time
         for(Event e: allEvents){
-            if (e.getStartTime().isEqual(time) && e.getRoomNum().equals(roomNum)){
+            //lower and upper limits
+            LocalDateTime lower = e.getStartTime();
+            LocalDateTime upper = e.getEndTime();
+            if ((start.isAfter(lower) || start.equals(lower)) && (end.isBefore(upper) || end.equals(upper))
+                    && e.getRoomNum().equals(roomNum)) {
                 return false;
             }
         }
@@ -163,14 +177,20 @@ public class EventManager implements Serializable {
      * Returns whether or not the given speaker is already hosting an event at the given date and time
      * @param date the date for the potential event (YYYYMMDD)
      * @param startTime the start time for the potential event (HH:mm:ss)
+     * @param endTime the start time for the potential event (HH:mm:ss)
      * @param speakerUserName the username for the speaker of the event
      * @return true iff the speaker is not booked for any other event at give date and time
      */
-    public boolean isSpeakerAvailableAtTime(String date, String startTime, String speakerUserName){
-        LocalDateTime time = parseStringToLocalDateTime(date, startTime).get(0);
+    public boolean isSpeakerAvailableAtTime(String date, String startTime, String endTime, String speakerUserName){
+        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
+        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
         //check if speaker is booked at the time
         for(Event event: allEvents){
-            if (event.getStartTime().isEqual(time) && event.getSpeakerUserNames().contains(speakerUserName)){
+            //lower and upper limits
+            LocalDateTime lower = event.getStartTime();
+            LocalDateTime upper = event.getEndTime();
+            if ((start.isAfter(lower) || start.equals(lower)) && (end.isBefore(upper) || end.equals(upper))
+                    && event.getSpeakerUserNames().contains(speakerUserName)){
                 return false;
             }
         }

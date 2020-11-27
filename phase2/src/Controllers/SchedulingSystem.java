@@ -169,10 +169,10 @@ public class SchedulingSystem {
         }
         // check if the maximum number of the people who can attend the event exceeds the assigned room capacity.
         else if (Integer.parseInt(maxNum) > rm.getCapacity(rmNum)){
-            menu.printStatement("Uh-oh! The maximum number of  people who can attend the event exceeds the room capacity.");
+            menu.printStatement("Uh-oh! The maximum number of people who can attend the event exceeds the room capacity.");
         }
         //if everything works out
-        else if(canAddEvent(date, startTime, endTime, rmNum, speakerUsernames, title)){
+        else if(canAddEvent(date, startTime, endTime, rmNum, speakerUsernames, title, maxNum)){
             em.createEvent(VIP, title, date, startTime, endTime, rmNum, Integer.parseInt(maxNum), speakerUsernames);
             //update the speaker's list of events
             for (String speakerUsername : speakerUsernames){ um.addEventToSpeaker(title, speakerUsername);}
@@ -194,7 +194,7 @@ public class SchedulingSystem {
      * @param speakerUsernames the list of names of the speakers for the event
      * @return true iff all speakers in the list exists
      */
-    private Boolean helperAreSpeakersExist(List<String> speakerUsernames){
+    private boolean helperAreSpeakersExist(List<String> speakerUsernames){
         for(String speakerUsername : speakerUsernames){
             if(!um.isUserExists(speakerUsername)){
                 return false;
@@ -208,12 +208,12 @@ public class SchedulingSystem {
      * @param speakerUsernames the list of names of the speakers for the event
      * @return true iff all speakers in the list are available
      */
-    private Boolean helperAreSpeakersAvailable(String date, String startTime, String endTime, List<String> speakerUsernames){
-        //for(String speakerUsername : speakerUsernames){
-            //if(!em.isSpeakerAvailableAtTime(date,startTime,endTime, speakerUsername)){
-                //return false;
-            //}
-        //}
+    private boolean helperAreSpeakersAvailable(String date, String startTime, String endTime, List<String> speakerUsernames){
+        for(String speakerUsername : speakerUsernames){
+            if(!em.isSpeakerAvailableAtTime(date,startTime,endTime, speakerUsername)){
+                return false;
+            }
+        }
         return true;
     }
 
@@ -228,11 +228,12 @@ public class SchedulingSystem {
      * @param title the title for the event
      * @return true iff the event can be created
      */
-    private boolean canAddEvent(String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title){
+    private boolean canAddEvent(String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, String maxNum){
         return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(startTime) && em.parseStringToLocalTime(endTime)
                 && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)
                 && helperAreSpeakersExist(speakerUsernames) && helperAreSpeakersAvailable(date, startTime, endTime, speakerUsernames)
-                && em.isEventTitleUnique(title);
+                && em.isEventTitleUnique(title) && helper_isMaxNumInt(maxNum) && Integer.parseInt(maxNum) > 0 &&
+                Integer.parseInt(maxNum) <= rm.getCapacity(rmNum);
     }
 
 }
