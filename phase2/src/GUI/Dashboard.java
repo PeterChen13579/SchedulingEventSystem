@@ -28,31 +28,22 @@ public class Dashboard{
     private JButton seeAllEvent;
     private JButton seeSignedEvent;
     private JButton exit;
-    private JButton viewChat;
-    private JButton sendMessage;
-    private JButton viewNewMessages;
-    private JButton addFriend;
     private JButton scheduleMenu;
     private JButton createSpeaker;
     private JButton addRoom;
     private JButton addEvent;
     private JButton seeListEvents;
-    private JButton sendOne;
-    private JButton sendAll;
     private JButton confirmAttendeeSignUp;
     private JButton confirmOrganizerSignUp;
     private JButton confirmSpeakerSignUp;
     private JButton confirmLogIn;
     private JButton confirmEventSignup;
     private JButton confirmEventRemoval;
-    private JButton confirmFriend;
     private JButton nextPanel;
     private JButton confirmFilename;
     private JButton save;
     private JButton confirmSave;
     private JButton confirmRoomNumber;
-    private JButton confirmOneMessage;
-    private JButton confirmAllMessage;
     private JButton confirmAddEvent;
     private JLabel addRoomLabel;
     private JTextField textInput;
@@ -68,12 +59,12 @@ public class Dashboard{
     private JLabel errorText;
     private JLabel displayUsername, displayPassword;
     private JList displayList;
-    private String currentUsername, currentPassword;
-    private SynthLookAndFeel style = new SynthLookAndFeel();
+    private String currentUsername;
 
     public Dashboard() {
         //@peter dw about this lmao
         try {
+            SynthLookAndFeel style = new SynthLookAndFeel();
             style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
             UIManager.setLookAndFeel(style);
         } catch (Exception e) {
@@ -91,6 +82,28 @@ public class Dashboard{
         loginType = "";
         loadMenu();
     }
+
+    public Dashboard(String loginType, String currentUsername){
+        this.loginType = loginType;
+        this.currentUsername = currentUsername;
+        frame = new JFrame("Tech Conference System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        buttonPanel = new JPanel();
+        frame.add(buttonPanel);
+        frame.setVisible(true);
+        createButtons();
+        switch (loginType) {
+            case "Attendee":
+                loggedInAttendee();
+            case "Organizer":
+                loggedInOrganizer();
+            case "Speaker":
+                loggedInSpeaker();
+        }
+
+    }
+
 
 //---------------------------------------Loading conference to Main Menu ---------------------------------------;
 
@@ -191,7 +204,7 @@ public class Dashboard{
 //---------------------------------------LoggedInUsers ---------------------------------------;
 
 
-    private void loggedInAttendee() {
+    public void loggedInAttendee() {
         System.out.println("this happened");
         loginType = "Attendee";
         currentMenu = "LoggedInAttendee";
@@ -203,7 +216,7 @@ public class Dashboard{
         frame.pack();
     }
 
-    private void loggedInOrganizer() {
+    public void loggedInOrganizer() {
         loginType = "Organizer";
         currentMenu = "LoggedInOrganizer";
         buttonPanel.removeAll();
@@ -217,7 +230,7 @@ public class Dashboard{
         frame.pack();
     }
 
-    private void loggedInSpeaker() {
+    public void loggedInSpeaker() {
         loginType = "Speaker";
         currentMenu = "LoggedInSpeaker";
         buttonPanel.removeAll();
@@ -293,63 +306,9 @@ public class Dashboard{
 
 //---------------------------------------Messaging Menu ---------------------------------------;
     private void messagingMenu() {
-        currentMenu = "Messaging";
         buttonPanel.removeAll();
-        buttonPanel.add(viewChat);
-        buttonPanel.add(sendMessage);
-        buttonPanel.add(viewNewMessages);
-        buttonPanel.add(addFriend);
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    private void sendMessageMenu() {
-        currentMenu = "SendMessage";
-        buttonPanel.removeAll();
-        sendOne.setText("Send One");
-        // make sure to block users that aren't speakers from sending to all eventually
-        buttonPanel.add(sendOne);
-        buttonPanel.add(sendAll);
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    //TODO: fill in
-    private void sendOneMessage() {
-        buttonPanel.removeAll();
-        buttonPanel.add(confirmOneMessage);
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    //TODO: fill in, will most likely be just sendOneMessage repeated I guess
-    private void sendAllEventMessage() {
-        buttonPanel.removeAll();
-        buttonPanel.add(confirmAllMessage);
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    private void chatDisplay() {
-        buttonPanel.removeAll();
-        //TODO: fill in chats, formatted, prob using JList or JScrollPane or w/e
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    private void displayNewMessages() {
-        buttonPanel.removeAll();
-        //TODO: same as chatDisplay
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    private void addFriend() {
-        buttonPanel.removeAll();
-        buttonPanel.add(textInput);
-        buttonPanel.add(confirmFriend);
-        buttonPanel.add(back);
-        frame.pack();
+        frame.dispose();
+        new MessagingDashboard(sendsInfo, currentUsername, loginType);
     }
 
 
@@ -521,39 +480,6 @@ public class Dashboard{
                 previousMenu();
             }
         });
-        viewChat = new JButton("View All Chats");
-        viewChat.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "MessageMenu";
-                chatDisplay();
-            }
-        });
-        sendMessage = new JButton("Send Message");
-        sendMessage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "MessageMenu";
-                System.out.println("bruh?");
-                sendMessageMenu();
-            }
-        });
-        viewNewMessages = new JButton("View New Messages");
-        viewNewMessages.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "MessageMenu";
-                displayNewMessages();
-            }
-        });
-        addFriend = new JButton("Add Friend");
-        addFriend.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "MessageMenu";
-                addFriend();
-            }
-        });
         scheduleMenu = new JButton("Schedule Menu");
         scheduleMenu.addActionListener(new ActionListener() {
             @Override
@@ -592,22 +518,6 @@ public class Dashboard{
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "LoggedIn";
                 displayEvents(false);
-            }
-        });
-        sendOne = new JButton("Send To One User");
-        sendOne.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "SendMessageMenu";
-                sendOneMessage();
-            }
-        });
-        sendAll = new JButton("Send To All Users");
-        sendAll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "SendMessageMenu";
-                sendAllEventMessage();
             }
         });
         confirmRoomNumber = new JButton("Confirm");
@@ -762,27 +672,6 @@ public class Dashboard{
                 clearTextField();
             }
         });
-        confirmFriend = new JButton("Confirm");
-        confirmFriend.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 add friend
-            }
-        });
-        confirmOneMessage = new JButton("Confirm");
-        confirmOneMessage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 send one message
-            }
-        });
-        confirmAllMessage = new JButton("Confirm");
-        confirmAllMessage.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 send all message
-            }
-        });
         confirmAddEvent = new JButton("Confirm");
         confirmAddEvent.addActionListener(new ActionListener() {
             @Override
@@ -838,10 +727,6 @@ public class Dashboard{
             case "ScheduleMenu":
                 schedulingMenu();
                 previousMenu = "LoggedIn";
-                break;
-            case "SendMessageMenu":
-                sendMessageMenu();
-                previousMenu = "MessageMenu";
                 break;
         }
     }
