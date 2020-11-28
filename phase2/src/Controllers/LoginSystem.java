@@ -25,12 +25,11 @@ public class LoginSystem implements Serializable {
         InputStreamReader r = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(r);
         StatementPresenter menu = new StatementPresenter();
-        String input = "";
         boolean verified = false;
         while (true) {
             menu.printStatement("Type 'cancel' to return to the main menu; otherwise hit enter to login:");
             try {
-                input = br.readLine();
+                String input = br.readLine();
                 if (input.equals("cancel")){
                     break;
                 }
@@ -40,8 +39,6 @@ public class LoginSystem implements Serializable {
                     menu.printStatement("Please enter your password: ");
                     String enteredPassword = br.readLine();
                     if (verifyLogin(enteredUsername, enteredPassword)) {
-                        username = enteredUsername;
-                        String userType = verifyUserType(username);
                         verified = true;
                         break;
                     } else {
@@ -63,7 +60,6 @@ public class LoginSystem implements Serializable {
      * the UI class?
      */
     public boolean verifyLogin(String enteredUsername, String enteredPassword) {
-        int i = 0;
         boolean verified = false;
         if (manager.credentialAuthorization(enteredUsername, enteredPassword)) {
             verified = true;
@@ -81,5 +77,10 @@ public class LoginSystem implements Serializable {
         return manager.userType(username);
     }
 
+    /**
+     * Grabs the Username of the User once successfully logged in.
+     * @return Username of the User
+     */
     public String getUsername() { return this.username; }
+
 }
