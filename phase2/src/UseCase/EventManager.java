@@ -78,6 +78,52 @@ public class EventManager implements Serializable {
         }
     }
 
+    //delete event from the corresponding list variable
+    public void deleteEvent(String title){
+        Event event = helperEventTitle(title);
+        String type = eventType(title);
+        switch (type) {
+            case "Party":
+                allParties.removeIf(e1 -> e1.getTitle().equals(title));
+                break;
+            case "Talk":
+                allTalks.removeIf(e2 -> e2.getTitle().equals(title));
+                break;
+            case "Panel":
+                allPanels.removeIf(e3 -> e3.getTitle().equals(title));
+                break;
+        }
+        allEvents.removeIf(e -> e.getTitle().equals(title));
+    }
+
+    //change event maxNum from the corresponding list variable
+    public void changeEventMaxNum(String title, int maxNum){
+        String type = eventType(title);
+        switch (type) {
+            case "Party":
+                for (Event e1 : allParties){
+                    if (e1.getTitle().equals(title)){
+                        e1.setMaxNum(maxNum);
+                    }
+                }
+                break;
+            case "Talk":
+                for (Event e2 : allTalks){
+                    if (e2.getTitle().equals(title)){
+                        e2.setMaxNum(maxNum);
+                    }
+                }
+                break;
+            case "Panel":
+                for (Event e3 : allPanels){
+                    if (e3.getTitle().equals(title)){
+                        e3.setMaxNum(maxNum);
+                    }
+                }
+                break;
+        }
+    }
+
     /**
      * Returns a list of 2 LocalDateTime object representing the start time and end time of a potential event
      * (endTime will automatically be 1 hour after startTime)

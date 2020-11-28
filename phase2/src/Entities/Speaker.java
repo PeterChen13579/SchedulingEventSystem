@@ -35,4 +35,12 @@ public class Speaker extends User {
     public void addEventToSpeaker(String title){
         talkTitles.add(title);
     }
+
+    /**
+     * Delete the given event title from the list of events the speaker is attending/hosting.
+     * @param title the title of the new event
+     */
+    public void deleteEventForSpeaker(String title){
+        talkTitles.remove(title);
+    }
 }

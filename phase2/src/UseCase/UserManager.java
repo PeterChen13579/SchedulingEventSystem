@@ -262,6 +262,16 @@ public class UserManager implements Serializable {
     }
 
     /**
+     * Delete the given event title for the given speaker's list of events.
+     * @param title the title of the event
+     * @param speakerUserName the username of the speaker
+     */
+    public void deleteEventForSpeaker(String title, String speakerUserName){
+        Speaker speaker = stringToSpeaker(speakerUserName);
+        speaker.deleteEventForSpeaker(title);
+    }
+
+    /**
      * Check the type of the user.
      * @param username the username of the user that you want to check.
      * @return return "Attendee" if the user is an attendee;
