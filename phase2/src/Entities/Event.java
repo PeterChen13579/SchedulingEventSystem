@@ -16,7 +16,7 @@ public class Event implements Serializable {
     private List<String> attendeeList;
     private List<String> speakerUserNames;
     private final boolean VIP;
-    private final int maxNum;
+    private int maxNum;
 
     public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime,
                  String roomNum, boolean VIP, int maxNum, List<String> speakerUserNames){
@@ -97,6 +97,12 @@ public class Event implements Serializable {
      * @return the maximum number of people who can attend this event.
      */
     public int getMaxNum() { return maxNum; }
+
+    /**
+     * Setter for the maximum number of people who can attend this event.
+     */
+    public void setMaxNum(int maxNum) {this.maxNum = maxNum;}
+
 
 
     /**

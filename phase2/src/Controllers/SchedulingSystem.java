@@ -44,8 +44,8 @@ public class SchedulingSystem {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));//reads from input efficiently
         String temp = "";//input is being added to temp
 
-        while (!temp.equals("3")) {
-            menu.printStatement("(1) add room;\n(2) add new event;\n (3) go back to main menu ");
+        while (!temp.equals("5")) {
+            menu.printStatement("(1) add room;\n(2) add new event;\n (3) cancel an event;\n (4) change the capacity of an event \n (5) go back to main menu ");
             try {
                 temp = br.readLine();
                 if (temp.equals("1")) {
@@ -56,12 +56,22 @@ public class SchedulingSystem {
                     addRoom(roomNum, capacity);
                 } else if (temp.equals("2")) {
                     String inputEventType = "";
-                    while(!inputEventType.equals("4")) {
+                    while (!inputEventType.equals("4")) {
                         menu.printStatement("Please enter the type of event you want to create:\n" +
                                 "(1) a talk (one-speaker)\n(2) a panel (multi-speaker)\n(3) a party (no speaker)\n(4) exit");
                         inputEventType = br.readLine();
                         addEvent(inputEventType);
                     }
+                } else if (temp.equals("3")) {
+                    menu.printStatement("Please enter the event title for which you want to cancel: ");
+                    String title = br.readLine();
+                    cancelEvent(title);
+                } else if (temp.equals("4")) {
+                    menu.printStatement("Please enter the event title for which you want to change the capacity of: ");
+                    String title = br.readLine();
+                    menu.printStatement("Please enter the new capacity for this event (new capacity >= current attendee number): ");
+                    String capacity = br.readLine();
+                    changeCapacity(title, capacity);
                 }
             } catch (IOException e) {
                 menu.printStatement("Oops! Something unexpected happened!");
@@ -234,6 +244,32 @@ public class SchedulingSystem {
                 && helperAreSpeakersExist(speakerUsernames) && helperAreSpeakersAvailable(date, startTime, endTime, speakerUsernames)
                 && em.isEventTitleUnique(title) && helper_isMaxNumInt(maxNum) && Integer.parseInt(maxNum) > 0 &&
                 Integer.parseInt(maxNum) <= rm.getCapacity(rmNum);
+    }
+
+    //perform necessary checks & operations for cancelling an event
+    private void cancelEvent(String title){
+        //check if event already exists
+        if (em.isEventExist(title)){
+//           Update all attendees’ of the event for the change, delete the event in their list of attending
+//           Update all speaker’s of the event for the change, delete the event in their list of speaker
+            em.deleteEvent(title);
+        }else{
+            menu.printStatement("Uh-oh! The event you have entered does not exist!");
+        }
+    }
+
+    //perform necessary checks & operations for changing the capacity of an event
+    private void changeCapacity(String title, String capacity){
+        //check if event already exists
+        if (em.isEventExist(title)){
+            if (Integer.parseInt(capacity) >= em.attendeeNum(title)){
+                em.changeEventMaxNum(title, Integer.parseInt(capacity));
+            }else{
+                menu.printStatement("Uh-oh! The number of attendees already signed up for this event exceeds the new capacity entered!");
+            }
+        }else{
+            menu.printStatement("Uh-oh! The event you have entered does not exist!");
+        }
     }
 
 }
