@@ -91,8 +91,12 @@ public class TechConferenceSystem implements Viewable{
     }
 
 
-
-
+    /**
+     *
+     * @param username   Username that the user wants to login with
+     * @param password   Password that the user wants to login with
+     * @return          False if username is already in database or invalid. True otherwise.
+     */
     public String LogInButton(String username, String password){
         String userType = userManager.userType(username);
         if (userType.equals("Invalid Username")){
@@ -106,6 +110,16 @@ public class TechConferenceSystem implements Viewable{
         }
     }
 
+
+//--------------------------------------------Messaging Buttons-----------------------------------------
+
+    /**
+     * TO @William Wang and Kailas Moon; This method is for sending the info of ALL chat usernames to
+     * display on GUI; method for "View Chats". Add in the username for this;
+     */
+    public void sendChatUsername(){
+
+    }
 
     /**
      * Runs the initial controls to start the program
@@ -143,6 +157,7 @@ public class TechConferenceSystem implements Viewable{
 
     private void mainLevel(){
         boolean flag = true;
+        System.out.println("wtf");
         while(flag){
             if(mainLevelHelper()) {
                 flag = false;
@@ -400,10 +415,10 @@ public class TechConferenceSystem implements Viewable{
                 userManager.signUpEventAttendee(username, eventTitle);
 //            sp.printStatement("You have successfully signed up for this event.");
             }
-            if (!signUpSystem.roomNotFull(eventTitle)) {
+           // if (!signUpSystem.roomNotFull(eventTitle)) {
 //            sp.printStatement("The event you have entered is already full.");
-                return 2;
-            }
+              //  return 2;
+           // }
         } catch (IllegalArgumentException e) {
 //            sp.printStatement("The event title you have entered is invalid.");
             return 3;

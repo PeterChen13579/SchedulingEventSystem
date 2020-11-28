@@ -70,6 +70,7 @@ public class Dashboard{
         } catch (Exception e) {
             System.out.println(e);
         }
+
         frame = new JFrame("Tech Conference System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -83,7 +84,8 @@ public class Dashboard{
         loadMenu();
     }
 
-    public Dashboard(String loginType, String currentUsername){
+    public Dashboard(Viewable sendsInfo, String loginType, String currentUsername){
+        this.sendsInfo = sendsInfo;
         this.loginType = loginType;
         this.currentUsername = currentUsername;
         frame = new JFrame("Tech Conference System");

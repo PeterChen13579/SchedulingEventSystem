@@ -26,5 +26,6 @@ public interface Viewable {
     boolean confirmRoom(String roomNumber, int capacity);
     int signUpForEvent(String username, String eventTitle);
     int cancelAttendEvent(String username, String eventTitle);
+    void sendChatUsername();
 
 }

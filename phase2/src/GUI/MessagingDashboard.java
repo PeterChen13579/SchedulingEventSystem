@@ -9,9 +9,9 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 
 public class MessagingDashboard {
     private static JFrame frame;
-    private String loginType;
+    private final String loginType;
     private String currentMenu;
-    private String currentUsername;
+    private final String currentUsername;
     private final JPanel buttonPanel;
     private JButton viewChat;
     private JButton sendMessage;
@@ -27,6 +27,7 @@ public class MessagingDashboard {
     private JButton confirmAllMessage;
     private JButton confirmChatNumber;
     private JButton back;
+    private JLabel displayUsername;
     private JLabel usernameLabel;
     private JLabel msgContentLabel;
     private JTextField textInput;
@@ -119,6 +120,7 @@ public class MessagingDashboard {
     }
 
     private void chatDisplay() {
+        currentMenu = "ViewChat";
         buttonPanel.removeAll();
         buttonPanel.add(displayChatNumber);
         buttonPanel.add(chatNumber);
@@ -128,6 +130,7 @@ public class MessagingDashboard {
     }
 
     private void displayNewMessages() {
+        currentMenu="ViewNewMessage";
         buttonPanel.removeAll();
         //TODO: same as chatDisplay
         buttonPanel.add(back);
@@ -135,7 +138,9 @@ public class MessagingDashboard {
     }
 
     private void addFriend() {
+        currentMenu="AddFriend";
         buttonPanel.removeAll();
+        buttonPanel.add(displayUsername);
         buttonPanel.add(textInput);
         buttonPanel.add(confirmFriend);
         buttonPanel.add(back);
@@ -143,7 +148,7 @@ public class MessagingDashboard {
     }
 
     private void createButtons(){
-        viewChat = new JButton("View All Chats");
+        viewChat = new JButton("View Chats");
         viewChat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -242,6 +247,7 @@ public class MessagingDashboard {
         displayChatNumber = new JLabel("Chat number:");
         usernameLabel = new JLabel("Recipient username");
         msgContentLabel = new JLabel("Msg");
+        displayUsername = new JLabel("Username:");
     }
 
 
@@ -249,11 +255,12 @@ public class MessagingDashboard {
         switch (currentMenu) {
             case "Messaging":
                 frame.dispose();
-                new Dashboard(loginType, currentUsername);
+                new Dashboard(sendsInfo, loginType, currentUsername);
                 break;
             case "ViewChat":
             case "SendMessage":
             case "ViewNewMessage":
+            case "AddFriend":
                 messagingMenu();
                 break;
             default:
