@@ -180,21 +180,17 @@ public class EventManager implements Serializable {
     }
 
 
-//    //returns true if this time frame has already been booked
-//    private boolean isTimeConflict(String date, String startTime, String endTime){
-//        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
-//        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
-//
-//        for (Event e : allEvents){
-//            // lower and upper limits
-//            LocalDateTime lower = e.getStartTime();
-//            LocalDateTime upper = e.getEndTime();
-//            if ((start.isAfter(lower) || start.equals(lower)) && (end.isBefore(upper) || end.equals(upper))) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    //returns true if this time frame is a valid time frame (start time < endtime)
+    public boolean isTimeValid(String date, String startTime, String endTime){
+        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
+        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
+        return end.isAfter(start);
+    }
+
+    //returns true if the two time intervals overlap
+    public boolean doTimesOverlap(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2){
+        return start1.isBefore(end2) && start2.isBefore(end1);
+    }
 
     /**
      * Returns whether or not the given room is booked at the given date and time
@@ -212,8 +208,7 @@ public class EventManager implements Serializable {
             //lower and upper limits
             LocalDateTime lower = e.getStartTime();
             LocalDateTime upper = e.getEndTime();
-            if ((start.isAfter(lower) || start.equals(lower)) && (end.isBefore(upper) || end.equals(upper))
-                    && e.getRoomNum().equals(roomNum)) {
+            if (doTimesOverlap(lower, upper, start, end) && e.getRoomNum().equals(roomNum)) {
                 return false;
             }
         }
@@ -236,8 +231,7 @@ public class EventManager implements Serializable {
             //lower and upper limits
             LocalDateTime lower = event.getStartTime();
             LocalDateTime upper = event.getEndTime();
-            if ((start.isAfter(lower) || start.equals(lower)) && (end.isBefore(upper) || end.equals(upper))
-                    && event.getSpeakerUserNames().contains(speakerUserName)){
+            if (doTimesOverlap(lower, upper, start, end) && event.getSpeakerUserNames().contains(speakerUserName)){
                 return false;
             }
         }

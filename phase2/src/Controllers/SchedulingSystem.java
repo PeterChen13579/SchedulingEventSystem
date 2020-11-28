@@ -146,9 +146,17 @@ public class SchedulingSystem {
         if (!em.parseStringToLocalDate(date)){
             menu.printStatement("Uh-oh! The date entered is not a valid date or not written in the correct format (YYYYMMDD)!");
         }
-        //check if time is valid format and value
+        //check if start time is valid format and value
         else if (!em.parseStringToLocalTime(startTime)){
             menu.printStatement("Uh-oh! The start time entered is not a valid date or not written in the correct format (24-hour time, HH:MM:SS)!");
+        }
+        //check if end time is valid format and value
+        else if (!em.parseStringToLocalTime(endTime)){
+            menu.printStatement("Uh-oh! The end time entered is not a valid date or not written in the correct format (24-hour time, HH:MM:SS)!");
+        }
+        //check if start time < endtime
+        else if (!em.isTimeValid(date, startTime, endTime)){
+            menu.printStatement("Uh-oh! The end time entered should be after the start time for this event!");
         }
         //check if room exists
         else if(!rm.doesRoomExist(rmNum)){
