@@ -81,7 +81,7 @@ public class EventManager implements Serializable {
     //delete event from the corresponding list variable
     public void deleteEvent(String title){
         Event event = helperEventTitle(title);
-        String type = eventType(title);
+        String type = event.getEventType();
         switch (type) {
             case "Party":
                 allParties.removeIf(e1 -> e1.getTitle().equals(title));
@@ -98,7 +98,8 @@ public class EventManager implements Serializable {
 
     //change event maxNum from the corresponding list variable
     public void changeEventMaxNum(String title, int maxNum){
-        String type = eventType(title);
+        Event event = helperEventTitle(title);
+        String type = event.getEventType();
         switch (type) {
             case "Party":
                 for (Event e1 : allParties){
