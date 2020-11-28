@@ -114,4 +114,14 @@ public class Event implements Serializable {
     public void setSpeakerUserName(List<String> speakerUserNames) {
         this.speakerUserNames = speakerUserNames;
     }
+
+    /**
+     * Getter for the type of event
+     * @return "Party" if there are no speakers; "Talk" if there is one speaker; "Panel" if there are multiple speakers
+     */
+    public String getEventType(){
+        if (getSpeakerUserNames().size() == 0) { return "Party"; }
+        else if (getSpeakerUserNames().size() == 1) { return "Talk"; }
+        else { return "Panel"; }
+    }
 }

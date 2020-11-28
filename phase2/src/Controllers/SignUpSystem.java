@@ -50,8 +50,7 @@ public class SignUpSystem {
                     case "2": {
                         sp.printStatement("Type the event title for the event you want to sign up:");
                         String eventTitle = br.readLine();
-                        try{signUpEvent(userName, eventTitle);}
-                        catch(IllegalArgumentException e){sp.printStatement("The event title you have entered is invalid.");}
+                        signUpEvent(userName, eventTitle);
                         break;
                     }
                     case "3": {
@@ -77,25 +76,20 @@ public class SignUpSystem {
         }
     }
 
-
-    public boolean roomNotFull(String eventTitle){
-        int attendeeNum = em.attendeeNum(eventTitle);
-        String roomNum = em.getRoomNum(eventTitle);
-        int roomCapacity = rm.getCapacity(roomNum);
-        return roomCapacity > attendeeNum;
-    }
-
     /**
      * Method that calls methods in EventManager and UserManager to sign up for an event
      * @param userName the username of this Attendee
      * @param eventTitle the event title of the event that this attendee want to sign up for
      */
     public void signUpEvent(String userName, String eventTitle){
-        if (em.isAttendeeAdded(userName, eventTitle)){
+        if (!em.isEventExist(eventTitle)){
+            sp.printStatement("The event title you have entered is invalid.");
+        }
+        else if (em.isAttendeeAdded(userName, eventTitle)){
             sp.printStatement("You have signed up for this event before.");
         }
-        else if (!roomNotFull(eventTitle)){
-            sp.printStatement("The event you have entered is already full.");
+        else if(em.isEventFull(userName)){
+            sp.printStatement("Sorry, this event has reached its maximum capacity.");
         }
         else if (!um.isAttendeeVIP(userName) & em.VIP(eventTitle)){
             sp.printStatement("Sorry, you are not a VIP user, so you cannot sign up for a VIP event.");
@@ -103,7 +97,8 @@ public class SignUpSystem {
         else{
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
-            sp.printStatement("You have successfully signed up for this event.");
+            um.setAttendeeVIP(userName);
+            sp.printStatement("You have successfully signed up for this event!");
         }
     }
 
@@ -113,13 +108,16 @@ public class SignUpSystem {
      * @param eventTitle the event title of the event that this attendee want to cancel spot
      */
     public void cancelSpotEvent(String userName, String eventTitle){
-        if (!em.isAttendeeAdded(userName, eventTitle)){
+        if(!em.isEventExist(eventTitle)){
+            sp.printStatement("The event title you have entered is invalid.");
+        }else if(!em.isAttendeeAdded(userName, eventTitle)){
             sp.printStatement("You haven't signed up for this event yet.");
         }
-        if(em.canDeleteAttendee(userName, eventTitle)) {
+        else{
             em.deleteAttendee(userName, eventTitle);
             um.cancelSpotAttendee(userName, eventTitle);
-            sp.printStatement("You have cancelled the spot for this event.");
+            um.setAttendeeVIP(userName);
+            sp.printStatement("You have cancelled the spot for this event!");
         }
     }
 }

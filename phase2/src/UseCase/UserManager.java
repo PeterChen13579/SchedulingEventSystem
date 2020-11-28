@@ -307,4 +307,10 @@ public class UserManager implements Serializable {
         Attendee attendee = stringToAttendee(userName);
         return attendee.isVIP();
     }
+
+    public void setAttendeeVIP(String userName){
+        Attendee attendee = stringToAttendee(userName);
+        int eventNum = attendee.getEventAttending().size();
+        attendee.setVIP(eventNum >= 2);
+    }
 }
