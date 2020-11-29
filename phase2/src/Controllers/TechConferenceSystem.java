@@ -196,6 +196,51 @@ public class TechConferenceSystem implements Viewable{
         mainLevel();
     }
 
+//-----------------------------------------Scheduling Buttons-------------------------------------------
+
+    /**  TO Lisa, Joy, and Amy;
+     *
+     * @return  true if successfully canceled event, False Otherwise.
+     */
+    @Override
+    public boolean cancelEvent(String eventName){
+        return false;
+    }
+
+
+    /**   To Lisa, Joy, Amy
+     *
+     * @param eventName   String event name to change capacity
+     * @param capacity    capacity to change to
+     * @return            true if successfully changed, false otherwise.
+     */
+    @Override
+    public boolean changeCapacity(String eventName, int capacity){
+        return false;
+    }
+
+
+    public boolean confirmRoom(String roomNumber, int capacity){
+        if (roomManager.doesRoomExist(roomNumber)){
+            return false;
+        }else{
+            roomManager.createRoom(roomNumber, capacity);
+            return true;
+        }
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    public String createSpeakerEvent(){
+        return null;
+    }
+
+
+
+
     private boolean start(){
         Scanner input = new Scanner(System.in);
         String temp = input.nextLine();
@@ -456,14 +501,6 @@ public class TechConferenceSystem implements Viewable{
         return toReturn;
     }
 
-    public boolean confirmRoom(String roomNumber, int capacity){
-        if (roomManager.doesRoomExist(roomNumber)){
-            return false;
-        }else{
-            roomManager.createRoom(roomNumber, capacity);
-            return true;
-        }
-    }
 
     public int signUpForEvent(String username, String eventTitle) {
         try {

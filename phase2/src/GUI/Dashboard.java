@@ -32,6 +32,8 @@ public class Dashboard{
     private JButton createSpeaker;
     private JButton addRoom;
     private JButton addEvent;
+    private JButton cancelEvent;
+    private JButton changeCapacity;
     private JButton seeListEvents;
     private JButton confirmAttendeeSignUp;
     private JButton confirmOrganizerSignUp;
@@ -45,21 +47,32 @@ public class Dashboard{
     private JButton confirmSave;
     private JButton confirmRoomNumber;
     private JButton confirmAddEvent;
+    private JButton oneSpeakerEvent;
+    private JButton multiSpeakerEvent;
+    private JButton noSpeakerEvent;
+    private JButton confirmCancelEvent;
+    private JButton confirmChangeCapacity;
+    private JTextField cancelEventTextfield;
+    private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
     private JTextField textInput;
     private JTextField roomNumber;
     private JTextField roomCapacity;
+    private JTextField filename;
+    private JTextField eventName;
     private JPasswordField password;
     private String currentMenu;
     private String previousMenu;
     private String loginType;
     private JLabel displayCapacity;
+    private JLabel eventNameMsg;
     private Viewable sendsInfo;
-    private JTextField filename;
     private JLabel errorText;
     private JLabel displayUsername, displayPassword;
+    private JLabel cancelEventMsg, changeCapacityMsg;
     private JList displayList;
     private String currentUsername;
+    private JLabel speakerNameDisplay, timeDisplay;
 
     public Dashboard() {
         //@peter dw about this lmao
@@ -246,7 +259,7 @@ public class Dashboard{
         frame.pack();
     }
 
-//---------------------------------------Event Menu ---------------------------------------;
+//---------------------------------------Sign up Event Menu ---------------------------------------;
 
 
     private void signUpEventMenu() {
@@ -324,6 +337,8 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(addRoom);
         buttonPanel.add(addEvent);
+        buttonPanel.add(cancelEvent);
+        buttonPanel.add(changeCapacity);
         buttonPanel.add(back);
         frame.pack();
     }
@@ -341,12 +356,46 @@ public class Dashboard{
     }
 
     private void addEvent() {
-        currentMenu = "AddEvent";
+        currentMenu = "ChooseEvent";
         buttonPanel.removeAll();
-        //TODO: implement adding an event (there are 5 text fields im too smol brain for that rn)
-        buttonPanel.add(confirmAddEvent);
+        buttonPanel.add(oneSpeakerEvent);
+        buttonPanel.add(multiSpeakerEvent);
+        buttonPanel.add(noSpeakerEvent);
         buttonPanel.add(back);
         frame.pack();
+    }
+
+    private void cancelEvent(){
+        currentMenu = "CancelEvent";
+        buttonPanel.removeAll();;
+        buttonPanel.add(cancelEventMsg);
+        buttonPanel.add(cancelEventTextfield);
+        buttonPanel.add(confirmCancelEvent);
+        buttonPanel.add(back);
+        frame.pack();
+    }
+
+    private void changeEventCapacity(){
+        currentMenu = "changeEventCapacity";
+        buttonPanel.removeAll();
+        buttonPanel.add(eventNameMsg);
+        buttonPanel.add(eventName);
+        buttonPanel.add(changeCapacityMsg);
+        buttonPanel.add(changeCapacityEventTextfield);
+        buttonPanel.add(confirmChangeCapacity);
+        buttonPanel.add(back);
+        frame.pack();
+    }
+
+    private void createEvent(String eventType){
+        currentMenu = "CreateEvent";
+        buttonPanel.removeAll();
+        if (eventType.equals("one")){
+
+        }
+        buttonPanel.add(back);
+        frame.pack();
+
     }
 
 //---------------------------------------Failed Menu ---------------------------------------;
@@ -420,7 +469,6 @@ public class Dashboard{
         messageMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                previousMenu = "LoggedIn";
                 messagingMenu();
             }
         });
@@ -509,12 +557,76 @@ public class Dashboard{
                 addRoom();
             }
         });
-        addEvent = new JButton("Add Event");
+        addEvent = new JButton("Add New Event");
         addEvent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "ScheduleMenu";
                 addEvent();
+            }
+        });
+        cancelEvent = new JButton("Cancel Event");
+        cancelEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "ScheduleMenu";
+                cancelEvent();
+            }
+        });
+        changeCapacity = new JButton("Change Capacity of Event");
+        changeCapacity.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "ScheduleMenu";
+                changeEventCapacity();
+            }
+        });
+        confirmCancelEvent = new JButton("Cancel Event");
+        confirmCancelEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (sendsInfo.cancelEvent(cancelEventTextfield.getText())){
+                    schedulingMenu();
+                }else{
+                    failedMenu("The event you have entered does not exist.");
+                }
+            }
+        });
+        confirmChangeCapacity = new JButton("Confirm");
+        confirmChangeCapacity.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int changeCapacity = tryParse(changeCapacityEventTextfield.getText());
+                if (changeCapacity != -1){
+                    sendsInfo.changeCapacity(eventName.getText(), changeCapacity);
+                    changeEventCapacity();
+                }else{
+                    failedMenu("You must enter an integer.");
+                }
+            }
+        });
+        oneSpeakerEvent = new JButton("One-Speaker Event");
+        oneSpeakerEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "ChooseEvent";
+                createEvent("one");
+            }
+        });
+        multiSpeakerEvent = new JButton("Multi-Speaker Event");
+        multiSpeakerEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "ChooseEvent";
+                createEvent("multi");
+            }
+        });
+        noSpeakerEvent = new JButton("No-Speaker Event");
+        noSpeakerEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "ChooseEvent";
+                createEvent("no");
             }
         });
         seeListEvents = new JButton("See List of Events");
@@ -533,10 +645,11 @@ public class Dashboard{
                 if (capacity != -1){
                     if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
                         loggedInOrganizer();
+                    }else{
+                        failedMenu("This room has already been created.");
                     }
                 }else{
-                    failedMenu("You have entered an invalid room number or the room " +
-                            "has already been created");
+                    failedMenu("You have entered an invalid room number");
                 }
             }
         });
@@ -691,10 +804,17 @@ public class Dashboard{
         filename = new JTextField("File Name", 12);
         roomNumber = new JTextField(12);
         roomCapacity = new JTextField(12);
+        eventName = new JTextField(12);
+        changeCapacityEventTextfield = new JTextField(12);
+        cancelEventTextfield = new JTextField(12);
         addRoomLabel = new JLabel("Room Number:");
-        displayCapacity = new JLabel("Capacity");
-        displayUsername = new JLabel("Username");
+        displayCapacity = new JLabel("Capacity:");
+        displayUsername = new JLabel("Username:");
         displayPassword = new JLabel("Password:");
+        changeCapacityMsg = new JLabel("New Capacity:");
+        cancelEventMsg = new JLabel("Event name:");
+        eventNameMsg = new JLabel("Event name:");
+
     }
 
     public void setView(final Viewable sendsInfo) {
@@ -733,6 +853,10 @@ public class Dashboard{
                 schedulingMenu();
                 previousMenu = "LoggedIn";
                 break;
+            case "CreateEvent":
+                schedulingMenu();
+            case "ChooseEvent":
+                addEvent();
         }
     }
 

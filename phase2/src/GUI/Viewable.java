@@ -5,17 +5,6 @@ import java.util.ArrayList;
 
 public interface Viewable {
 
-    //public void loadMenu();
-    //public void loginSignup();
-    //public void loggedInAttendee();
-    //public void signUpEventMenu();
-    //public void messagingMenu();
-    //public void browseEventMenu();
-    //public void loggedInOrganizer();
-    //public void schedulingMenu();
-    //public void loggedInSpeaker();
-    //public void sendMessageMenu();
-    //public void usernamePassword();
     boolean createAttendeeButton(String username, String password);
     boolean createOrganizerButton(String username, String password);
     boolean createSpeakerButton(String username, String password);
@@ -35,4 +24,7 @@ public interface Viewable {
     void msgAllAttendees(String msg);
     void msgAllSpeakers(String msg);
     void msgAllAttendeeEvent(String msg);
+    boolean cancelEvent(String eventName);
+    boolean changeCapacity(String eventName, int capacity);
+    String createSpeakerEvent();
 }
