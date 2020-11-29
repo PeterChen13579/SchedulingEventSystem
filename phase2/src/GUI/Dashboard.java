@@ -22,11 +22,6 @@ public class Dashboard{
     private JButton signUpMenu;
     private JButton messageMenu;
     private JButton logout;
-    private JButton browseEvent;
-    private JButton signUpEvent;
-    private JButton cancelAttendEvent;
-    private JButton seeAllEvent;
-    private JButton seeSignedEvent;
     private JButton exit;
     private JButton scheduleMenu;
     private JButton createSpeaker;
@@ -73,6 +68,7 @@ public class Dashboard{
     private JList displayList;
     private String currentUsername;
     private JLabel speakerNameDisplay, timeDisplay;
+    private SignUpDashboard signUpDashboard;
 
     public Dashboard() {
         //@peter dw about this lmao
@@ -86,6 +82,7 @@ public class Dashboard{
 
         frame = new JFrame("Tech Conference System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(900, 600));
         frame.setLocationRelativeTo(null);
         buttonPanel = new JPanel();
         frame.add(buttonPanel);
@@ -130,7 +127,8 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(load);
         buttonPanel.add(newConference);
-        frame.pack();
+        refresh();
+        
     }
 
     private void loadConference(){
@@ -139,7 +137,8 @@ public class Dashboard{
         buttonPanel.add(filename);
         buttonPanel.add(confirmFilename);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
 
@@ -154,7 +153,8 @@ public class Dashboard{
         buttonPanel.add(createOrganizer);
         buttonPanel.add(save);
         buttonPanel.add(exit);
-        frame.pack();
+        refresh();
+        
     }
 
 
@@ -167,7 +167,8 @@ public class Dashboard{
         buttonPanel.add(password);
         buttonPanel.add(confirmLogIn);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
 
@@ -180,7 +181,8 @@ public class Dashboard{
         buttonPanel.add(password);
         buttonPanel.add(confirmAttendeeSignUp);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
 
@@ -193,7 +195,8 @@ public class Dashboard{
         buttonPanel.add(password);
         buttonPanel.add(confirmOrganizerSignUp);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
 
@@ -207,14 +210,16 @@ public class Dashboard{
         buttonPanel.add(password);
         buttonPanel.add(confirmSpeakerSignUp);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
     private void saveMenu() {
         buttonPanel.removeAll();
         buttonPanel.add(textInput);
         buttonPanel.add(confirmSave);
-        frame.pack();
+        refresh();
+        
     }
 
 
@@ -231,7 +236,8 @@ public class Dashboard{
         buttonPanel.add(messageMenu);
         buttonPanel.add(save);
         buttonPanel.add(logout);
-        frame.pack();
+        refresh();
+        
     }
 
     public void loggedInOrganizer() {
@@ -245,7 +251,8 @@ public class Dashboard{
         buttonPanel.add(createAttendee);
         buttonPanel.add(save);
         buttonPanel.add(logout);
-        frame.pack();
+        refresh();
+        
     }
 
     public void loggedInSpeaker() {
@@ -256,70 +263,28 @@ public class Dashboard{
         buttonPanel.add(seeListEvents);
         buttonPanel.add(save);
         buttonPanel.add(logout);
-        frame.pack();
+        refresh();
+        
     }
 
 //---------------------------------------Sign up Event Menu ---------------------------------------;
 
 
     private void signUpEventMenu() {
-        currentMenu = "SignUpEvent";
-        buttonPanel.removeAll();
-        buttonPanel.add(browseEvent);
-        buttonPanel.add(signUpEvent);
-        buttonPanel.add(cancelAttendEvent);
-        buttonPanel.add(back);
-        frame.pack();
-    }
+        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, loginType, this);
+        frame.remove(buttonPanel);
+        frame.add(signUpDashboard);
+        refresh();
+        
 
-    private void browseEventMenu() {
-        currentMenu = "BrowseEvent";
-        buttonPanel.removeAll();
-        buttonPanel.add(seeAllEvent);
-        buttonPanel.add(seeSignedEvent);
-        buttonPanel.add(back);
-        frame.pack();
+//        frame.remove(signUpDashboard);
+//        frame.add(buttonPanel);
+//        refresh();
+//        
+//        loginType();
     }
 
 
-    private void displayEvents(boolean allOrNot) {
-        currentMenu = "DisplayEvents";
-        buttonPanel.removeAll();
-        String[] info;
-        if (allOrNot) {
-            info = sendsInfo.displayAllEvents();
-        } else {
-            // save current username I guess to run this
-            info = sendsInfo.displaySignedUpEvents(currentUsername);
-        }
-        if (info.length == 0) {
-            errorText.setText("no events :(");
-            buttonPanel.add(errorText);
-        } else {
-            displayList.setListData(info);
-            buttonPanel.add(displayList);
-        }
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    private void signUpForEvent() {
-        currentMenu = "SignUpForEvent";
-        buttonPanel.removeAll();
-        buttonPanel.add(textInput);
-        buttonPanel.add(confirmEventSignup);
-        buttonPanel.add(back);
-        frame.pack();
-    }
-
-    private void cancelAttendEvent() {
-        currentMenu = "CancelAttendEvent";
-        buttonPanel.removeAll();
-        buttonPanel.add(textInput);
-        buttonPanel.add(confirmEventRemoval);
-        buttonPanel.add(back);
-        frame.pack();
-    }
 
 
 //---------------------------------------Messaging Menu ---------------------------------------;
@@ -340,7 +305,8 @@ public class Dashboard{
         buttonPanel.add(cancelEvent);
         buttonPanel.add(changeCapacity);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
     private void addRoom(){
@@ -352,7 +318,8 @@ public class Dashboard{
         buttonPanel.add(roomCapacity);
         buttonPanel.add(confirmRoomNumber);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
     private void addEvent() {
@@ -362,7 +329,8 @@ public class Dashboard{
         buttonPanel.add(multiSpeakerEvent);
         buttonPanel.add(noSpeakerEvent);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
     private void cancelEvent(){
@@ -372,7 +340,8 @@ public class Dashboard{
         buttonPanel.add(cancelEventTextfield);
         buttonPanel.add(confirmCancelEvent);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
     private void changeEventCapacity(){
@@ -384,7 +353,8 @@ public class Dashboard{
         buttonPanel.add(changeCapacityEventTextfield);
         buttonPanel.add(confirmChangeCapacity);
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
     }
 
     private void createEvent(String eventType){
@@ -394,7 +364,8 @@ public class Dashboard{
 
         }
         buttonPanel.add(back);
-        frame.pack();
+        refresh();
+        
 
     }
 
@@ -405,7 +376,8 @@ public class Dashboard{
         errorText.setText(failedMessage);
         buttonPanel.add(errorText);
         buttonPanel.add(nextPanel);
-        frame.pack();
+        refresh();
+        
     }
 
     private void createButtons() {
@@ -477,46 +449,6 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginSignup();
-            }
-        });
-        browseEvent = new JButton("Browse Events");
-        browseEvent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "SignUpMenu";
-                browseEventMenu();
-            }
-        });
-        signUpEvent = new JButton("Sign Up for Event");
-        signUpEvent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "SignUpMenu";
-                signUpForEvent();
-            }
-        });
-        cancelAttendEvent = new JButton("Cancel Attendance to Event");
-        cancelAttendEvent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "SignUpMenu";
-                cancelAttendEvent();
-            }
-        });
-        seeAllEvent = new JButton("See All Events");
-        seeAllEvent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "BrowseMenu";
-                displayEvents(true);
-            }
-        });
-        seeSignedEvent = new JButton("See Signed Up Events");
-        seeSignedEvent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "BrowseMenu";
-                displayEvents(false);
             }
         });
         nextPanel = new JButton("Next");
@@ -629,12 +561,13 @@ public class Dashboard{
                 createEvent("no");
             }
         });
+        //TODO: move this somewhere
         seeListEvents = new JButton("See List of Events");
         seeListEvents.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "LoggedIn";
-                displayEvents(false);
+                //displayEvents(false);
             }
         });
         confirmRoomNumber = new JButton("Confirm");
@@ -751,45 +684,7 @@ public class Dashboard{
                 returnToSameMenu();
             }
         });
-        confirmEventSignup = new JButton("Confirm");
-        confirmEventSignup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "SignUpMenu";
-                int result = sendsInfo.signUpForEvent(currentUsername, textInput.getText());
-                switch (result) {
-                    case 0:
-                        previousMenu();
-                    case 1:
-                        failedMenu("You have signed up for this event before.");
-                    case 2:
-                        failedMenu("The event you have entered is already full.");
-                    case 3:
-                        failedMenu("The event title you have entered is invalid.");
-                }
-                clearTextField();
-            }
-        });
-        confirmEventRemoval = new JButton("Confirm");
-        confirmEventRemoval.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                previousMenu = "SignUpMenu";
-                int result = sendsInfo.cancelAttendEvent(currentUsername, textInput.getText());
-                switch (result) {
-                    case 0:
-                        previousMenu();
-                        break;
-                    case 1:
-                        failedMenu("You haven't signed up for this event yet.");
-                        break;
-                    case 2:
-                        failedMenu("The event title you have entered is invalid.");
-                        break;
-                }
-                clearTextField();
-            }
-        });
+
         confirmAddEvent = new JButton("Confirm");
         confirmAddEvent.addActionListener(new ActionListener() {
             @Override
@@ -841,10 +736,6 @@ public class Dashboard{
                 signUpEventMenu();
                 previousMenu = "LoggedIn";
                 break;
-            case "BrowseMenu":
-                browseEventMenu();
-                previousMenu = "SignUpMenu";
-                break;
             case "MessageMenu":
                 messagingMenu();
                 previousMenu = "LoggedIn";
@@ -892,12 +783,6 @@ public class Dashboard{
             case "UsernamePassword":
                 usernamePassword();
                 break;
-            case "SignUpForEvent":
-                signUpForEvent();
-                break;
-            case "CancelAttendEvent":
-                cancelAttendEvent();
-                break;
         }
     }
 
@@ -921,5 +806,17 @@ public class Dashboard{
         } catch (NumberFormatException e) {
             return -1;
         }
+    }
+
+    public void backToMain() {
+        frame.remove(signUpDashboard);
+        frame.add(buttonPanel);
+        refresh();
+        loginType();
+    }
+
+    public void refresh() {
+        frame.pack();
+        frame.repaint();
     }
 }
