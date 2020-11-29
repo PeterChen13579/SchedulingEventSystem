@@ -7,7 +7,7 @@ import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -115,10 +115,72 @@ public class TechConferenceSystem implements Viewable{
 
     /**
      * TO @William Wang and Kailas Moon; This method is for sending the info of ALL chat usernames to
-     * display on GUI; method for "View Chats". Add in the username for this;
+     * display on GUI; Add in the number AND username for this; ie. [1.kailas, 2.william]
      */
-    public void sendChatUsername(){
+    @Override
+    public ArrayList <String> sendChatName(){
+        return null;
+    }
 
+
+    /**
+     *
+     * @param chatNumber The chat number that the user wants to view
+     * @return           Return String that the User wants to view; IN VIEW CHAT NUMBER: Return "false" if can not find
+     *                   chat number;
+     */
+    @Override
+    public String viewChatMsg(int chatNumber){
+        return null;
+    }
+
+    @Override
+    public void msgAllAttendees(String msg){
+
+    }
+
+    @Override
+    public void msgAllSpeakers(String msg){
+
+    }
+
+    @Override
+    public void msgAllAttendeeEvent(String msg){
+
+    }
+
+
+    /** TO @William Wang and Kailas Moon
+     *
+     * @param username    The username this user wants to msg
+     * @param content     The text this username wants to send
+     * @return   True if successfully sent. False otherwise(username does not exist);
+     */
+
+    @Override
+    public boolean sendOneMsg(String username, String content) {
+        return false;
+    }
+
+    /** TO @William Wang and Kailas Moon
+     *
+     * @return   All new Messages (View all new messages option)
+     */
+    @Override
+    public String getNewMessages(){
+        return null;
+    }
+
+    /** TO @William Wang and Kailas Moon
+     *
+     * @param username    The username this user wants to add
+     * @return            "true" if successfully added.
+     *                    "You have already added this username" if username is already on this user's friend list.
+     *                    "Username entered is not in database." if username is not in database.
+     */
+    @Override
+    public String addFriend(String username){
+        return null;
     }
 
     /**
@@ -401,7 +463,6 @@ public class TechConferenceSystem implements Viewable{
             roomManager.createRoom(roomNumber, capacity);
             return true;
         }
-
     }
 
     public int signUpForEvent(String username, String eventTitle) {

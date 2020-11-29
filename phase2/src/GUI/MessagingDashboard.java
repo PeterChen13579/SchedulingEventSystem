@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
+import java.util.ArrayList;
 
 public class MessagingDashboard {
     private static JFrame frame;
@@ -22,27 +23,33 @@ public class MessagingDashboard {
     private JButton sendAllAttendee;
     private JButton sendAllSpeaker;
     private JButton sendAllAttendeeEvent;
-    private JButton confirmEventTitle;
     private JButton confirmOneMessage;
-    private JButton confirmAllMessage;
     private JButton confirmChatNumber;
+    private JButton allAttendeeMsg;
+    private JButton allSpeakerMsg;
+    private JButton allEventMsg;
     private JButton back;
+    private JButton nextPanel;
+    private JLabel errorText;
     private JLabel displayUsername;
     private JLabel usernameLabel;
     private JLabel msgContentLabel;
-    private JTextField textInput;
+    private JLabel chatMsg;
+    private JTextField friendAddText;
     private JTextField chatNumber;
     private JTextField usernameTextfield;
     private JTextField content;
     private JLabel displayChatNumber;
-    private SynthLookAndFeel style = new SynthLookAndFeel();
-    private Viewable sendsInfo;
+    private final Viewable sendsInfo;
+    private ArrayList <String> userToDisplay;
 
     public MessagingDashboard(Viewable sendsInfo, String currentUsername, String loginType){
         this.sendsInfo = sendsInfo;
         this.currentUsername = currentUsername;
         this.loginType = loginType;
+        userToDisplay = sendsInfo.sendChatName();
         try {
+            SynthLookAndFeel style = new SynthLookAndFeel();
             style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
             UIManager.setLookAndFeel(style);
         } catch (Exception e) {
@@ -86,6 +93,7 @@ public class MessagingDashboard {
 
     //TODO: fill in
     private void sendOneMessage() {
+        currentMenu = "SendOneMessage";
         buttonPanel.removeAll();
         buttonPanel.add(usernameLabel);
         buttonPanel.add(usernameTextfield);
@@ -97,29 +105,41 @@ public class MessagingDashboard {
     }
 
     private void sendAllAttendee(){
+        currentMenu = "MsgAllAttendees";
         buttonPanel.removeAll();
-        buttonPanel.add(back);
-    }
-
-    private void sendAllSpeaker(){
-        buttonPanel.removeAll();
-        buttonPanel.add(back);
-    }
-
-    private void sendAllAttendeeEvent(){
-        buttonPanel.removeAll();
-        buttonPanel.add(back);
-    }
-
-    //TODO: fill in, will most likely be just sendOneMessage repeated I guess
-    private void sendAllEventMessage() {
-        buttonPanel.removeAll();
-        buttonPanel.add(confirmAllMessage);
+        buttonPanel.add(msgContentLabel);
+        buttonPanel.add(content);
+        buttonPanel.add(allAttendeeMsg);
         buttonPanel.add(back);
         frame.pack();
     }
 
-    private void chatDisplay() {
+    private void sendAllSpeaker(){
+        currentMenu = "MsgAllSpeakers";
+        buttonPanel.removeAll();
+        buttonPanel.add(msgContentLabel);
+        buttonPanel.add(content);
+        buttonPanel.add(allSpeakerMsg);
+        buttonPanel.add(back);
+        frame.pack();
+    }
+
+    private void sendAllAttendeeEvent(){
+        currentMenu = "MsgAllAttendeeEvent";
+        buttonPanel.removeAll();
+        buttonPanel.add(msgContentLabel);
+        buttonPanel.add(content);
+        buttonPanel.add(allEventMsg);
+        buttonPanel.add(back);
+        frame.pack();
+    }
+
+
+    private void chatDisplay(ArrayList <String> userToDisplay) {
+        for (String s : userToDisplay) {
+            JLabel addUsernameLabel = new JLabel(s);
+            buttonPanel.add(addUsernameLabel);
+        }
         currentMenu = "ViewChat";
         buttonPanel.removeAll();
         buttonPanel.add(displayChatNumber);
@@ -129,10 +149,20 @@ public class MessagingDashboard {
         frame.pack();
     }
 
-    private void displayNewMessages() {
+    private void displayChatMsg(String chatMsgDisplay){
+        currentMenu = "ViewOneChat";
+        buttonPanel.removeAll();
+        chatMsg.setText(chatMsgDisplay);
+        buttonPanel.add(chatMsg);
+        buttonPanel.add(back);
+        frame.pack();
+    }
+
+    private void displayNewMessages(String newMsgs) {
         currentMenu="ViewNewMessage";
         buttonPanel.removeAll();
-        //TODO: same as chatDisplay
+        chatMsg.setText(newMsgs);
+        buttonPanel.add(chatMsg);
         buttonPanel.add(back);
         frame.pack();
     }
@@ -141,9 +171,17 @@ public class MessagingDashboard {
         currentMenu="AddFriend";
         buttonPanel.removeAll();
         buttonPanel.add(displayUsername);
-        buttonPanel.add(textInput);
+        buttonPanel.add(friendAddText);
         buttonPanel.add(confirmFriend);
         buttonPanel.add(back);
+        frame.pack();
+    }
+
+    private void failedMenu(String failedMessage) {
+        buttonPanel.removeAll();
+        errorText.setText(failedMessage);
+        buttonPanel.add(errorText);
+        buttonPanel.add(nextPanel);
         frame.pack();
     }
 
@@ -152,7 +190,7 @@ public class MessagingDashboard {
         viewChat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chatDisplay();
+                chatDisplay(userToDisplay);
             }
         });
         sendMessage = new JButton("Send Message");
@@ -167,7 +205,8 @@ public class MessagingDashboard {
         viewNewMessages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayNewMessages();
+                String newMsgs = sendsInfo.getNewMessages();
+                displayNewMessages(newMsgs);
             }
         });
         addFriend = new JButton("Add Friend");
@@ -209,28 +248,63 @@ public class MessagingDashboard {
         confirmFriend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 add friend
+                if (sendsInfo.addFriend(friendAddText.getText()).equals("true")){
+                    messagingMenu();
+                    userToDisplay = sendsInfo.sendChatName();
+                }else{
+                    String failedMsg = sendsInfo.addFriend(friendAddText.getText());
+                    failedMenu(failedMsg);
+                }
             }
         });
         confirmOneMessage = new JButton("Confirm");
         confirmOneMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 send one message
+                if (sendsInfo.sendOneMsg(currentUsername, usernameTextfield.getText())){
+                    messagingMenu();
+                }else{
+                    failedMenu("Can not find specified username.");
+                }
             }
         });
-        confirmAllMessage = new JButton("Confirm");
-        confirmAllMessage.addActionListener(new ActionListener() {
+        allAttendeeMsg = new JButton("Confirm");
+        allAttendeeMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 send all message
+                sendsInfo.msgAllAttendees(content.getText());
+            }
+        });
+        allSpeakerMsg = new JButton("Confirm");
+        allSpeakerMsg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendsInfo.msgAllSpeakers(content.getText());
+            }
+        });
+        allEventMsg = new JButton("Confirm");
+        allEventMsg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendsInfo.msgAllAttendeeEvent(content.getText());
             }
         });
         confirmChatNumber = new JButton("Confirm");
         confirmChatNumber.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 send all message
+                int possibleNum = tryParse(chatNumber.getText());
+                if (possibleNum == -1){
+                    failedMenu("You must enter a valid integer");
+                }else{
+                    if (sendsInfo.viewChatMsg(possibleNum).equals("false")){
+                        failedMenu("The integer you entered is invalid");
+                    }else{
+                        String displayMsg = sendsInfo.viewChatMsg(possibleNum);
+                        displayChatMsg(displayMsg);
+                    }
+                }
+
             }
         });
         back = new JButton("Back");
@@ -240,7 +314,24 @@ public class MessagingDashboard {
                 previousMenu();
             }
         });
-        textInput = new JTextField(12);
+        nextPanel = new JButton("Next");
+        nextPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (currentMenu){
+                    case "SendOneMessage":
+                        sendOneMessage();
+                        break;
+                    case "AddFriend":
+                        addFriend();
+                        break;
+                    case "ViewChat":
+                        chatDisplay(userToDisplay);
+
+                }
+            }
+        });
+        friendAddText = new JTextField(12);
         chatNumber = new JTextField(12);
         usernameTextfield = new JTextField(12);
         content = new JTextField(12);
@@ -248,6 +339,8 @@ public class MessagingDashboard {
         usernameLabel = new JLabel("Recipient username");
         msgContentLabel = new JLabel("Msg");
         displayUsername = new JLabel("Username:");
+        errorText = new JLabel();
+        chatMsg = new JLabel();
     }
 
 
@@ -257,6 +350,9 @@ public class MessagingDashboard {
                 frame.dispose();
                 new Dashboard(sendsInfo, loginType, currentUsername);
                 break;
+            case "ViewOneChat":
+                chatDisplay(userToDisplay);
+                break;
             case "ViewChat":
             case "SendMessage":
             case "ViewNewMessage":
@@ -265,7 +361,16 @@ public class MessagingDashboard {
                 break;
             default:
                 sendMessageMenu();
+                break;
 
+        }
+    }
+
+    private Integer tryParse(String text){
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return -1;
         }
     }
 }

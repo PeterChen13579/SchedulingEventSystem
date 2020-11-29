@@ -1,6 +1,7 @@
 package GUI;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public interface Viewable {
 
@@ -26,6 +27,12 @@ public interface Viewable {
     boolean confirmRoom(String roomNumber, int capacity);
     int signUpForEvent(String username, String eventTitle);
     int cancelAttendEvent(String username, String eventTitle);
-    void sendChatUsername();
-
+    ArrayList <String> sendChatName();
+    boolean sendOneMsg(String username, String content);
+    String viewChatMsg(int chatNumber);
+    String addFriend(String username);
+    String getNewMessages();
+    void msgAllAttendees(String msg);
+    void msgAllSpeakers(String msg);
+    void msgAllAttendeeEvent(String msg);
 }

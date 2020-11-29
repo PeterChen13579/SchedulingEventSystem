@@ -354,8 +354,8 @@ public class Dashboard{
     private void failedMenu(String failedMessage) {
         buttonPanel.removeAll();
         errorText.setText(failedMessage);
-        buttonPanel.add(nextPanel);
         buttonPanel.add(errorText);
+        buttonPanel.add(nextPanel);
         frame.pack();
     }
 
@@ -791,7 +791,7 @@ public class Dashboard{
         }
     }
 
-    public Integer tryParse(String text){
+    private Integer tryParse(String text){
         try {
             return Integer.parseInt(text);
         } catch (NumberFormatException e) {
