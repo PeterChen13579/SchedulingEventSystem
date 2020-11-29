@@ -4,14 +4,9 @@ import UseCase.EventManager;
 import UseCase.UserManager;
 import Presenters.MessagePresenter;
 
+import java.io.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Messaging system for the program. It can message users and view chats/messages.
@@ -357,4 +352,45 @@ public class MessagingSystem {
         }
     }
 
+    /**
+     * The encoder takes in a string that represents the file path to the desired image to be encoded in a
+     * Base64 string.
+     * @param imagePath the filepath to the image on the device
+     * @return the encoded Base64 string
+     */
+
+    public static String imageToBase64(String imagePath) {
+        String encodedFile = null;
+        File file = new File(imagePath);
+        try {
+            FileInputStream imageFile = new FileInputStream(file);
+            byte[] imageBytes = new byte[(int)file.length()];
+            imageFile.read(imageBytes);
+            encodedFile = Base64.getEncoder().encodeToString(imageBytes);
+        } catch (FileNotFoundException e) {
+            System.out.println("Image does not exist or cannot be found. ");
+        } catch (IOException f) {
+            f.printStackTrace();
+        }
+        return encodedFile;
+    }
+
+    /**
+     Takes in a Base64 string and converts it into an image to be saved onto the computer. Does not return
+     * anything. Should be called after imagetoBase64.
+     * @param base64Image String that represents the base64 string
+     * @param imagePath The filepath where the image will be saved.
+     */
+    public static void base64ToImage(String base64Image, String imagePath) {
+        try {
+            FileOutputStream imageFile = new FileOutputStream(imagePath);
+            byte[] imageByteArray = Base64.getDecoder().decode(base64Image);
+            imageFile.write(imageByteArray);
+        } catch (FileNotFoundException e) {
+            System.out.println("Image could not send.");
+        } catch (IOException f) {
+            f.printStackTrace();
+        }
+    }
 }
+
