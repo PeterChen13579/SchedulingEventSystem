@@ -69,9 +69,9 @@ public class Dashboard{
     private String currentUsername;
     private JLabel speakerNameDisplay, timeDisplay;
     private SignUpDashboard signUpDashboard;
+    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public Dashboard() {
-        //@peter dw about this lmao
         try {
             SynthLookAndFeel style = new SynthLookAndFeel();
             style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
@@ -82,8 +82,8 @@ public class Dashboard{
 
         frame = new JFrame("Tech Conference System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(900, 600));
-        frame.setLocationRelativeTo(null);
+        frame.setPreferredSize(new Dimension(1280, 720));
+        frame.setLocation(screenSize.width/2 - 640, screenSize.height/2 - 360);
         buttonPanel = new JPanel();
         frame.add(buttonPanel);
         frame.setVisible(true);
@@ -271,17 +271,10 @@ public class Dashboard{
 
 
     private void signUpEventMenu() {
-        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, loginType, this);
+        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, this);
         frame.remove(buttonPanel);
         frame.add(signUpDashboard);
         refresh();
-        
-
-//        frame.remove(signUpDashboard);
-//        frame.add(buttonPanel);
-//        refresh();
-//        
-//        loginType();
     }
 
 

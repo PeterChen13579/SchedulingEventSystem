@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SignUpDashboard extends JPanel {
-    private String currentMenu, previousMenu, currentUsername, loginType;
+    private String currentMenu, previousMenu, currentUsername;
     private JButton seeAllEvent, seeSignedEvent, back, nextPanel;
     private JButton browseEvent, signUpEvent, cancelAttendEvent;
     private JButton confirmEventSignup, confirmEventRemoval;
@@ -17,7 +17,7 @@ public class SignUpDashboard extends JPanel {
     private boolean running;
     private Dashboard dashboard;
 
-    SignUpDashboard(Viewable sendsInfo, String currentUsername, String loginType, Dashboard dashboard) {
+    SignUpDashboard(Viewable sendsInfo, String currentUsername, Dashboard dashboard) {
         super();
         this.setOpaque(true);
         //this.setSize(900, 600);
@@ -25,7 +25,6 @@ public class SignUpDashboard extends JPanel {
         previousMenu = "LoggedIn";
         this.sendsInfo = sendsInfo;
         this.currentUsername = currentUsername;
-        this.loginType = loginType;
         this.dashboard = dashboard;
         createButtons();
         running = true;
@@ -61,18 +60,28 @@ public class SignUpDashboard extends JPanel {
         currentMenu = "DisplayEvents";
         this.removeAll();
         String[] info;
-        if (allOrNot) {
-            info = sendsInfo.displayAllEvents();
-        } else {
-            // save current username I guess to run this
-            info = sendsInfo.displaySignedUpEvents(currentUsername);
+//        if (allOrNot) {
+//            info = sendsInfo.displayAllEvents();
+//        } else {
+//            info = sendsInfo.displaySignedUpEvents(currentUsername);
+//        }
+        info = new String[50];
+        for (int i = 0; i < 50; i++) {
+            if (i % 2 == 0){
+                info[i] = "hi";
+            } else if (i % 3 == 0) {
+                info[i] = "not hi";
+            } else {
+                info[i] = "bye";
+            }
         }
         if (info.length == 0) {
             errorText.setText("no events :(");
             this.add(errorText);
         } else {
-            //displayList.setListData(info);
-            //this.add(displayList);
+            JScrollPane events =new JScrollPane(new JList(info), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            events.setPreferredSize(new Dimension(640, 720));
+            this.add(events);
         }
         this.add(back);
         dashboard.refresh();
