@@ -8,12 +8,10 @@ import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.util.ArrayList;
 
-public class MessagingDashboard {
-    private static JFrame frame;
+public class MessagingDashboard extends JPanel{
     private final String loginType;
     private String currentMenu;
     private final String currentUsername;
-    private final JPanel buttonPanel;
     private JButton viewChat;
     private JButton sendMessage;
     private JButton viewNewMessages;
@@ -42,11 +40,14 @@ public class MessagingDashboard {
     private JLabel displayChatNumber;
     private final Viewable sendsInfo;
     private ArrayList <String> userToDisplay;
+    private final Dashboard dashboard;
 
-    public MessagingDashboard(Viewable sendsInfo, String currentUsername, String loginType){
+    public MessagingDashboard(Viewable sendsInfo, Dashboard dashboard, String currentUsername, String loginType){
+
         this.sendsInfo = sendsInfo;
         this.currentUsername = currentUsername;
         this.loginType = loginType;
+        this.dashboard = dashboard;
         userToDisplay = sendsInfo.sendChatName();
         try {
             SynthLookAndFeel style = new SynthLookAndFeel();
@@ -55,12 +56,6 @@ public class MessagingDashboard {
         } catch (Exception e) {
             System.out.println(e);
         }
-        frame = new JFrame("Tech Conference System");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        buttonPanel = new JPanel();
-        frame.add(buttonPanel);
-        frame.setVisible(true);
         createButtons();
         messagingMenu();
     }
@@ -68,121 +63,121 @@ public class MessagingDashboard {
 
     private void messagingMenu() {
         currentMenu = "Messaging";
-        buttonPanel.removeAll();
-        buttonPanel.add(viewChat);
-        buttonPanel.add(sendMessage);
-        buttonPanel.add(viewNewMessages);
-        buttonPanel.add(addFriend);
-        buttonPanel.add(back);
-        frame.pack();
+        this.removeAll();
+        this.add(viewChat);
+        this.add(sendMessage);
+        this.add(viewNewMessages);
+        this.add(addFriend);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void sendMessageMenu() {
         currentMenu = "SendMessage";
-        buttonPanel.removeAll();
-        buttonPanel.add(sendOne);
+        this.removeAll();
+        this.add(sendOne);
         if (loginType.equals("Organizer")) {
-            buttonPanel.add(sendAllAttendee);
-            buttonPanel.add(sendAllSpeaker);
+            this.add(sendAllAttendee);
+            this.add(sendAllSpeaker);
         }else if (loginType.equals("Speaker")){
-            buttonPanel.add(sendAllAttendeeEvent);
+            this.add(sendAllAttendeeEvent);
         }
-        buttonPanel.add(back);
-        frame.pack();
+        this.add(back);
+        dashboard.refresh();
     }
 
     //TODO: fill in
     private void sendOneMessage() {
         currentMenu = "SendOneMessage";
-        buttonPanel.removeAll();
-        buttonPanel.add(usernameLabel);
-        buttonPanel.add(usernameTextfield);
-        buttonPanel.add(msgContentLabel);
-        buttonPanel.add(content);
-        buttonPanel.add(confirmOneMessage);
-        buttonPanel.add(back);
-        frame.pack();
+        this.removeAll();
+        this.add(usernameLabel);
+        this.add(usernameTextfield);
+        this.add(msgContentLabel);
+        this.add(content);
+        this.add(confirmOneMessage);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void sendAllAttendee(){
         currentMenu = "MsgAllAttendees";
-        buttonPanel.removeAll();
-        buttonPanel.add(msgContentLabel);
-        buttonPanel.add(content);
-        buttonPanel.add(allAttendeeMsg);
-        buttonPanel.add(back);
-        frame.pack();
+        this.removeAll();
+        this.add(msgContentLabel);
+        this.add(content);
+        this.add(allAttendeeMsg);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void sendAllSpeaker(){
         currentMenu = "MsgAllSpeakers";
-        buttonPanel.removeAll();
-        buttonPanel.add(msgContentLabel);
-        buttonPanel.add(content);
-        buttonPanel.add(allSpeakerMsg);
-        buttonPanel.add(back);
-        frame.pack();
+        this.removeAll();
+        this.add(msgContentLabel);
+        this.add(content);
+        this.add(allSpeakerMsg);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void sendAllAttendeeEvent(){
         currentMenu = "MsgAllAttendeeEvent";
-        buttonPanel.removeAll();
-        buttonPanel.add(msgContentLabel);
-        buttonPanel.add(content);
-        buttonPanel.add(allEventMsg);
-        buttonPanel.add(back);
-        frame.pack();
+        this.removeAll();
+        this.add(msgContentLabel);
+        this.add(content);
+        this.add(allEventMsg);
+        this.add(back);
+        dashboard.refresh();
     }
 
 
     private void chatDisplay(ArrayList <String> userToDisplay) {
         for (String s : userToDisplay) {
             JLabel addUsernameLabel = new JLabel(s);
-            buttonPanel.add(addUsernameLabel);
+            this.add(addUsernameLabel);
         }
         currentMenu = "ViewChat";
-        buttonPanel.removeAll();
-        buttonPanel.add(displayChatNumber);
-        buttonPanel.add(chatNumber);
-        buttonPanel.add(confirmChatNumber);
-        buttonPanel.add(back);
-        frame.pack();
+        this.removeAll();
+        this.add(displayChatNumber);
+        this.add(chatNumber);
+        this.add(confirmChatNumber);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void displayChatMsg(String chatMsgDisplay){
         currentMenu = "ViewOneChat";
-        buttonPanel.removeAll();
+        this.removeAll();
         chatMsg.setText(chatMsgDisplay);
-        buttonPanel.add(chatMsg);
-        buttonPanel.add(back);
-        frame.pack();
+        this.add(chatMsg);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void displayNewMessages(String newMsgs) {
         currentMenu="ViewNewMessage";
-        buttonPanel.removeAll();
+        this.removeAll();
         chatMsg.setText(newMsgs);
-        buttonPanel.add(chatMsg);
-        buttonPanel.add(back);
-        frame.pack();
+        this.add(chatMsg);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void addFriend() {
         currentMenu="AddFriend";
-        buttonPanel.removeAll();
-        buttonPanel.add(displayUsername);
-        buttonPanel.add(friendAddText);
-        buttonPanel.add(confirmFriend);
-        buttonPanel.add(back);
-        frame.pack();
+        this.removeAll();
+        this.add(displayUsername);
+        this.add(friendAddText);
+        this.add(confirmFriend);
+        this.add(back);
+        dashboard.refresh();
     }
 
     private void failedMenu(String failedMessage) {
-        buttonPanel.removeAll();
+        this.removeAll();
         errorText.setText(failedMessage);
-        buttonPanel.add(errorText);
-        buttonPanel.add(nextPanel);
-        frame.pack();
+        this.add(errorText);
+        this.add(nextPanel);
+        dashboard.refresh();
     }
 
     private void createButtons(){
@@ -347,8 +342,7 @@ public class MessagingDashboard {
     private void previousMenu() {
         switch (currentMenu) {
             case "Messaging":
-                frame.dispose();
-                new Dashboard(sendsInfo, loginType, currentUsername);
+                dashboard.backToMain("Msg");
                 break;
             case "ViewOneChat":
                 chatDisplay(userToDisplay);

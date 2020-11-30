@@ -217,11 +217,12 @@ public class TechConferenceSystem implements Viewable{
     }
 
 
-    /**
+    /**  TO @Lisa Chen;
      *
-     * @return
+     * @return  "true" if successfully created; Else return a string msg you want to display on GUI;
      */
-    public String createSpeakerEvent(){
+    public String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+            speakerUsernames, String eventTitle, String capacity){
         return null;
     }
 

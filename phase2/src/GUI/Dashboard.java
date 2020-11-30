@@ -6,8 +6,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
+import java.util.List;
 
 public class Dashboard{
 
@@ -34,8 +38,6 @@ public class Dashboard{
     private JButton confirmOrganizerSignUp;
     private JButton confirmSpeakerSignUp;
     private JButton confirmLogIn;
-    private JButton confirmEventSignup;
-    private JButton confirmEventRemoval;
     private JButton nextPanel;
     private JButton confirmFilename;
     private JButton save;
@@ -55,6 +57,9 @@ public class Dashboard{
     private JTextField roomCapacity;
     private JTextField filename;
     private JTextField eventName;
+    private JTextField date, startTime, endTime, speakerUsernameOne, speakerUsernameMulti, VIP;
+    private JLabel dateDisplay, startTimeDisplay, endTimeDisplay, VIPDisplay;
+    private JLabel speakerUsernameDisplayOne, speakerUsernameDisplayMulti;
     private JPasswordField password;
     private String currentMenu;
     private String previousMenu;
@@ -69,6 +74,7 @@ public class Dashboard{
     private String currentUsername;
     private JLabel speakerNameDisplay, timeDisplay;
     private SignUpDashboard signUpDashboard;
+    private MessagingDashboard messagingDashboard;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private SynthLookAndFeel regularTheme, vipTheme;
 
@@ -277,9 +283,10 @@ public class Dashboard{
 
 //---------------------------------------Messaging Menu ---------------------------------------;
     private void messagingMenu() {
-        buttonPanel.removeAll();
-        frame.dispose();
-        new MessagingDashboard(sendsInfo, currentUsername, loginType);
+        messagingDashboard = new MessagingDashboard(sendsInfo, this, currentUsername, loginType);
+        frame.remove(buttonPanel);
+        frame.add(messagingDashboard);
+        refresh();
     }
 
 
@@ -311,6 +318,7 @@ public class Dashboard{
     }
 
     private void addEvent() {
+        previousMenu = "ScheduleMenu";
         currentMenu = "ChooseEvent";
         buttonPanel.removeAll();
         buttonPanel.add(oneSpeakerEvent);
@@ -348,13 +356,28 @@ public class Dashboard{
     private void createEvent(String eventType){
         currentMenu = "CreateEvent";
         buttonPanel.removeAll();
+        buttonPanel.add(VIPDisplay);
+        buttonPanel.add(VIP);
+        buttonPanel.add(dateDisplay);
+        buttonPanel.add(date);
+        buttonPanel.add(startTimeDisplay);
+        buttonPanel.add(startTime);
+        buttonPanel.add(endTimeDisplay);
+        buttonPanel.add(endTime);
+        buttonPanel.add(addRoomLabel);
+        buttonPanel.add(roomNumber);
+        buttonPanel.add(displayCapacity);
+        buttonPanel.add(roomCapacity);
         if (eventType.equals("one")){
-
+            buttonPanel.add(speakerUsernameDisplayOne);
+            buttonPanel.add(speakerUsernameOne);
+        }else if (eventType.equals("multi")){
+            buttonPanel.add(speakerUsernameDisplayMulti);
+            buttonPanel.add(speakerUsernameMulti);
         }
+        buttonPanel.add(confirmAddEvent);
         buttonPanel.add(back);
         refresh();
-        
-
     }
 
 //---------------------------------------Failed Menu ---------------------------------------;
@@ -482,7 +505,6 @@ public class Dashboard{
         addEvent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                previousMenu = "ScheduleMenu";
                 addEvent();
             }
         });
@@ -547,7 +569,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "ChooseEvent";
-                createEvent("no");
+                createEvent("none");
             }
         });
         //TODO: move this somewhere
@@ -564,11 +586,16 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int capacity = tryParse(roomCapacity.getText());
-                if (capacity != -1){
-                    if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
-                        loggedInOrganizer();
+                int roomNum = tryParse(roomNumber.getText());
+                if (roomNum > -1){
+                    if (capacity > -1) {
+                        if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
+                            loggedInOrganizer();
+                        } else {
+                            failedMenu("This room has already been created.");
+                        }
                     }else{
-                        failedMenu("This room has already been created.");
+                        failedMenu("You have entered an invalid room capacity");
                     }
                 }else{
                     failedMenu("You have entered an invalid room number");
@@ -676,12 +703,39 @@ public class Dashboard{
                 returnToSameMenu();
             }
         });
-
         confirmAddEvent = new JButton("Confirm");
         confirmAddEvent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: connect phase 1 add event
+                String vipVerify = VIP.getText();
+                if (!(vipVerify.equalsIgnoreCase("yes") || vipVerify.equalsIgnoreCase("no"))){
+                    failedMenu("You need to enter 'yes' or 'no' in vip");
+                }else{
+                    boolean vip;
+                    vip = vipVerify.equalsIgnoreCase("yes");
+                    List <String> speakerList = new ArrayList<String>();
+                    String createdOrNot = "";
+                    if (speakerUsernameOne.getText().equals("") && speakerUsernameMulti.getText().equals("")){
+                        createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(),
+                                endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
+                                roomCapacity.getText());
+                    }else if(speakerUsernameMulti.getText().equals("")){
+                        speakerList.add(speakerUsernameOne.getText());
+                        createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
+                                roomNumber.getText(), speakerList, eventName.getText(), roomCapacity.getText());
+                    }else if(speakerUsernameOne.getText().equals("")) {
+                        String addSpeakerUsernames = speakerUsernameDisplayMulti.getText();
+                        addSpeakerUsernames = addSpeakerUsernames.replaceAll("\\s+", "");
+                        speakerList = Arrays.asList(addSpeakerUsernames.split(","));
+                        createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
+                                roomNumber.getText(), speakerList, eventName.getText(), roomCapacity.getText());
+                    }
+                    if (createdOrNot.equals("true")){
+                        addEvent();
+                    }else{
+                        failedMenu(createdOrNot);
+                    }
+                }
             }
         });
         textInput = new JTextField(12);
@@ -701,6 +755,18 @@ public class Dashboard{
         changeCapacityMsg = new JLabel("New Capacity:");
         cancelEventMsg = new JLabel("Event name:");
         eventNameMsg = new JLabel("Event name:");
+        date = new JTextField(10);
+        startTime = new JTextField(10);
+        endTime = new JTextField(10);
+        speakerUsernameOne = new JTextField(10);
+        speakerUsernameMulti = new JTextField(10);
+        VIP = new JTextField(10);
+        dateDisplay = new JLabel("Date('YYYYMMDD'):");
+        startTimeDisplay = new JLabel("Start Time-24Hours('HH:MM:SS'):");
+        endTimeDisplay = new JLabel("End Time-24Hours('HH:MM:SS'):");
+        speakerUsernameDisplayOne = new JLabel("Enter Speaker Username:");
+        speakerUsernameDisplayMulti = new JLabel("Enter Speaker Usernames ~Separate by commas:");
+        VIPDisplay = new JLabel("Vip: (yes or no)");
 
     }
 
@@ -803,8 +869,12 @@ public class Dashboard{
         }
     }
 
-    public void backToMain() {
-        frame.remove(signUpDashboard);
+    public void backToMain(String type) {
+        if (type.equals("Msg")){
+            frame.remove(messagingDashboard);
+        }else if(type.equals("SignUp")){
+            frame.remove(signUpDashboard);
+        }
         frame.add(buttonPanel);
         refresh();
         loginType();

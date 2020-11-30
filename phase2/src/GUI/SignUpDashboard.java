@@ -11,14 +11,14 @@ public class SignUpDashboard extends JPanel {
     private JButton seeAllEvent, seeSignedEvent, back, nextPanel;
     private JButton browseEvent, signUpEvent, cancelAttendEvent;
     private JButton confirmEventSignup, confirmEventRemoval;
-    private Viewable sendsInfo;
+    private final Viewable sendsInfo;
     private JTextField textInput;
     private JLabel errorText;
     private boolean running;
-    private Dashboard dashboard;
+    private final Dashboard dashboard;
 
     SignUpDashboard(Viewable sendsInfo, String currentUsername, Dashboard dashboard) {
-        super();
+
         this.setOpaque(true);
         //this.setSize(900, 600);
         currentMenu = "SignUpMenu";
@@ -210,7 +210,7 @@ public class SignUpDashboard extends JPanel {
         switch (previousMenu) {
             case "LoggedIn":
                 //return to dashboard
-                dashboard.backToMain();
+                dashboard.backToMain("SignUp");
                 break;
             case "BrowseMenu":
                 browseEventMenu();
