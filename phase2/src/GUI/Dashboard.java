@@ -70,17 +70,13 @@ public class Dashboard{
     private JLabel speakerNameDisplay, timeDisplay;
     private SignUpDashboard signUpDashboard;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private SynthLookAndFeel regularTheme, vipTheme;
 
     public Dashboard() {
-        try {
-            SynthLookAndFeel style = new SynthLookAndFeel();
-            style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
-            UIManager.setLookAndFeel(style);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        createThemes();
 
         frame = new JFrame("Tech Conference System");
+        changeTheme("regular");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1280, 720));
         frame.setLocation(screenSize.width/2 - 640, screenSize.height/2 - 360);
@@ -237,7 +233,6 @@ public class Dashboard{
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
-        
     }
 
     public void loggedInOrganizer() {
@@ -441,6 +436,7 @@ public class Dashboard{
         logout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                changeTheme("regular");
                 loginSignup();
             }
         });
@@ -635,13 +631,16 @@ public class Dashboard{
                                 "the username does not exist in the database.");
                         break;
                     case "Attendee":
-                        loggedInAttendee();
+                        loginType = "Attendee";
+                        loginType();
                         break;
                     case "Organizer":
-                        loggedInOrganizer();
+                        loginType = "Organizer";
+                        loginType();
                         break;
                     case "Speaker":
-                        loggedInSpeaker();
+                        loginType = "Speaker";
+                        loginType();
                         break;
                 }
                 clearTextField();
@@ -780,6 +779,9 @@ public class Dashboard{
     }
 
     private void loginType() {
+        if (sendsInfo.userIsVIP(currentUsername)) {
+            changeTheme("vip");
+        }
         switch (loginType) {
             case "Attendee":
                 loggedInAttendee();
@@ -811,5 +813,34 @@ public class Dashboard{
     public void refresh() {
         frame.pack();
         frame.repaint();
+    }
+
+    private void createThemes() {
+        try {
+            regularTheme = new SynthLookAndFeel();
+            regularTheme.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
+            vipTheme = new SynthLookAndFeel();
+            vipTheme.load(Dashboard.class.getResourceAsStream("vip.xml"), Dashboard.class);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void changeTheme(String themeName) {
+        try {
+            switch (themeName) {
+                case "regular":
+                    UIManager.setLookAndFeel(regularTheme);
+                    SwingUtilities.updateComponentTreeUI(frame);
+                    break;
+                case "vip":
+                    UIManager.setLookAndFeel(vipTheme);
+                    SwingUtilities.updateComponentTreeUI(frame);
+                    break;
+            }
+            frame.pack();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
     }
 }

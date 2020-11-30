@@ -60,20 +60,10 @@ public class SignUpDashboard extends JPanel {
         currentMenu = "DisplayEvents";
         this.removeAll();
         String[] info;
-//        if (allOrNot) {
-//            info = sendsInfo.displayAllEvents();
-//        } else {
-//            info = sendsInfo.displaySignedUpEvents(currentUsername);
-//        }
-        info = new String[50];
-        for (int i = 0; i < 50; i++) {
-            if (i % 2 == 0){
-                info[i] = "hi";
-            } else if (i % 3 == 0) {
-                info[i] = "not hi";
-            } else {
-                info[i] = "bye";
-            }
+        if (allOrNot) {
+            info = sendsInfo.displayAllEvents();
+        } else {
+            info = sendsInfo.displaySignedUpEvents(currentUsername);
         }
         if (info.length == 0) {
             errorText.setText("no events :(");
@@ -167,12 +157,19 @@ public class SignUpDashboard extends JPanel {
                 switch (result) {
                     case 0:
                         previousMenu();
+                        break;
                     case 1:
                         failedMenu("You have signed up for this event before.");
+                        break;
                     case 2:
                         failedMenu("The event you have entered is already full.");
+                        break;
                     case 3:
                         failedMenu("The event title you have entered is invalid.");
+                        break;
+                    case 4:
+                        failedMenu("This is a VIP event, but you are not a VIP.");
+                        break;
                 }
                 clearTextField();
             }

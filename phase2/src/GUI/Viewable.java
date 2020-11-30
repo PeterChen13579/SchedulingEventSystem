@@ -27,4 +27,5 @@ public interface Viewable {
     boolean cancelEvent(String eventName);
     boolean changeCapacity(String eventName, int capacity);
     String createSpeakerEvent();
+    boolean userIsVIP(String username);
 }

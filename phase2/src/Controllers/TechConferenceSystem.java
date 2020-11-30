@@ -35,7 +35,6 @@ public class TechConferenceSystem implements Viewable{
         this.dashboard = dashboard;
         dashboard.setView(this);
         createProgram();
-        run();
     }
 
     /**
@@ -183,18 +182,6 @@ public class TechConferenceSystem implements Viewable{
         return null;
     }
 
-    /**
-     * Runs the initial controls to start the program
-     */
-    private void run() {
-        boolean flag = true;
-        while(flag){
-            if (start()) {
-                flag = false;
-            }
-        }
-        mainLevel();
-    }
 
 //-----------------------------------------Scheduling Buttons-------------------------------------------
 
@@ -238,226 +225,70 @@ public class TechConferenceSystem implements Viewable{
         return null;
     }
 
+//--------------------------------------------Sign Up Buttons-----------------------------------------
 
+    public String[] displayAllEvents() {
+        List<String> events = eventManager.getAllEventTitle();
+        String[] toReturn = events.toArray(new String[0]);
+        return toReturn;
+    }
 
+    public String[] displaySignedUpEvents(String username) {
+        List<String> events;
+        if (userManager.userType(username).equals("Speaker")){
+            events = userManager.getEventsSpeaking(username);
+        }else {
+            events = userManager.getEventAttending(username);
+        }
+        String[] toReturn = events.toArray(new String[0]);
+        return toReturn;
+    }
 
-    private boolean start(){
-        Scanner input = new Scanner(System.in);
-        String temp = input.nextLine();
+    /**
+     *
+     * @param username
+     * @param eventTitle
+     * @return
+     */
+    public int signUpForEvent(String username, String eventTitle) {
+        if (!eventManager.isEventExist(eventTitle)){
+            return 3;
+        }
+        else if (eventManager.isAttendeeAdded(username, eventTitle)){
+            return 1;
+        }
+        else if(eventManager.isEventFull(username)){
+            return 2;
+        }
+        else if (!userManager.isAttendeeVIP(username) & eventManager.VIP(eventTitle)){
+            return 4;
+        }
+        else{
+            eventManager.addAttendee(username, eventTitle);
+            userManager.signUpEventAttendee(username, eventTitle);
+            userManager.setAttendeeVIP(username);
+        }
+        return 0;
+    }
 
-        if (temp.equals("1")) {
-            try {
-                createProgram();
-                return true;
-            } catch (ClassCastException exception) {
-//                STATEMENT_PRESENTER.printStatement("There is no existing Conference, please create a new one. ");
-                return false;
+    public int cancelAttendEvent(String username, String eventTitle) {
+        try {
+            if (!eventManager.isAttendeeAdded(username, eventTitle)) {
+//            sp.printStatement("You haven't signed up for this event yet.");
+                return 1;
             }
-        } else if (temp.equals("2")) {
-            createProgram();
-            return true;
-        } else {
-//            STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
-            return false;
-        }
-    }
-
-    private void mainLevel(){
-        boolean flag = true;
-        System.out.println("wtf");
-        while(flag){
-            if(mainLevelHelper()) {
-                flag = false;
+            if (eventManager.canDeleteAttendee(username, eventTitle)) {
+                eventManager.deleteAttendee(username, eventTitle);
+                userManager.cancelSpotAttendee(username, eventTitle);
+//            sp.printStatement("You have cancelled the spot for this event.");
             }
+        } catch (IllegalArgumentException e) {
+            return 2;
         }
+        return 0;
     }
 
-
-
-
-    private boolean mainLevelHelper(){
-        Scanner in = new Scanner(System.in);
-
-//        STATEMENT_PRESENTER.printStatement("What do you want to do? ;)");
-//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-//        STATEMENT_PRESENTER.printStatement("(1) Log In \n(2) Create Attendee Account  \n(3) Create Organizer Account \n(4) Quit");
-        String temp2 = in.nextLine();
-
-        switch (temp2) {
-            case "1":
-                if (loginSystem.run()) {
-                    String username = loginSystem.getUsername();
-                    if (userManager.userType(username).equals("Attendee")) {
-                        loggedInMenuAttendee(username);
-                    } else if (userManager.userType(username).equals("Organizer")) {
-                        loggedInMenuOrganizer(username);
-                    } else {
-                        loggedInMenuSpeaker(username);
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-
-            case "2": {
-//                STATEMENT_PRESENTER.printStatement("Please enter a username:");
-                String userName = in.nextLine();
-//                STATEMENT_PRESENTER.printStatement("Please enter a password:");
-                String password = in.nextLine();
-                if (userManager.createAttendeeAccount(userName, password)) {
-//                    STATEMENT_PRESENTER.printStatement("You have successfully created an Attendee Account!");
-                } else {
-//                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
-//                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
-                }
-                return false;
-            }
-            case "3": {
-//                STATEMENT_PRESENTER.printStatement("Please enter a username:");
-                String userName = in.nextLine();
-//                STATEMENT_PRESENTER.printStatement("Please enter a password:");
-                String password = in.nextLine();
-                if (userManager.createOrganizerAccount(userName, password)) {
-//                    STATEMENT_PRESENTER.printStatement("You have successfully created an Organizer Account!");
-                } else {
-//                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
-//                    STATEMENT_PRESENTER.printStatement("Please enter a different username");
-                }
-                return false;
-            }
-            case "4":
-//                STATEMENT_PRESENTER.printStatement("You have exited the program.");
-                saveProgram("hi.txt");
-                return true;
-            default:
-//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
-                break;
-        }
-        return false;
-    }
-
-    private void loggedInMenuAttendee(String username){
-        boolean flag = true;
-        while (flag){
-            if (loggedInMenuAttendeeHelper(username)) { flag = false; }
-        }
-    }
-
-    private boolean loggedInMenuAttendeeHelper(String username){
-        Scanner in = new Scanner(System.in);
-
-//        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
-//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-//        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Log Out");
-        String temp2 = in.nextLine();
-
-        switch (temp2) {
-            case "1":
-                signUpSystem.run(username);
-                return false;
-            case "2":
-                messagingSystem.run(username);
-                return false;
-            case "3":
-//                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
-                mainLevel();
-                return true;
-            default:
-//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
-                return false;
-        }
-    }
-
-    private void loggedInMenuOrganizer(String username){
-        boolean flag = true;
-        while(flag){
-            if (loggedInMenuOrganizerHelper(username)){
-                flag = false;
-            }
-        }
-    }
-
-    private boolean loggedInMenuOrganizerHelper(String username){
-        Scanner in = new Scanner(System.in);
-
-//        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
-//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-//        STATEMENT_PRESENTER.printStatement("(1) Sign Up Menu \n(2) Message Menu  \n(3) Schedule Menu " +
-//                "\n(4) Create Speaker account \n(5) Log Out");
-        String temp2 = in.nextLine();
-
-        switch (temp2) {
-            case "1":
-                signUpSystem.run(username);
-                return false;
-            case "2":
-                messagingSystem.run(username);
-                return false;
-            case "3":
-                schedulingSystem.run();
-                return false;
-            case "4":
-//                STATEMENT_PRESENTER.printStatement("Please enter a Username:");
-                String userName = in.nextLine();
-//                STATEMENT_PRESENTER.printStatement("Please enter a Password:");
-                String password = in.nextLine();
-                if (userManager.createSpeakerAccount(userName, password)) {
-//                    STATEMENT_PRESENTER.printStatement("You have successfully created a speaker account.");
-                } else {
-//                    STATEMENT_PRESENTER.printStatement("This username is already in our database.");
-//                    STATEMENT_PRESENTER.printStatement("Please enter a different username.");
-                }
-                return false;
-            case "5":
-//                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
-                mainLevel();
-                return true;
-            default:
-//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
-                return false;
-        }
-    }
-
-    private void loggedInMenuSpeaker(String username){
-        boolean flag = true;
-
-        while (flag){
-            if (loggedInMenuSpeakerHelper(username)){
-                flag = false;
-            }
-        }
-    }
-
-    private boolean loggedInMenuSpeakerHelper(String username){
-        Scanner in = new Scanner(System.in);
-
-//        STATEMENT_PRESENTER.printStatement(" Hey, " + username + "! \n What do you want to do? ");
-//        STATEMENT_PRESENTER.printStatement("Please enter the corresponding number listed below: ");
-//        STATEMENT_PRESENTER.printStatement("(1) Message Menu \n(2) View List of Events Speaking \n(3) Log Out");
-        String temp2 = in.nextLine();
-
-        switch (temp2) {
-            case "1":
-                messagingSystem.run(username);
-                return false;
-            case "2":
-                if (userManager.getEventsSpeaking(username).isEmpty()){
-//                    STATEMENT_PRESENTER.printStatement("You do not have any events scheduled to speak in.");
-                }else{
-                    EventPresenter eventPresenter = new EventPresenter(eventManager, userManager);
-                    eventPresenter.displaySignedUpEvents(username);
-                }
-                return false;
-            case "3":
-//                STATEMENT_PRESENTER.printStatement("You have logged out successfully! ;)");
-                mainLevel();
-                return true;
-            default:
-//                STATEMENT_PRESENTER.printStatement("Please enter the corresponding number and try again");
-                return false;
-        }
-    }
-
+    //--------------------------------------------Creating Controller-----------------------------------------
     public boolean createProgram() {
         chatManager = new ChatManager();
         eventManager = new EventManager();
@@ -484,60 +315,9 @@ public class TechConferenceSystem implements Viewable{
         writer.writeToFile(filename, saveObjects);
     }
 
-    public String[] displayAllEvents() {
-        List<String> events = eventManager.getAllEventTitle();
-        String[] toReturn = events.toArray(new String[0]);
-        return toReturn;
-    }
-
-    public String[] displaySignedUpEvents(String username) {
-        List<String> events;
-        if (userManager.userType(username).equals("Speaker")){
-            events = userManager.getEventsSpeaking(username);
-        }else {
-            events = userManager.getEventAttending(username);
-        }
-        String[] toReturn = events.toArray(new String[0]);
-        return toReturn;
+    public boolean userIsVIP(String username) {
+        return userManager.isAttendeeVIP(username);
     }
 
 
-    public int signUpForEvent(String username, String eventTitle) {
-        try {
-            if (eventManager.isAttendeeAdded(username, eventTitle)) {
-//            sp.printStatement("You have signed up for this event before.");
-                return 1;
-            }
-            if (eventManager.canAddAttendee(username, eventTitle)) {
-                eventManager.addAttendee(username, eventTitle);
-                userManager.signUpEventAttendee(username, eventTitle);
-//            sp.printStatement("You have successfully signed up for this event.");
-            }
-           // if (!signUpSystem.roomNotFull(eventTitle)) {
-//            sp.printStatement("The event you have entered is already full.");
-              //  return 2;
-           // }
-        } catch (IllegalArgumentException e) {
-//            sp.printStatement("The event title you have entered is invalid.");
-            return 3;
-        }
-        return 0;
-    }
-    
-    public int cancelAttendEvent(String username, String eventTitle) {
-        try {
-            if (!eventManager.isAttendeeAdded(username, eventTitle)) {
-//            sp.printStatement("You haven't signed up for this event yet.");
-                return 1;
-            }
-            if (eventManager.canDeleteAttendee(username, eventTitle)) {
-                eventManager.deleteAttendee(username, eventTitle);
-                userManager.cancelSpotAttendee(username, eventTitle);
-//            sp.printStatement("You have cancelled the spot for this event.");
-            }
-        } catch (IllegalArgumentException e) {
-            return 2;
-        }
-        return 0;
-    }
 }
