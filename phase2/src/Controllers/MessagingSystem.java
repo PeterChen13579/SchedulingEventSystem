@@ -244,6 +244,16 @@ public class MessagingSystem {
      * @param content The content of the message
      */
     private void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content) {
+        String imageString = "";  //Sets the parameter image to empty, i.e. don't want to send the image
+        String confirmImage = ""; //Checks to see if the User wants to send an image
+        Scanner input = new Scanner(System.in); //User input
+        messagingPresenter.printStatement("Enter 'yes' if you want to attach an image, otherwise press enter."); //If User types 'yes' then image = true
+        confirmImage = input.nextLine(); //Record user input
+        if (confirmImage.equals("yes")) { //Checks to see if User entered 'yes'
+            messagingPresenter.printStatement("Please enter the file path to the desired image: "); //User types in the absolute file path to the image
+            String imagePath = input.nextLine(); //Stores the file path in imagePath
+            imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
+        }
         for (String username : usernames) {
 
             List<String> thisChatUsernames = new ArrayList<>();
@@ -254,7 +264,7 @@ public class MessagingSystem {
             if (chat == null) {
                 chat = userChatManager.createChat(thisChatUsernames); // If no such chat exists, create it
             }
-            this.userChatManager.sendMessageToChat(chat, senderUsername, time, content);
+            this.userChatManager.sendMessageToChat(chat, senderUsername, time, content, imageString); //New parameter added, image which is a boolean
         }
         messagingPresenter.printStatement("Message sent!");
     }
@@ -350,41 +360,6 @@ public class MessagingSystem {
             messagingPresenter.printStatement(newFriend + " is already a friend.");
             return true;
         }
-    }
-
-    private void messageImage(String senderUsername) {
-        Scanner input = new Scanner(System.in);
-        messagingPresenter.printStatement("Please enter the username of the user you'd like to message.");
-        String recipient = input.nextLine();
-        messagingPresenter.printStatement("Please enter the message you'd like to send.");
-        String content = input.nextLine();
-        messagingPresenter.printStatement("Please enter the full file path of the image you'd like to send.");
-        String image = input.nextLine();
-        List<String> recipients = new ArrayList<>();
-        recipients.add(recipient);
-        if (!userManager.isUserExists(recipient)) {
-            messagingPresenter.error("The user " + recipient + " does not exist.");
-        } else if (userManager.isAddFriend(senderUsername, recipient)) {
-            this.sendImageToUsers(recipients, senderUsername, LocalDateTime.now(), content, image);
-        } else {
-            messagingPresenter.error(recipient + " is not your friend.");
-        }
-    }
-
-    private void sendImageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String image) {
-        for (String username : usernames) {
-
-            List<String> thisChatUsernames = new ArrayList<>();
-            thisChatUsernames.add(senderUsername);
-            thisChatUsernames.add(username);
-            UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
-
-            if (chat == null) {
-                chat = userChatManager.createChat(thisChatUsernames); // If no such chat exists, create it
-            }
-            this.userChatManager.sendImageToChat(chat, senderUsername, time, content, image);
-        }
-        messagingPresenter.printStatement("Message sent!");
     }
 
     /**

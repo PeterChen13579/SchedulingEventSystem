@@ -52,33 +52,24 @@ public class ChatManager implements Serializable {
      * @param time The time the message was sent
      * @param content The content of the message
      */
-    public void sendMessageToChat(UUID chatId, String senderUsername, LocalDateTime time, String content) {
-        Message message = new Message(senderUsername, time, content);
-        UUID newMessageId = UUID.randomUUID();
+    public void sendMessageToChat(UUID chatId, String senderUsername, LocalDateTime time, String content, String imageString) {//Added an extra parameter imageString
 
-        Chat chosenChat = allChats.get(chatId);
-        chosenChat.addChatMessage(newMessageId, message);
-        chosenChat.setLastViewedMessage(senderUsername, newMessageId);
-    }
+        if (!imageString.isEmpty()) { //If imageString is not empty, then is represents a valid Base64 String, if not, go to else as usual
+            ImageMessage message = new ImageMessage(senderUsername, time, content); //create an ImageMessage
+            message.setImageString(imageString); //Set the ImageMessage's Base64 String to be imageString
+            UUID newMessageId = UUID.randomUUID(); //Add the ID
 
-    /**
-     * Send a message and image to one chat
-     * PRECONDITION: senderUsername is in this chat and the time is the current time and the Message contains a Base64
-     * ImageString
-     * @param chatId The id of the chat that the message is being sent in
-     * @param senderUsername The username of the sender
-     * @param time The time the message was sent
-     * @param content The content of the message
-     * @param image The Base64 string representing the image
-     */
-    public void sendImageToChat(UUID chatId, String senderUsername, LocalDateTime time, String content, String image) {
-        ImageMessage message = new ImageMessage(senderUsername, time, content);
-        message.setImageString(image);
-        UUID newMessageId = UUID.randomUUID();
+            Chat chosenChat = allChats.get(chatId); //Grab the chat
+            chosenChat.addChatMessage(newMessageId, message); //Add the message with the image
+            chosenChat.setLastViewedMessage(senderUsername, newMessageId); //Set the last message to be this one
+        } else {
+            Message message = new Message(senderUsername, time, content);
+            UUID newMessageId = UUID.randomUUID();
 
-        Chat chosenChat = allChats.get(chatId);
-        chosenChat.addChatMessage(newMessageId, message);
-        chosenChat.setLastViewedMessage(senderUsername, newMessageId);
+            Chat chosenChat = allChats.get(chatId);
+            chosenChat.addChatMessage(newMessageId, message);
+            chosenChat.setLastViewedMessage(senderUsername, newMessageId);
+        }
     }
 
     /**
