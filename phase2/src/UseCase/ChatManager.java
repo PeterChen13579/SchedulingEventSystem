@@ -3,7 +3,6 @@ import Entities.Chat;
 import Entities.Message;
 import Entities.ImageMessage;
 
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,13 +92,7 @@ public class ChatManager implements Serializable {
         // get index of message and the id of the previous chronological message
         LinkedHashMap<UUID, Message> chatMessages = chosenChat.getAllMessages();
         List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
-        int messageIndex = chatMessagesList.indexOf(messageId);
-        UUID previousMessageId;
-        if (messageIndex > 0){
-            previousMessageId = chatMessagesList.get(messageIndex - 1);
-        }else{
-            previousMessageId = null;
-        }
+        UUID previousMessageId = getPreviousMessage(chatMessagesList, messageId);
 
         // set the last viewed message of the users who had seen the deletable message to the previous message
         for (String userName: chosenChat.getMemberUsernames()){
@@ -108,6 +101,26 @@ public class ChatManager implements Serializable {
             }
         }
         chosenChat.removeMessage(messageId);
+    }
+
+    /**
+     * Mark chat as unread for a certain user. Doesn't do anything if there are new, unread messages or if the chat is empty.
+     * Note: messages sent by this specific user can be set to unread too.
+     * @param username the username of the user
+     * @param chatId the id of the chat
+     */
+    public void markAsUnread(String username, UUID chatId){
+        Chat chosenChat = allChats.get(chatId);
+
+        LinkedHashMap<UUID, Message> chatMessages = chosenChat.getAllMessages();
+        List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
+        UUID lastViewedMessage = chosenChat.getLastViewedMessage(username);
+
+        if (!isChatEmpty(chatId)){
+            if(chatMessagesList.get(chatMessagesList.size() - 1).equals(lastViewedMessage)){
+                chosenChat.setLastViewedMessage(username, getPreviousMessage(chatMessagesList, lastViewedMessage));
+            }
+        }
     }
 
     /**
@@ -272,17 +285,6 @@ public class ChatManager implements Serializable {
     }
 
     /**
-     * Get a message given the chat it's in and it's UUID
-     * @param chatId The UUID of the chat
-     * @param messageId The UUID of the message
-     * @return The message
-     */
-    private Message getChatMessage(UUID chatId, UUID messageId){
-        Chat chat = allChats.get(chatId);
-        return chat.getAllMessages().get(messageId);
-    }
-
-    /**
      * Checks if the chat has at least one message sent by one specific user
      * @param chatId The id of the chat
      * @param username The username of the sender
@@ -298,6 +300,24 @@ public class ChatManager implements Serializable {
             }
         }
         return false;
+    }
+
+
+    private Message getChatMessage(UUID chatId, UUID messageId){
+        Chat chat = allChats.get(chatId);
+        return chat.getAllMessages().get(messageId);
+    }
+
+    private UUID getPreviousMessage(List<UUID> chatMessagesList, UUID messageId){ //returns previous message or null if no previous exists
+        int messageIndex = chatMessagesList.indexOf(messageId);
+        UUID previousMessageId;
+
+        if (messageIndex > 0){
+            previousMessageId = chatMessagesList.get(messageIndex - 1);
+        }else{
+            previousMessageId = null;
+        }
+        return previousMessageId;
     }
 
     private void setBase64String(ImageMessage message, String imageString) {
