@@ -258,8 +258,19 @@ public class SchedulingSystem {
     private void cancelEvent(String title){
         //check if event already exists
         if (em.isEventExist(title)){
-//           Update all attendees’ of the event for the change, delete the event in their list of attending
-//           Update all speaker’s of the event for the change, delete the event in their list of speaker
+//           TO-DO: Update all attendees’ of the event for the change,
+            //delete the event in their list of attending
+            List<String> attendees = em.getAllAttendeesByTitle(title);
+            for(String a : attendees){
+                um.cancelSpotAttendee(a, title);
+            }
+//           TO-DO: Update all speaker’s of the event for the change
+            //delete the event in the speaker's list of talks
+            List<String> speakers = em.getSpeakerUsernameByTitle(title);
+            for(String s : speakers){
+                um.deleteEventForSpeaker(title, s);
+            }
+            //delete the actual event
             em.deleteEvent(title);
         }else{
             menu.printStatement("Uh-oh! The event you have entered does not exist!");

@@ -186,12 +186,32 @@ public class TechConferenceSystem implements Viewable{
 //-----------------------------------------Scheduling Buttons-------------------------------------------
 
     /**  TO Lisa, Joy, and Amy;
-     *
+     * @param   title the event name entered
      * @return  true if successfully canceled event, False Otherwise.
      */
     @Override
-    public boolean cancelEvent(String eventName){
-        return false;
+    public boolean cancelEvent(String title){
+        //check if event already exists
+        if (eventManager.isEventExist(title)){
+//           TO-DO: Update all attendees’ of the event for the change,
+            //delete the event in their list of attending
+            List<String> attendees = eventManager.getAllAttendeesByTitle(title);
+            for(String a : attendees){
+                userManager.cancelSpotAttendee(a, title);
+            }
+//           TO-DO: Update all speaker’s of the event for the change
+            //delete the event in the speaker's list of talks
+            List<String> speakers = eventManager.getSpeakerUsernameByTitle(title);
+            for(String s : speakers){
+                userManager.deleteEventForSpeaker(title, s);
+            }
+            //delete the actual event
+            eventManager.deleteEvent(title);
+            return true;
+        }else{
+            //menu.printStatement("Uh-oh! The event you have entered does not exist!");
+            return false;
+        }
     }
 
 
