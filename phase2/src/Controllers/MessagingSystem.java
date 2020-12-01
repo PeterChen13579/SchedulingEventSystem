@@ -264,7 +264,11 @@ public class MessagingSystem {
             if (chat == null) {
                 chat = userChatManager.createChat(thisChatUsernames); // If no such chat exists, create it
             }
-            this.userChatManager.sendMessageToChat(chat, senderUsername, time, content, imageString); //New parameter added, image which is a boolean
+            if (!imageString.isEmpty()) { //If the Base64 String is not empty, then call sendImageMessageToChat
+                this.userChatManager.sendImageMessageToChat(chat, senderUsername, time, content, imageString); //send an image/message
+            } else {
+                this.userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
+            }
         }
         messagingPresenter.printStatement("Message sent!");
     }
