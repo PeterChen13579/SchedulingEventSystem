@@ -32,6 +32,7 @@ public class MessagingSystem {
      * Method that runs the Messaging feature
      * @param userName The username of the current user
      */
+    /*
     public void run(String userName){
         //Precondition: userName is a valid username
 
@@ -55,11 +56,13 @@ public class MessagingSystem {
             }
         }
     }
+     */
 
     /**
      * Calls the appropriate methods for sending messages based on the user type
      * @param userName The username of the current user
      */
+    /*
     private void sendMessage(String userName) {
         if (userManager.userType(userName).equals("Attendee")) {
             attendeeSendMessage(userName);
@@ -69,11 +72,14 @@ public class MessagingSystem {
             speakerSendMessage(userName);
         }
     }
+    */
+
 
     /**
      * Helper method for viewing chats in run
      * @param userName The username of the current user
      */
+    /*
     private void chatInteraction(String userName) {
         Scanner input = new Scanner(System.in);
         viewChatNames(userName);   // show chats
@@ -106,31 +112,38 @@ public class MessagingSystem {
             input.nextLine();
         }
     }
+    */
 
     /**
      * View all chat names
      * @param userName The username of the current user
      */
-    private void viewChatNames(String userName){
+    /*
+    public void viewChatNames(String userName){
         List<UUID> userChats = userChatManager.getUserChats(userName); //might change the method since it might be redundant in the use case
         messagingPresenter.displayChatNames(userChats);
     }
+
+     */
 
     /**
      * View Messages in the chat
      * @param username The username of the current user
      * @param allUsers All the users in the chat
      */
-    private void viewChat(String username, List<String> allUsers) {      //allUsers is a list of usernames
+    /*
+    public void viewChat(String username, List<String> allUsers) {      //allUsers is a list of usernames
         UUID userChat = userChatManager.getChatContainingUsers(allUsers);
         List<UUID> messages = userChatManager.getChatMessages(username, userChat);
         messagingPresenter.displayChat(username, userChat, messages);
     }
+     */
 
     /**
      * Sending messages for attendees
      * @param userName The username of the current user
      */
+    /*
     private void attendeeSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
@@ -145,11 +158,13 @@ public class MessagingSystem {
             }
         }
     }
+    */
 
     /**
      * Sending messages for organizers
      * @param userName The username of the current user
      */
+    /*
     private void organizerSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
@@ -172,11 +187,13 @@ public class MessagingSystem {
             }
         }
     }
+    */
 
     /**
      * Sending messages for organizers
      * @param userName The username of the current user
      */
+    /*
     private void speakerSendMessage(String userName) {
         Scanner input = new Scanner(System.in);
         String choice = "";
@@ -197,23 +214,19 @@ public class MessagingSystem {
             }
         }
     }
+    */
 
     /**
      * Helper method for sending a message to one user. Checks if the recipient is a friend before sending
      * @param senderUsername The username of the user sending the message
      */
-    private void messageOneUser(String senderUsername) {
-        Scanner input = new Scanner(System.in);
-        messagingPresenter.printStatement("Please enter the username of the user you'd like to message.");
-        String recipient = input.nextLine();
-        messagingPresenter.printStatement("Please enter the message you'd like to send.");
-        String content = input.nextLine();
+    public void messageOneUser(String senderUsername, String recipient, String content, String imagePath) {
         List<String> recipients = new ArrayList<>();
         recipients.add(recipient);
         if (!userManager.isUserExists(recipient)) {
             messagingPresenter.error("The user " + recipient + " does not exist.");
         } else if (userManager.isAddFriend(senderUsername, recipient)) {
-            this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content);
+            this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
         } else {
             messagingPresenter.error(recipient + " is not your friend.");
         }
@@ -223,8 +236,7 @@ public class MessagingSystem {
      * View all the chat messages
      * @param userName The username of the current user
      */
-    private void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
-        Scanner input = new Scanner(System.in);
+    public void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
         List<UUID> userChats = userChatManager.getUserChats(userName);
         Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
@@ -232,8 +244,6 @@ public class MessagingSystem {
             newMessages.put(id, chatNewMessages);
         }
         messagingPresenter.displayNewMessages(newMessages);
-        messagingPresenter.printStatement("Press enter to go back.");
-        input.nextLine();
     }
 
     /**
@@ -243,15 +253,10 @@ public class MessagingSystem {
      * @param time The time the message was sent
      * @param content The content of the message
      */
-    private void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content) {
-        String imageString = "";  //Sets the parameter image to empty, i.e. don't want to send the image
-        String confirmImage = ""; //Checks to see if the User wants to send an image
-        Scanner input = new Scanner(System.in); //User input
-        messagingPresenter.printStatement("Enter 'yes' if you want to attach an image, otherwise press enter."); //If User types 'yes' then image = true
-        confirmImage = input.nextLine(); //Record user input
-        if (confirmImage.equals("yes")) { //Checks to see if User entered 'yes'
+    public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) {
+        String imageString = "";
+        if (!imagePath.equals("")) { //Checks to see if imageString is not empty
             messagingPresenter.printStatement("Please enter the file path to the desired image: "); //User types in the absolute file path to the image
-            String imagePath = input.nextLine(); //Stores the file path in imagePath
             imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
         }
         for (String username : usernames) {
@@ -278,9 +283,9 @@ public class MessagingSystem {
      * @param senderUsername Username of the sender
      * @param content Content of message
      */
-    private void organizerMessageAllAttendees(String senderUsername, String content) {
+    public void organizerMessageAllAttendees(String senderUsername, String content, String imagePath) {
         List<String> allAttendees = userManager.getAllAttendee();
-        this.sendMessageToUsers(allAttendees, senderUsername, LocalDateTime.now(), content);
+        this.sendMessageToUsers(allAttendees, senderUsername, LocalDateTime.now(), content, imagePath);
     }
 
     /**
@@ -288,9 +293,9 @@ public class MessagingSystem {
      * @param senderUsername Username of the sender
      * @param content Content of message
      */
-    private void organizerMessageAllSpeakers(String senderUsername, String content) {
+    public void organizerMessageAllSpeakers(String senderUsername, String content, String imagePath) {
         List<String> allSpeakers = userManager.getAllSpeaker();
-        this.sendMessageToUsers(allSpeakers, senderUsername, LocalDateTime.now(), content);
+        this.sendMessageToUsers(allSpeakers, senderUsername, LocalDateTime.now(), content, imagePath);
     }
 
     /**
@@ -298,7 +303,7 @@ public class MessagingSystem {
      * @param senderUsername Username of the sender
      * @param content Content of message
      */
-    private void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content) {
+    public void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
         List<String> recipients = new ArrayList<>();
 
@@ -322,7 +327,33 @@ public class MessagingSystem {
                 messagingPresenter.error("No event with title " + title + " found.");
             }
         }
-        this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content);
+        this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
+    }
+
+    public void organizerMessageEventSpeakersAndAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
+        List<String> allEvents = eventManager.getAllEventTitle();
+        List<String> recipients = new ArrayList<>();
+
+        for (String title: eventTitles) {
+            boolean found = false;
+            for (String event : allEvents) {
+                if (event.equals(title)) {
+                    found = true;
+                    for (String recipient: eventManager.getAllAttendeesByTitle(event)) {
+                        if (!recipients.contains(recipient)) {
+                            recipients.add(recipient);
+                        }
+                        if (!recipients.contains(eventManager.getSpeakerUsernameByTitle(event))) {
+                            recipients.add(recipient);
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                messagingPresenter.error("No event with title " + title + " found.");
+            }
+        }
+        this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
     }
 
     /**
@@ -330,10 +361,7 @@ public class MessagingSystem {
      * @param mainUserUsername the current user
      * @return True if the friend is added or already your friend, false otherwise
      */
-    private boolean addPeopleToMessage(String mainUserUsername){
-        Scanner input = new Scanner(System.in);
-        messagingPresenter.printStatement("Which friend would you like to add?");
-        String newFriend = input.nextLine();
+    public boolean addPeopleToMessage(String mainUserUsername, String newFriend){
 
         if (userManager.userType(mainUserUsername).equals("Speaker")) {
             if (userManager.userType(newFriend).equals("Attendee")) {
