@@ -77,6 +77,7 @@ public class Dashboard{
     private MessagingDashboard messagingDashboard;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private SynthLookAndFeel regularTheme, vipTheme;
+    private JFileChooser fileChooser;
 
     public Dashboard() {
         createThemes();
@@ -93,6 +94,7 @@ public class Dashboard{
         currentMenu = "";
         previousMenu = "";
         loginType = "";
+        fileChooser = new JFileChooser(System.getProperty("user.dir"));
         loadMenu();
     }
 
@@ -397,7 +399,8 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "LoadOrNewConference";
-                loadConference();
+//                loadConference();
+                loadFile();
             }
         });
         load.setName("button");
@@ -691,7 +694,8 @@ public class Dashboard{
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveMenu();
+//                saveMenu();
+                saveFile();
             }
         });
         confirmSave = new JButton("Confirm");
@@ -911,6 +915,25 @@ public class Dashboard{
             frame.pack();
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void saveFile() {
+        int result = fileChooser.showSaveDialog(buttonPanel);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            sendsInfo.saveProgram(fileChooser.getSelectedFile().getAbsolutePath());
+        }
+    }
+
+    private void loadFile() {
+        currentMenu = "LoadingConference";
+        int result = fileChooser.showOpenDialog(buttonPanel);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            if (sendsInfo.loadConferenceButton(fileChooser.getSelectedFile().getAbsolutePath())) {
+                loginSignup();
+            } else {
+                failedMenu("Load failed.");
+            }
         }
     }
 }

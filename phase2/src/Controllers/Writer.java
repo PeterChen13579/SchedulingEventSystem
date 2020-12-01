@@ -27,6 +27,7 @@ public class Writer {
                 output.writeObject(thing[i]);
             }
 
+            output.flush();
             output.close();
         } catch (IOException e) {
             System.out.println("Save failed due to IOException.");
