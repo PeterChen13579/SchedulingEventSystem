@@ -274,7 +274,7 @@ public class Dashboard{
 
 
     private void signUpEventMenu() {
-        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, this);
+        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, loginType, this);
         frame.remove(buttonPanel);
         frame.add(signUpDashboard);
         refresh();
@@ -848,15 +848,23 @@ public class Dashboard{
         }
     }
 
-    private void loginType() {
+    public void loginType() {
+        boolean verifyVIP = false;
         if (sendsInfo.userIsVIP(currentUsername)) {
             changeTheme("vip");
+            verifyVIP = true;
         }
         switch (loginType) {
             case "Attendee":
+                if (verifyVIP){
+                    frame.setTitle("VIP Attendee Account");
+                }
                 loggedInAttendee();
                 break;
             case "Organizer":
+                if (verifyVIP){
+                    frame.setTitle("VIP Organizer Account");
+                }
                 loggedInOrganizer();
                 break;
             case "Speaker":

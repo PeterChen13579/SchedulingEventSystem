@@ -13,12 +13,12 @@ public class SignUpDashboard extends JPanel {
     private JButton confirmEventSignup, confirmEventRemoval;
     private final Viewable sendsInfo;
     private JTextField textInput;
-    private JLabel errorText;
+    private JLabel errorText, eventName;
     private boolean running;
     private final Dashboard dashboard;
+    private String loginType;
 
-    SignUpDashboard(Viewable sendsInfo, String currentUsername, Dashboard dashboard) {
-
+    SignUpDashboard(Viewable sendsInfo, String currentUsername, String loginType, Dashboard dashboard) {
         this.setOpaque(true);
         //this.setSize(900, 600);
         currentMenu = "SignUpMenu";
@@ -26,6 +26,7 @@ public class SignUpDashboard extends JPanel {
         this.sendsInfo = sendsInfo;
         this.currentUsername = currentUsername;
         this.dashboard = dashboard;
+        this.loginType = loginType;
         createButtons();
         running = true;
         run();
@@ -81,6 +82,7 @@ public class SignUpDashboard extends JPanel {
     private void signUpForEvent() {
         currentMenu = "SignUpForEvent";
         this.removeAll();
+        this.add(eventName);
         this.add(textInput);
         this.add(confirmEventSignup);
         this.add(back);
@@ -91,6 +93,7 @@ public class SignUpDashboard extends JPanel {
     private void cancelAttendEvent() {
         currentMenu = "CancelAttendEvent";
         this.removeAll();
+        this.add(eventName);
         this.add(textInput);
         this.add(confirmEventRemoval);
         this.add(back);
@@ -171,6 +174,9 @@ public class SignUpDashboard extends JPanel {
                         failedMenu("This is a VIP event, but you are not a VIP.");
                         break;
                 }
+                if (sendsInfo.userIsVIP(currentUsername)){
+                    dashboard.loginType();
+                }
                 clearTextField();
             }
         });
@@ -203,6 +209,7 @@ public class SignUpDashboard extends JPanel {
         });
         textInput = new JTextField(12);
         errorText = new JLabel();
+        eventName = new JLabel("Event Name");
     }
 
     private void previousMenu() {
