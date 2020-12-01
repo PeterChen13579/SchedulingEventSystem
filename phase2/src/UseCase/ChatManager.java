@@ -1,6 +1,8 @@
 package UseCase;
 import Entities.Chat;
 import Entities.Message;
+import Entities.ImageMessage;
+
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -52,6 +54,26 @@ public class ChatManager implements Serializable {
      */
     public void sendMessageToChat(UUID chatId, String senderUsername, LocalDateTime time, String content) {
         Message message = new Message(senderUsername, time, content);
+        UUID newMessageId = UUID.randomUUID();
+
+        Chat chosenChat = allChats.get(chatId);
+        chosenChat.addChatMessage(newMessageId, message);
+        chosenChat.setLastViewedMessage(senderUsername, newMessageId);
+    }
+
+    /**
+     * Send a message and image to one chat
+     * PRECONDITION: senderUsername is in this chat and the time is the current time and the Message contains a Base64
+     * ImageString
+     * @param chatId The id of the chat that the message is being sent in
+     * @param senderUsername The username of the sender
+     * @param time The time the message was sent
+     * @param content The content of the message
+     * @param image The Base64 string representing the image
+     */
+    public void sendImageToChat(UUID chatId, String senderUsername, LocalDateTime time, String content, String image) {
+        ImageMessage message = new ImageMessage(senderUsername, time, content);
+        message.setImageString(image);
         UUID newMessageId = UUID.randomUUID();
 
         Chat chosenChat = allChats.get(chatId);
@@ -276,6 +298,10 @@ public class ChatManager implements Serializable {
             }
         }
         return false;
+    }
+
+    private void setBase64String(ImageMessage message, String imageString) {
+        message.setImageString(imageString);
     }
 
 }

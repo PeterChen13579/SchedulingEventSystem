@@ -352,6 +352,41 @@ public class MessagingSystem {
         }
     }
 
+    private void messageImage(String senderUsername) {
+        Scanner input = new Scanner(System.in);
+        messagingPresenter.printStatement("Please enter the username of the user you'd like to message.");
+        String recipient = input.nextLine();
+        messagingPresenter.printStatement("Please enter the message you'd like to send.");
+        String content = input.nextLine();
+        messagingPresenter.printStatement("Please enter the full file path of the image you'd like to send.");
+        String image = input.nextLine();
+        List<String> recipients = new ArrayList<>();
+        recipients.add(recipient);
+        if (!userManager.isUserExists(recipient)) {
+            messagingPresenter.error("The user " + recipient + " does not exist.");
+        } else if (userManager.isAddFriend(senderUsername, recipient)) {
+            this.sendImageToUsers(recipients, senderUsername, LocalDateTime.now(), content, image);
+        } else {
+            messagingPresenter.error(recipient + " is not your friend.");
+        }
+    }
+
+    private void sendImageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String image) {
+        for (String username : usernames) {
+
+            List<String> thisChatUsernames = new ArrayList<>();
+            thisChatUsernames.add(senderUsername);
+            thisChatUsernames.add(username);
+            UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
+
+            if (chat == null) {
+                chat = userChatManager.createChat(thisChatUsernames); // If no such chat exists, create it
+            }
+            this.userChatManager.sendImageToChat(chat, senderUsername, time, content, image);
+        }
+        messagingPresenter.printStatement("Message sent!");
+    }
+
     /**
      * The encoder takes in a string that represents the file path to the desired image to be encoded in a
      * Base64 string.
