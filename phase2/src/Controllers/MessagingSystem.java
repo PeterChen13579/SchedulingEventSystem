@@ -256,7 +256,6 @@ public class MessagingSystem {
     public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) {
         String imageString = "";
         if (!imagePath.equals("")) { //Checks to see if imageString is not empty
-            messagingPresenter.printStatement("Please enter the file path to the desired image: "); //User types in the absolute file path to the image
             imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
         }
         for (String username : usernames) {
