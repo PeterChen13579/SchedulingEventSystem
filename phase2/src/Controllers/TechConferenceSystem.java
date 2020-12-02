@@ -185,65 +185,53 @@ public class TechConferenceSystem implements Viewable{
 
 //-----------------------------------------Scheduling Buttons-------------------------------------------
 
-    /**  TO Lisa, Joy, and Amy;
+    /**
+     * Perform necessary checks & operations for cancelling an event.
      * @param   title the event name entered
+     * @param   username the username of the organizer that chose to cancel this event
      * @return  true if successfully canceled event, False Otherwise.
      */
     @Override
-    public boolean cancelEvent(String title){
-        //check if event already exists
-        if (eventManager.isEventExist(title)){
-//           TO-DO: Update all attendees’ of the event for the change,
-            //delete the event in their list of attending
-            List<String> attendees = eventManager.getAllAttendeesByTitle(title);
-            for(String a : attendees){
-                userManager.cancelSpotAttendee(a, title);
-            }
-//           TO-DO: Update all speaker’s of the event for the change
-            //delete the event in the speaker's list of talks
-            List<String> speakers = eventManager.getSpeakerUsernameByTitle(title);
-            for(String s : speakers){
-                userManager.deleteEventForSpeaker(title, s);
-            }
-            //delete the actual event
-            eventManager.deleteEvent(title);
-            return true;
-        }else{
-            //menu.printStatement("Uh-oh! The event you have entered does not exist!");
-            return false;
-        }
+    public boolean cancelEvent(String title, String username){
+        schedulingSystem.cancelEvent(title, username);
     }
 
 
-    /**   To Lisa, Joy, Amy
-     *
+    /**
+     * Perform necessary checks & operations for changing the capacity of an event.
      * @param eventName   String event name to change capacity
      * @param capacity    capacity to change to
+     * @param username    the username of the organizer that chose to change the capacity of this event
      * @return            true if successfully changed, false otherwise.
      */
     @Override
-    public boolean changeCapacity(String eventName, int capacity){
-        return false;
+    public boolean changeCapacity(String eventName, int capacity, String username){
+        schedulingSystem.changeCapacity(eventName, capacity, username);
     }
 
-
+    //return true iff added the room, return false otherwise
     public boolean confirmRoom(String roomNumber, int capacity){
-        if (roomManager.doesRoomExist(roomNumber)){
-            return false;
-        }else{
-            roomManager.createRoom(roomNumber, capacity);
-            return true;
-        }
+        schedulingSystem.addRoom(roomNumber, capacity);
     }
 
 
-    /**  TO @Lisa Chen;
-     *
-     * @return  "true" if successfully created; Else return a string msg you want to display on GUI;
+    /**
+     * Check if the conditions for adding the given event is satisfied and return error messages accordingly.
+     * If satisfied, create new event, update speaker's list of events, and print success message.
+     * @param VIP whether the event is of type VIP
+     * @param date the date for the event (YYYYMMDD)
+     * @param startTime the start time for the event (HH:mm:ss)
+     * @param endTime the end time for the event (HH:mm:ss)
+     * @param roomNum the room number for the event
+     * @param speakerUsernames the names of the speakers for the event
+     * @param eventTitle the title for the event
+     * @param capacity the maximum/capacity of people that can attend this event
+     * @return the error message according to the error or "true" if event successfully created
      */
     public String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
-            speakerUsernames, String eventTitle, String capacity){
-        return null;
+            speakerUsernames, String eventTitle, int capacity){
+        return schedulingSystem.helper_addEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
+
     }
 
 //--------------------------------------------Sign Up Buttons-----------------------------------------
@@ -322,7 +310,7 @@ public class TechConferenceSystem implements Viewable{
     private void initializeManagers() {
         loginSystem = new LoginSystem(userManager);
         messagingSystem = new MessagingSystem(chatManager, userManager, eventManager);
-        schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager);
+        schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager, messagingSystem);
         signUpSystem = new SignUpSystem(eventManager, userManager, roomManager);
     }
 
