@@ -294,6 +294,33 @@ public class MessagingSystem {
     }
 
     /**
+     * delete a user's message from a chat
+     * @param username the username of the user
+     * @param chatId the id of the chat
+     * @param messageId the id of the message
+     */
+    public void deleteUserMessage(String username, UUID chatId, UUID messageId){
+        if (userChatManager.getMessageSenderUsername(chatId, messageId).equals(username)){
+            userChatManager.deleteMessageFromChat(chatId, messageId);
+        } else{
+            messagingPresenter.error("You cannot delete someone else's message");
+        }
+    }
+
+    /**
+     * mark a user's chat as unread
+     * @param username the username of the user
+     * @param chatId the id of the chat
+     */
+    public void markUserChatAsUnread(String username, UUID chatId){
+        if(!userChatManager.isChatEmpty(chatId)){
+            userChatManager.markChatAsUnread(username, chatId);
+        }else{
+            messagingPresenter.error("Cannot mark empty chat as unread");
+        }
+    }
+
+    /**
      * Helper method for organizers to send a message to all attendees
      * @param senderUsername Username of the sender
      * @param content Content of message

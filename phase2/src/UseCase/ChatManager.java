@@ -80,7 +80,6 @@ public class ChatManager implements Serializable {
 
     /**
      * Deletes a message from a chat
-     * PRECONDITION : message exists in this chat
      * @param chatId The id of the chat
      * @param messageId The id of the message to be deleted
      */
@@ -98,21 +97,19 @@ public class ChatManager implements Serializable {
     }
 
     /**
-     * Mark chat as unread for a certain user. Doesn't do anything if there are new, unread messages or if the chat is empty.
+     * Mark chat as unread for a certain user. Doesn't do anything if there are unread messages for this user in this chat.
+     * PRECONDITION : The chat is not empty.
      * Note: messages sent by this specific user can be set to unread too.
      * @param username the username of the user
      * @param chatId the id of the chat
      */
     public void markChatAsUnread(String username, UUID chatId){
         Chat chosenChat = allChats.get(chatId);
-        List<UUID> chatMessagesList = chosenChat.getAllMessages();
         UUID lastViewedMessage = chosenChat.getLastViewedMessage(username);
 
         // set the last viewed message to the previous message if the user has seen all the messages
-        if (!isChatEmpty(chatId)){
-            if(chatMessagesList.get(chatMessagesList.size() - 1).equals(lastViewedMessage)){
-                chosenChat.setLastViewedMessage(username, getPreviousMessage(chosenChat, lastViewedMessage));
-            }
+        if (!areNewMessages(username, chatId)){
+            chosenChat.setLastViewedMessage(username, getPreviousMessage(chosenChat, lastViewedMessage));
         }
     }
 
@@ -191,6 +188,23 @@ public class ChatManager implements Serializable {
     public boolean isChatEmpty(UUID chatId) {
         Chat chat = allChats.get(chatId);
         return chat.getAllMessages().isEmpty();
+    }
+
+    /**
+     * Checks if there are unread messages for the user in this chat. Doesn't return the messages.
+     * @param username The username of the user
+     * @param chatId The id of the chat
+     * @return True if the user has unread messages in this chat, False otherwise
+     */
+    public boolean areNewMessages(String username, UUID chatId){
+        Chat chat = allChats.get(chatId);
+        List<UUID> chatMessagesList = chat.getAllMessages();
+        UUID lastViewedMessage = chat.getLastViewedMessage(username);
+        if (!isChatEmpty(chatId)){
+            UUID lastMessage = chatMessagesList.get(chatMessagesList.size() - 1);
+            return !lastMessage.equals(lastViewedMessage);
+        }
+        return false;
     }
 
     /**
