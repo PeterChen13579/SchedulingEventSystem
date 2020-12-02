@@ -118,24 +118,31 @@ public class TechConferenceSystem implements Viewable{
      * display on GUI; Add in the number AND username for this; ie. [1.kailas, 2.william]
      */
     @Override
-    public ArrayList <String> sendChatName(String userName){
-        ArrayList<String> output = new ArrayList<String>();
+    public ArrayList <String> sendChatName(String userName){ //probably change to viewChatnames
+        ArrayList<String> output = new ArrayList<>();
 
-        List<UUID> chats = messagingSystem.getChats(loginSystem.getUsername());
+        List<UUID> chats = messagingSystem.getChats(userName);
         int index = 1;
-        for (UUID chat: chats) {
+        for (UUID chatId: chats) {
             String outputString = index + ". ";
             index ++;
 
-            List<String> members = messagingSystem.getChatMembers(chat);
-            members.remove(loginSystem.getUsername());
-            for (String member: members) {
-                outputString += member + ", ";
-            }
-            outputString = outputString.substring(outputString.length()-2);
+            String chatName = getChatNameByUser(userName, chatId);
+            outputString += chatName + ","; // don't know if we need the comma
             output.add(outputString);
         }
         return output;
+    }
+
+    private String getChatNameByUser(String username, UUID chatId){
+        String chatName = messagingSystem.getChatName(chatId);
+        List<String> chatMembers = messagingSystem.getChatMembers(chatId);
+        if (chatMembers.size() == 2){   //chat name cannot be custom in 2 person chats
+            List<String> membersCopy = new ArrayList<>(chatMembers);
+            membersCopy.remove(username);
+            chatName = membersCopy.get(0);
+        }
+        return chatName;
     }
 
 

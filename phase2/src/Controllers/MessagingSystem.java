@@ -1,11 +1,18 @@
 package Controllers;
+import Entities.Chat;
+import Entities.Message;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.UserManager;
 import Presenters.MessagePresenter;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -251,16 +258,35 @@ public class MessagingSystem {
         return(newMessages);
     }
 
-    public String[][] getChatMessagesInfo(UUID chat) {
-        return userChatManager.getMessagesInfo(chat);
+    /**
+     * get Messages in the chat
+     * @param username The username of the current user
+     * @param chatId The id of the chat
+     */
+    public List<UUID> getChatMessages(String username, UUID chatId) {      //allUsers is a list of usernames
+        return userChatManager.getChatMessages(username, chatId);
     }
 
+    /**
+     * Get the name of the chat
+     * @param chatId The id of the chat
+     * @return The name of the chat
+     */
+    public String getChatName(UUID chatId){
+        return userChatManager.getChatName(chatId);
+    }
+
+    public List<String> getChatMembers(UUID chatId){
+        return userChatManager.getChatMemberUsernames(chatId);
+    }
+
+    /**
+     * get the user's chats
+     * @param userName The username of the current user
+     * @return The list of the user's chats
+     */
     public List<UUID> getChats(String userName) {
         return userChatManager.getUserChats(userName);
-    }
-
-    public List<String> getChatMembers(UUID chat) {
-        return userChatManager.getChatMemberUsernames(chat);
     }
 
     /**
@@ -299,7 +325,7 @@ public class MessagingSystem {
      * @param chatId the id of the chat
      * @param messageId the id of the message
      */
-    public void deleteUserMessage(String username, UUID chatId, UUID messageId){
+    public void deleteUserMessage(String username, UUID chatId, UUID messageId){ // make sure you discard messageId after since it's gone from the system
         if (userChatManager.getMessageSenderUsername(chatId, messageId).equals(username)){
             userChatManager.deleteMessageFromChat(chatId, messageId);
         } else{
@@ -312,12 +338,26 @@ public class MessagingSystem {
      * @param username the username of the user
      * @param chatId the id of the chat
      */
-    public void markUserChatAsUnread(String username, UUID chatId){
-        if(!userChatManager.isChatEmpty(chatId)){
+    public void markUserChatAsUnread(String username, UUID chatId){ //might change it to mark as read/unread in the future
+        if (!userChatManager.isChatEmpty(chatId)){
             userChatManager.markChatAsUnread(username, chatId);
         }else{
             messagingPresenter.error("Cannot mark empty chat as unread");
         }
+    }
+
+    /**
+     * archive a user's chat
+     * @param username the username of the user
+     * @param chatId the id of the chat
+     */
+    public void archiveUserChat(String username, UUID chatId){
+        if (!userChatManager.getArchivedChats(username).contains(chatId)){
+            userChatManager.archiveChat(username, chatId);
+        } else{
+            messagingPresenter.error("cannot archive chat that is already archived");
+        }
+
     }
 
     /**

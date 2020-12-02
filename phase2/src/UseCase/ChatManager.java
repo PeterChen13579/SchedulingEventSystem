@@ -109,7 +109,8 @@ public class ChatManager implements Serializable {
 
         // set the last viewed message to the previous message if the user has seen all the messages
         if (!areNewMessages(username, chatId)){
-            chosenChat.setLastViewedMessage(username, getPreviousMessage(chosenChat, lastViewedMessage));
+            UUID previousMessage = getPreviousMessage(chosenChat, lastViewedMessage);
+            chosenChat.setLastViewedMessage(username, previousMessage);
         }
     }
 
@@ -332,24 +333,6 @@ public class ChatManager implements Serializable {
             }
         }
         return false;
-    }
-
-    public String[][] getMessagesInfo(UUID chatId) {
-        Chat chat = allChats.get(chatId);
-        List<UUID> chatMessagesList = chat.getAllMessages();
-        String[][] output = new String[chatMessagesList.size()][4];
-
-        for (int i=0; i<chatMessagesList.size(); i++) {
-            Message message =  chat.getMessageObject(chatMessagesList.get(i));
-            output[i][0] = chatMessagesList.get(i).toString();
-            output[i][1] = message.getSenderUsername();
-            output[i][2] = message.getContent();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , yyyy-MM-dd");    //format time
-            String formattedTimestamp = message.getTimeStamp().format(formatter);
-            output[i][3] = formattedTimestamp;
-        }
-
-        return output;
     }
 
     // Make sure message exists in this chat
