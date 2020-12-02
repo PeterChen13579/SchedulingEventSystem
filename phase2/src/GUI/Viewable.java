@@ -17,13 +17,13 @@ public interface Viewable {
     int signUpForEvent(String username, String eventTitle);
     int cancelAttendEvent(String username, String eventTitle);
     ArrayList <String> sendChatName();
-    boolean sendOneMsg(String username, String content);
+    String sendOneMsg(String username, String content, String imagePath);
     String viewChatMsg(int chatNumber);
     String addFriend(String username);
     String getNewMessages();
-    void msgAllAttendees(String msg);
-    void msgAllSpeakers(String msg);
-    void msgAllAttendeeEvent(String msg);
+    void msgAllAttendees(String msg, String imagePath);
+    void msgAllSpeakers(String msg, String imagePath);
+    void msgAllAttendeeEvent(List<String> eventTitles, String msg, String imagePath);
     boolean cancelEvent(String eventName);
     boolean changeCapacity(String eventName, int capacity);
     String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum,

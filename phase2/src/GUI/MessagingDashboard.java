@@ -243,10 +243,11 @@ public class MessagingDashboard extends JPanel{
         confirmOneMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sendsInfo.sendOneMsg(currentUsername, usernameTextfield.getText())){
+                String result = sendsInfo.sendOneMsg(currentUsername, usernameTextfield.getText(), "");
+                if (result.equals("Message sent.")){
                     messagingMenu();
                 }else{
-                    failedMenu("Can not find specified username.");
+                    failedMenu(result);
                 }
             }
         });
@@ -254,21 +255,21 @@ public class MessagingDashboard extends JPanel{
         allAttendeeMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllAttendees(content.getText());
+                sendsInfo.msgAllAttendees(content.getText(), "");
             }
         });
         allSpeakerMsg = new JButton("Confirm");
         allSpeakerMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllSpeakers(content.getText());
+                sendsInfo.msgAllSpeakers(content.getText(), "");
             }
         });
         allEventMsg = new JButton("Confirm");
         allEventMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllAttendeeEvent(content.getText());
+                sendsInfo.msgAllAttendeeEvent(new ArrayList<String>(), content.getText(), "");
             }
         });
         confirmChatNumber = new JButton("Confirm");

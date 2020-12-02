@@ -28,6 +28,10 @@ public class MessagingSystem {
         this.eventManager = eventManager;
     }
 
+    public ChatManager getUserChatManager() {
+        return this.userChatManager;
+    }
+
     /**
      * Method that runs the Messaging feature
      * @param userName The username of the current user
@@ -220,15 +224,16 @@ public class MessagingSystem {
      * Helper method for sending a message to one user. Checks if the recipient is a friend before sending
      * @param senderUsername The username of the user sending the message
      */
-    public void messageOneUser(String senderUsername, String recipient, String content, String imagePath) {
+    public String messageOneUser(String senderUsername, String recipient, String content, String imagePath) {
         List<String> recipients = new ArrayList<>();
         recipients.add(recipient);
         if (!userManager.isUserExists(recipient)) {
-            messagingPresenter.error("The user " + recipient + " does not exist.");
+            return("The user " + recipient + " does not exist.");
         } else if (userManager.isAddFriend(senderUsername, recipient)) {
             this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
+            return("Message sent.");
         } else {
-            messagingPresenter.error(recipient + " is not your friend.");
+            return(recipient + " is not your friend.");
         }
     }
 
@@ -236,14 +241,14 @@ public class MessagingSystem {
      * View all the chat messages
      * @param userName The username of the current user
      */
-    public void viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
+    public Map<UUID, List<UUID>> viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
         List<UUID> userChats = userChatManager.getUserChats(userName);
         Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
             List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
             newMessages.put(id, chatNewMessages);
         }
-        messagingPresenter.displayNewMessages(newMessages);
+        return(newMessages);
     }
 
     /**
@@ -274,7 +279,6 @@ public class MessagingSystem {
                 this.userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
             }
         }
-        messagingPresenter.printStatement("Message sent!");
     }
 
     /**
@@ -342,7 +346,9 @@ public class MessagingSystem {
                         if (!recipients.contains(recipient)) {
                             recipients.add(recipient);
                         }
-                        if (!recipients.contains(eventManager.getSpeakerUsernameByTitle(event))) {
+                    }
+                    for (String recipient: eventManager.getSpeakerUsernameByTitle(event)) {
+                        if (!recipients.contains(recipient)) {
                             recipients.add(recipient);
                         }
                     }
@@ -360,36 +366,29 @@ public class MessagingSystem {
      * @param mainUserUsername the current user
      * @return True if the friend is added or already your friend, false otherwise
      */
-    public boolean addPeopleToMessage(String mainUserUsername, String newFriend){
+    public String addPeopleToMessage(String mainUserUsername, String newFriend){
 
         if (userManager.userType(mainUserUsername).equals("Speaker")) {
             if (userManager.userType(newFriend).equals("Attendee")) {
                 UUID chat = userChatManager.getChatContainingUsers(Arrays.asList(mainUserUsername, newFriend));
                 if (chat == null || !userChatManager.doesChatHaveMessageFrom(chat, newFriend)) {
-                    messagingPresenter.error("You may not add attendees as a friend until they have messaged you.");
-                    return false;
+                    return("You may not add attendees as a friend until they have messaged you.");
                 }
             } else {
-                messagingPresenter.error("You may not add this user as a friend.");
-                return false;
+                return("You may not add this user as a friend.");
             }
         } else if (userManager.userType(newFriend).equals("Organizer")) {
-            messagingPresenter.error("You may not add an organizer as a friend.");
-            return false;
+            return("You may not add an organizer as a friend.");
         }
 
         if (!userManager.isUserExists(newFriend)) {
-            messagingPresenter.error("The user " + newFriend + " does not exist.");
-            return false;
+            return("The user " + newFriend + " does not exist.");
         } else if (mainUserUsername.equals(newFriend)){
-            messagingPresenter.error("You cannot add yourself as a friend");
-            return false;
+            return("You cannot add yourself as a friend");
         } else if (userManager.addFriend(mainUserUsername, newFriend)) {
-            messagingPresenter.printStatement("Added " + newFriend + " to your friends list.");
-            return true;
+            return("true");
         } else {
-            messagingPresenter.printStatement(newFriend + " is already a friend.");
-            return true;
+            return(newFriend + " is already a friend.");
         }
     }
 

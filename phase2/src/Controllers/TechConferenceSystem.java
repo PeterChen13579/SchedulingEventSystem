@@ -7,9 +7,10 @@ import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Determines all the behaviour for the text-based UI
@@ -134,18 +135,18 @@ public class TechConferenceSystem implements Viewable{
     }
 
     @Override
-    public void msgAllAttendees(String msg){
-
+    public void msgAllAttendees(String msg, String imagePath) {
+        messagingSystem.organizerMessageAllAttendees(loginSystem.getUsername(), msg, imagePath);
     }
 
     @Override
-    public void msgAllSpeakers(String msg){
-
+    public void msgAllSpeakers(String msg, String imagePath) {
+        messagingSystem.organizerMessageAllSpeakers(this.loginSystem.getUsername(), msg, imagePath);
     }
 
     @Override
-    public void msgAllAttendeeEvent(String msg){
-
+    public void msgAllAttendeeEvent(List<String> eventTitles, String msg, String imagePath){
+        messagingSystem.speakerMessageEventAttendees(loginSystem.getUsername(), eventTitles, msg, imagePath);
     }
 
 
@@ -153,12 +154,12 @@ public class TechConferenceSystem implements Viewable{
      *
      * @param username    The username this user wants to msg
      * @param content     The text this username wants to send
-     * @return   True if successfully sent. False otherwise(username does not exist);
+     * @return   A success or error message based on whether sending the message was successful
      */
 
     @Override
-    public boolean sendOneMsg(String username, String content) {
-        return false;
+    public String sendOneMsg(String username, String content, String imagePath) {
+        return messagingSystem.messageOneUser(loginSystem.getUsername(), username, content, imagePath);
     }
 
     /** TO @William Wang and Kailas Moon
@@ -167,19 +168,51 @@ public class TechConferenceSystem implements Viewable{
      */
     @Override
     public String getNewMessages(){
-        return null;
+        String output = "New Messages:\n";
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(loginSystem.getUsername());
+
+        ChatManager userChatManager = messagingSystem.getUserChatManager();
+
+        boolean newMessagesExist = false;
+        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
+
+            UUID chatId = mapItem.getKey();
+            List<UUID> messageIds = mapItem.getValue();
+
+            if (messageIds.size() != 0) {
+                newMessagesExist = true;
+                //printing chat name
+                String chatName = userChatManager.getChatName(chatId);
+                output += ("\n" +chatName + "\n");
+
+                //showing time difference from now and last message
+                LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
+                Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
+                output += (timeDifference.toMinutes() + " minutes ago\n");        // might change the format to be more clearer. Also, only prints integers
+
+                //showing last eight messages
+                List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+                for (UUID last8Id : last8Messages){   //only prints last 8 Messages
+                    output += (userChatManager.getMessageSenderUsername(chatId, last8Id) + "  :  " +
+                            userChatManager.getMessageContent(chatId, last8Id) + "\n"); //might make this call helper instead
+                }
+            }
+        }
+        if (!newMessagesExist) {
+            output += ("\nNo new messages.");
+        }
+        return output;
     }
 
     /** TO @William Wang and Kailas Moon
      *
      * @param username    The username this user wants to add
      * @return            "true" if successfully added.
-     *                    "You have already added this username" if username is already on this user's friend list.
-     *                    "Username entered is not in database." if username is not in database.
+     *                    An error message if adding the friend was unsuccessful.
      */
     @Override
     public String addFriend(String username){
-        return null;
+        return messagingSystem.addPeopleToMessage(loginSystem.getUsername(), username);
     }
 
 
