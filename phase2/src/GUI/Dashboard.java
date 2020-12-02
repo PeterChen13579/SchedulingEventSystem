@@ -17,38 +17,17 @@ public class Dashboard{
 
     private static JFrame frame;
     private final JPanel buttonPanel;
-    private JButton load;
-    private JButton newConference;
-    private JButton login;
-    private JButton createAttendee;
-    private JButton createOrganizer;
-    private JButton back;
-    private JButton signUpMenu;
-    private JButton messageMenu;
-    private JButton logout;
-    private JButton exit;
-    private JButton scheduleMenu;
-    private JButton createSpeaker;
-    private JButton addRoom;
-    private JButton addEvent;
-    private JButton cancelEvent;
-    private JButton changeCapacity;
-    private JButton seeListEvents;
-    private JButton confirmAttendeeSignUp;
-    private JButton confirmOrganizerSignUp;
-    private JButton confirmSpeakerSignUp;
-    private JButton confirmLogIn;
-    private JButton nextPanel;
-    private JButton confirmFilename;
-    private JButton save;
-    private JButton confirmSave;
-    private JButton confirmRoomNumber;
-    private JButton confirmAddEvent;
-    private JButton oneSpeakerEvent;
-    private JButton multiSpeakerEvent;
-    private JButton noSpeakerEvent;
-    private JButton confirmCancelEvent;
-    private JButton confirmChangeCapacity;
+    private JButton load, login, newConference;
+    private JButton createAttendee, createAttendeeMainMenu, createOrganizer;
+    private JButton back, signUpMenu, messageMenu, logout, exit;
+    private JButton scheduleMenu, createSpeaker, addRoom, addEvent, cancelEvent;
+    private JButton changeCapacity, seeListEvents;
+    private JButton confirmAttendeeSignUp, confirmAttendeeSignUpMainMenu, confirmOrganizerSignUp ;
+    private JButton confirmSpeakerSignUp, confirmLogIn;
+    private JButton nextPanel, confirmFilename, save, confirmSave;
+    private JButton confirmRoomNumber, confirmAddEvent;
+    private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
+    private JButton confirmCancelEvent, confirmChangeCapacity;
     private JTextField cancelEventTextfield;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
@@ -155,6 +134,7 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(login);
         buttonPanel.add(createOrganizer);
+        buttonPanel.add(createAttendeeMainMenu);
         buttonPanel.add(save);
         buttonPanel.add(exit);
         refresh();
@@ -186,7 +166,6 @@ public class Dashboard{
         buttonPanel.add(confirmAttendeeSignUp);
         buttonPanel.add(back);
         refresh();
-        
     }
 
 
@@ -205,7 +184,6 @@ public class Dashboard{
 
 
     private void createSpeakerAccount(){
-        System.out.println("Create Speaker");
         currentMenu = "CreateSpeaker";
         buttonPanel.removeAll();
         buttonPanel.add(displayUsername);
@@ -216,6 +194,18 @@ public class Dashboard{
         buttonPanel.add(back);
         refresh();
         
+    }
+
+    private void createAttendeeAccountMainMenu(){
+        currentMenu = "CreateAttendeeMain";
+        buttonPanel.removeAll();
+        buttonPanel.add(displayUsername);
+        buttonPanel.add(textInput);
+        buttonPanel.add(displayPassword);
+        buttonPanel.add(password);
+        buttonPanel.add(confirmAttendeeSignUpMainMenu);
+        buttonPanel.add(back);
+        refresh();
     }
 
     private void saveMenu() {
@@ -426,6 +416,14 @@ public class Dashboard{
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "LoggedIn";
                 createAttendeeAccount();
+            }
+        });
+        createAttendeeMainMenu = new JButton("Create Attendee Account");
+        createAttendeeMainMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "LoginSignup";
+                createAttendeeAccountMainMenu();
             }
         });
         createOrganizer = new JButton("Create Organizer Account");
@@ -649,6 +647,19 @@ public class Dashboard{
                 clearTextField();
             }
         });
+        confirmAttendeeSignUpMainMenu= new JButton("Confirm");
+        confirmAttendeeSignUpMainMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu ="CreateAttendeeMain";
+                if (sendsInfo.createAttendeeButton(textInput.getText(), password.getText())) {
+                    loginSignup();
+                }else{
+                    failedMenu("The existing username is in our database. Please try again.");
+                }
+                clearTextField();
+            }
+        });
         confirmLogIn = new JButton("Confirm Log In");
         confirmLogIn.addActionListener(new ActionListener() {
             @Override
@@ -784,6 +795,7 @@ public class Dashboard{
     }
 
     private void previousMenu() {
+        System.out.println(previousMenu);
         switch (previousMenu) {
             case "LoggedIn":
                 loginType();
@@ -792,6 +804,7 @@ public class Dashboard{
                 loadMenu();
                 break;
             case "LoginSignup":
+            case "CreateAttendeeMain":
                 loginSignup();
                 break;
             case "SignUpMenu":
@@ -808,8 +821,10 @@ public class Dashboard{
                 break;
             case "CreateEvent":
                 schedulingMenu();
+                break;
             case "ChooseEvent":
                 addEvent();
+                break;
         }
     }
 
