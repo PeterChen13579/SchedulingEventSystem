@@ -529,7 +529,7 @@ public class Dashboard{
         confirmCancelEvent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sendsInfo.cancelEvent(cancelEventTextfield.getText())){
+                if (sendsInfo.cancelEvent(cancelEventTextfield.getText(), currentUsername)){
                     schedulingMenu();
                 }else{
                     failedMenu("The event you have entered does not exist.");
@@ -542,7 +542,7 @@ public class Dashboard{
             public void actionPerformed(ActionEvent e) {
                 int changeCapacity = tryParse(changeCapacityEventTextfield.getText());
                 if (changeCapacity != -1){
-                    sendsInfo.changeCapacity(eventName.getText(), changeCapacity);
+                    sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername);
                     changeEventCapacity();
                 }else{
                     failedMenu("You must enter an integer.");
@@ -729,27 +729,33 @@ public class Dashboard{
                     boolean vip;
                     vip = vipVerify.equalsIgnoreCase("yes");
                     List <String> speakerList = new ArrayList<String>();
-                    String createdOrNot = "";
-                    if (speakerUsernameOne.getText().equals("") && speakerUsernameMulti.getText().equals("")){
-                        createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(),
-                                endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
-                                roomCapacity.getText());
-                    }else if(speakerUsernameMulti.getText().equals("")){
-                        speakerList.add(speakerUsernameOne.getText());
-                        createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
-                                roomNumber.getText(), speakerList, eventName.getText(), roomCapacity.getText());
-                    }else if(speakerUsernameOne.getText().equals("")) {
-                        String addSpeakerUsernames = speakerUsernameDisplayMulti.getText();
-                        addSpeakerUsernames = addSpeakerUsernames.replaceAll("\\s+", "");
-                        speakerList = Arrays.asList(addSpeakerUsernames.split(","));
-                        createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
-                                roomNumber.getText(), speakerList, eventName.getText(), roomCapacity.getText());
-                    }
-                    if (createdOrNot.equals("true")){
-                        addEvent();
+                    int checkCapacity = tryParse(roomCapacity.getText());
+                    if (checkCapacity <= 0){
+                        failedMenu("Please enter a valid integer for Room Capacity.");
                     }else{
-                        failedMenu(createdOrNot);
+                        String createdOrNot = "";
+                        if (speakerUsernameOne.getText().equals("") && speakerUsernameMulti.getText().equals("")){
+                            createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(),
+                                    endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
+                                    checkCapacity);
+                        }else if(speakerUsernameMulti.getText().equals("")){
+                            speakerList.add(speakerUsernameOne.getText());
+                            createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
+                                    roomNumber.getText(), speakerList, eventName.getText(),checkCapacity);
+                        }else if(speakerUsernameOne.getText().equals("")) {
+                            String addSpeakerUsernames = speakerUsernameDisplayMulti.getText();
+                            addSpeakerUsernames = addSpeakerUsernames.replaceAll("\\s+", "");
+                            speakerList = Arrays.asList(addSpeakerUsernames.split(","));
+                            createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
+                                    roomNumber.getText(), speakerList, eventName.getText(), checkCapacity);
+                        }
+                        if (createdOrNot.equals("true")){
+                            addEvent();
+                        }else{
+                            failedMenu(createdOrNot);
+                        }
                     }
+
                 }
             }
         });
@@ -860,6 +866,8 @@ public class Dashboard{
             case "UsernamePassword":
                 usernamePassword();
                 break;
+            case "CreateEvent":
+
         }
     }
 
