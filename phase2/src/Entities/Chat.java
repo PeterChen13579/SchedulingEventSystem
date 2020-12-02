@@ -1,9 +1,10 @@
 package Entities;
 import java.io.Serializable;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -35,11 +36,21 @@ public class Chat implements Serializable {
     }
 
     /**
-     * getter for the messages
-     * @return Sorted LinkedHashMap of all messages in the chat
+     * getter for the all the message ids
+     * @return Sorted list of all the message ids in the chat
      */
-    public LinkedHashMap<UUID, Message> getAllMessages(){
-        return chatMessages;
+    public List<UUID> getAllMessages(){
+        return new ArrayList<>(chatMessages.keySet()); // the use case needs to update the last viewed message if the user is viewing
+    }
+
+    /**
+     * getter for the message object
+     * PRECONDITION : The message exists in this chat
+     * @param messageId The id of the message
+     * @return The message object
+     */
+    public Message getMessageObject(UUID messageId){
+        return chatMessages.get(messageId);
     }
 
     /**

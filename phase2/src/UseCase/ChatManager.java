@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -86,13 +85,9 @@ public class ChatManager implements Serializable {
      * @param chatId The id of the chat
      * @param messageId The id of the message to be deleted
      */
-    public void deleteMessageFromChat(UUID chatId, UUID messageId){
+    public void deleteMessageFromChat(UUID chatId, UUID messageId){ //make sure the user can only delete their own messages when calling this
         Chat chosenChat = allChats.get(chatId);
-
-        // get index of message and the id of the previous chronological message
-        LinkedHashMap<UUID, Message> chatMessages = chosenChat.getAllMessages();
-        List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
-        UUID previousMessageId = getPreviousMessage(chatMessagesList, messageId);
+        UUID previousMessageId = getPreviousMessage(chosenChat, messageId); // get the id of the previous chronological message
 
         // set the last viewed message of the users who had seen the deletable message to the previous message
         for (String userName: chosenChat.getMemberUsernames()){
@@ -111,14 +106,13 @@ public class ChatManager implements Serializable {
      */
     public void markAsUnread(String username, UUID chatId){
         Chat chosenChat = allChats.get(chatId);
-
-        LinkedHashMap<UUID, Message> chatMessages = chosenChat.getAllMessages();
-        List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
+        List<UUID> chatMessagesList = chosenChat.getAllMessages();
         UUID lastViewedMessage = chosenChat.getLastViewedMessage(username);
 
+        // set the last viewed message to the previous message if the user has seen all the messages
         if (!isChatEmpty(chatId)){
             if(chatMessagesList.get(chatMessagesList.size() - 1).equals(lastViewedMessage)){
-                chosenChat.setLastViewedMessage(username, getPreviousMessage(chatMessagesList, lastViewedMessage));
+                chosenChat.setLastViewedMessage(username, getPreviousMessage(chosenChat, lastViewedMessage));
             }
         }
     }
@@ -186,8 +180,7 @@ public class ChatManager implements Serializable {
         }
 
         Chat chat = allChats.get(chatId);
-        LinkedHashMap<UUID, Message> chatMessages = chat.getAllMessages();
-        List<UUID> chatMessagesList = new ArrayList<>(chatMessages.keySet());
+        List<UUID> chatMessagesList = chat.getAllMessages();
         chat.setLastViewedMessage(username, chatMessagesList.get(chatMessagesList.size()-1));  //updates the last viewed message
         return chatMessagesList;
     }
@@ -292,23 +285,24 @@ public class ChatManager implements Serializable {
      */
     public boolean doesChatHaveMessageFrom(UUID chatId, String username) {
         Chat chat = allChats.get(chatId);
-        LinkedHashMap<UUID,Message> messages = chat.getAllMessages();
-        for (Map.Entry<UUID, Message> entry: messages.entrySet()) {
-            Message message = entry.getValue();
-            if (message.getSenderUsername().equals(username)) {
+        List<UUID> chatMessagesList = chat.getAllMessages();
+        for (UUID messageId: chatMessagesList){
+            Message message = chat.getMessageObject(messageId);
+            if (message.getSenderUsername().equals(username)){
                 return true;
             }
         }
         return false;
     }
 
-
+    // Make sure message exists in this chat
     private Message getChatMessage(UUID chatId, UUID messageId){
         Chat chat = allChats.get(chatId);
-        return chat.getAllMessages().get(messageId);
+        return chat.getMessageObject(messageId);
     }
 
-    private UUID getPreviousMessage(List<UUID> chatMessagesList, UUID messageId){ //returns previous message or null if no previous exists
+    private UUID getPreviousMessage(Chat chosenChat, UUID messageId){ //returns previous message or null if no previous exists
+        List<UUID> chatMessagesList = chosenChat.getAllMessages();
         int messageIndex = chatMessagesList.indexOf(messageId);
         UUID previousMessageId;
 
