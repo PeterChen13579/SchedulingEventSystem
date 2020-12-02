@@ -285,6 +285,7 @@ public class TechConferenceSystem implements Viewable{
      */
     public String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
+        System.out.println(speakerUsernames);
         return schedulingSystem.helper_addEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
 
     }

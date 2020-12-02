@@ -310,6 +310,8 @@ public class Dashboard{
     }
 
     private void addEvent() {
+        speakerUsernameMulti.setText("");
+        speakerUsernameOne.setText("");
         previousMenu = "ScheduleMenu";
         currentMenu = "ChooseEvent";
         buttonPanel.removeAll();
@@ -356,6 +358,8 @@ public class Dashboard{
         buttonPanel.add(startTime);
         buttonPanel.add(endTimeDisplay);
         buttonPanel.add(endTime);
+        buttonPanel.add(eventNameMsg);
+        buttonPanel.add(eventName);
         buttonPanel.add(addRoomLabel);
         buttonPanel.add(roomNumber);
         buttonPanel.add(displayCapacity);
@@ -730,7 +734,7 @@ public class Dashboard{
                     vip = vipVerify.equalsIgnoreCase("yes");
                     List <String> speakerList = new ArrayList<String>();
                     int checkCapacity = tryParse(roomCapacity.getText());
-                    if (checkCapacity > 0){
+                    if (checkCapacity <= 0){
                         failedMenu("Please enter a valid integer for Room Capacity.");
                     }else{
                         String createdOrNot = "";
@@ -868,6 +872,9 @@ public class Dashboard{
                 break;
             case "CreateEvent":
                 addEvent();
+                break;
+            case "CancelEvent":
+                cancelEvent();
                 break;
         }
     }
