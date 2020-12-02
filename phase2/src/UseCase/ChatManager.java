@@ -17,17 +17,15 @@ import java.util.UUID;
  */
 public class ChatManager implements Serializable {
 
-    private Map<UUID, Chat> allChats;
+    private Map<UUID, Chat> allChats; //maps chat id to Chat entity
+    private Map<String, List<UUID>> archivedChats; // maps username to list of chats
 
     /**
      * Create an instance of ChatManager
      */
     public ChatManager() {
         this.allChats = new HashMap<>();
-    }
-
-    public ChatManager(HashMap<UUID, Chat> chat) {  // might need to change this for loading objects
-        allChats = chat;
+        this.archivedChats = new HashMap<>();
     }
 
     /**
@@ -85,7 +83,7 @@ public class ChatManager implements Serializable {
      * @param chatId The id of the chat
      * @param messageId The id of the message to be deleted
      */
-    public void deleteMessageFromChat(UUID chatId, UUID messageId){ //make sure the user can only delete their own messages when calling this
+    public void deleteMessageFromChat(UUID chatId, UUID messageId){ //make sure the user can only delete their own messages when calling this. Also they should have viewed the message before deleting.
         Chat chosenChat = allChats.get(chatId);
         UUID previousMessageId = getPreviousMessage(chosenChat, messageId); // get the id of the previous chronological message
 
@@ -104,7 +102,7 @@ public class ChatManager implements Serializable {
      * @param username the username of the user
      * @param chatId the id of the chat
      */
-    public void markAsUnread(String username, UUID chatId){
+    public void markChatAsUnread(String username, UUID chatId){
         Chat chosenChat = allChats.get(chatId);
         List<UUID> chatMessagesList = chosenChat.getAllMessages();
         UUID lastViewedMessage = chosenChat.getLastViewedMessage(username);
@@ -114,6 +112,23 @@ public class ChatManager implements Serializable {
             if(chatMessagesList.get(chatMessagesList.size() - 1).equals(lastViewedMessage)){
                 chosenChat.setLastViewedMessage(username, getPreviousMessage(chosenChat, lastViewedMessage));
             }
+        }
+    }
+
+    /**
+     * Archive a chat for a specific user. The chat still exists but it is hidden from the user.
+     * PRECONDITION : User exists in the userManager, the chat id is not already archived by user
+     * @param username the username of the user
+     * @param chatId the id of the chat to archive
+     */
+    public void archiveChat(String username, UUID chatId){
+        if (archivedChats.containsKey(username)){
+            List<UUID> hiddenChats = archivedChats.get(username);
+            hiddenChats.add(chatId);
+        } else {
+            List<UUID> hiddenChats = new ArrayList<>();
+            hiddenChats.add(chatId);
+            archivedChats.put(username, hiddenChats);
         }
     }
 
@@ -146,7 +161,7 @@ public class ChatManager implements Serializable {
      * @param username The username of the user
      * @return All of the user's chats
      */
-    public List<UUID> getUserChats(String username) {
+    public List<UUID> getUserChats(String username) { // make sure to remove the archived chats when displaying
         List<UUID> output = new ArrayList<>();
         for (Map.Entry<UUID, Chat> allChatsItem : allChats.entrySet()){
             UUID chatId = allChatsItem.getKey();
@@ -159,13 +174,22 @@ public class ChatManager implements Serializable {
     }
 
     /**
+     * Getter for a user's archived chats
+     * @param username the username of the user
+     * @return the user's archived chats
+     */
+    public List<UUID> getArchivedChats(String username) {
+        return archivedChats.get(username);
+    }
+
+    /**
      * Checks if a chat has no messages
      * @param chatId The id of the chat being checked
      * @return A boolean to represent whether or not the chat is empty
      */
     public boolean isChatEmpty(UUID chatId) {
         Chat chat = allChats.get(chatId);
-        return chat.getAllMessages().size() == 0;
+        return chat.getAllMessages().isEmpty();
     }
 
     /**
