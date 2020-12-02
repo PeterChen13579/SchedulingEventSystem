@@ -292,12 +292,15 @@ public class TechConferenceSystem implements Viewable{
 
 //--------------------------------------------Sign Up Buttons-----------------------------------------
 
+
+    //@TO JOY/AMY
     public String[] displayAllEvents() {
         List<String> events = eventManager.getAllEventTitle();
         String[] toReturn = events.toArray(new String[0]);
         return toReturn;
     }
 
+    //@TO JOY/AMY
     public String[] displaySignedUpEvents(String username) {
         List<String> events;
         if (userManager.userType(username).equals("Speaker")){
@@ -309,7 +312,7 @@ public class TechConferenceSystem implements Viewable{
         return toReturn;
     }
 
-    /**
+    /**  //@TO JOY/AMY
      *
      * @param username
      * @param eventTitle
@@ -336,6 +339,7 @@ public class TechConferenceSystem implements Viewable{
         return 0;
     }
 
+    //@TO JOY/AMY
     public int cancelAttendEvent(String username, String eventTitle) {
         try {
             if (!eventManager.isAttendeeAdded(username, eventTitle)) {
