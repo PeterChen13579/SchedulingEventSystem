@@ -24,7 +24,7 @@ public class Dashboard{
     private JButton changeCapacity, seeListEvents;
     private JButton confirmAttendeeSignUp, confirmAttendeeSignUpMainMenu, confirmOrganizerSignUp ;
     private JButton confirmSpeakerSignUp, confirmLogIn;
-    private JButton nextPanel, confirmFilename, save, confirmSave;
+    private JButton nextPanel,confirmFilename,save, confirmSave;
     private JButton confirmRoomNumber, confirmAddEvent;
     private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
     private JButton confirmCancelEvent, confirmChangeCapacity;
@@ -589,7 +589,7 @@ public class Dashboard{
                 int capacity = tryParse(roomCapacity.getText());
                 int roomNum = tryParse(roomNumber.getText());
                 if (roomNum > -1){
-                    if (capacity > -1) {
+                    if (capacity > 0) {
                         if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
                             loggedInOrganizer();
                         } else {
@@ -730,7 +730,7 @@ public class Dashboard{
                     vip = vipVerify.equalsIgnoreCase("yes");
                     List <String> speakerList = new ArrayList<String>();
                     int checkCapacity = tryParse(roomCapacity.getText());
-                    if (checkCapacity <= 0){
+                    if (checkCapacity > 0){
                         failedMenu("Please enter a valid integer for Room Capacity.");
                     }else{
                         String createdOrNot = "";
@@ -867,7 +867,8 @@ public class Dashboard{
                 usernamePassword();
                 break;
             case "CreateEvent":
-
+                addEvent();
+                break;
         }
     }
 

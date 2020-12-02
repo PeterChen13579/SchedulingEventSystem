@@ -16,9 +16,9 @@ public interface Viewable {
     boolean confirmRoom(String roomNumber, int capacity);
     int signUpForEvent(String username, String eventTitle);
     int cancelAttendEvent(String username, String eventTitle);
-    ArrayList <String> sendChatName();
+    ArrayList <String> sendChatName(String username);
     String sendOneMsg(String username, String content, String imagePath);
-    String viewChatMsg(int chatNumber);
+    String viewChat(int chatNumber, String username);
     String addFriend(String username);
     String getNewMessages();
     void msgAllAttendees(String msg, String imagePath);

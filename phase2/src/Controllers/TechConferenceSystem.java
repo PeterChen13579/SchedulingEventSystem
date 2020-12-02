@@ -118,7 +118,7 @@ public class TechConferenceSystem implements Viewable{
      * display on GUI; Add in the number AND username for this; ie. [1.kailas, 2.william]
      */
     @Override
-    public ArrayList <String> sendChatName(){
+    public ArrayList <String> sendChatName(String userName){
         ArrayList<String> output = new ArrayList<String>();
 
         ChatManager chatManager = messagingSystem.getUserChatManager();
@@ -147,8 +147,8 @@ public class TechConferenceSystem implements Viewable{
      *                   chat number;
      */
     @Override
-    public String viewChatMsg(int chatNumber){  // should probably change to getChatNameByIndex. Also idk why this method is needed. Are we entering the chat number or clicking a button for it?
-        List<String> userChats = sendChatName();
+    public String viewChat(int chatNumber, String currentUsername){
+        List<String> userChats = sendChatName(currentUsername);
         if (chatNumber >= 1 && chatNumber <= userChats.size()){
             return userChats.get(chatNumber - 1);
         }else{

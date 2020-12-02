@@ -35,7 +35,7 @@ public class MessagingDashboard extends JPanel{
         this.currentUsername = currentUsername;
         this.loginType = loginType;
         this.dashboard = dashboard;
-        userToDisplay = sendsInfo.sendChatName();
+        userToDisplay = sendsInfo.sendChatName(currentUsername);
         try {
             SynthLookAndFeel style = new SynthLookAndFeel();
             style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
@@ -232,7 +232,7 @@ public class MessagingDashboard extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 if (sendsInfo.addFriend(friendAddText.getText()).equals("true")){
                     messagingMenu();
-                    userToDisplay = sendsInfo.sendChatName();
+                    userToDisplay = sendsInfo.sendChatName(currentUsername);
                 }else{
                     String failedMsg = sendsInfo.addFriend(friendAddText.getText());
                     failedMenu(failedMsg);
@@ -280,10 +280,10 @@ public class MessagingDashboard extends JPanel{
                 if (possibleNum == -1){
                     failedMenu("You must enter a valid integer");
                 }else{
-                    if (sendsInfo.viewChatMsg(possibleNum).equals("false")){
+                    if (sendsInfo.viewChat(possibleNum, currentMenu).equals("false")){
                         failedMenu("The integer you entered is invalid");
                     }else{
-                        String displayMsg = sendsInfo.viewChatMsg(possibleNum);
+                        String displayMsg = sendsInfo.viewChat(possibleNum, currentMenu);
                         displayChatMsg(displayMsg);
                     }
                 }
