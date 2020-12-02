@@ -119,7 +119,24 @@ public class TechConferenceSystem implements Viewable{
      */
     @Override
     public ArrayList <String> sendChatName(){
-        return null;
+        ArrayList<String> output = new ArrayList<String>();
+
+        ChatManager chatManager = messagingSystem.getUserChatManager();
+        List<UUID> chats = chatManager.getUserChats(loginSystem.getUsername());
+        int index = 1;
+        for (UUID chat: chats) {
+            String outputString = index + ". ";
+            index ++;
+
+            List<String> members = chatManager.getChatMemberUsernames(chat);
+            members.remove(loginSystem.getUsername());
+            for (String member: members) {
+                outputString += member + ", ";
+            }
+            outputString = outputString.substring(outputString.length()-2);
+            output.add(outputString);
+        }
+        return output;
     }
 
 
