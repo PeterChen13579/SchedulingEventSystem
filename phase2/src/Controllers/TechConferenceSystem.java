@@ -248,7 +248,7 @@ public class TechConferenceSystem implements Viewable{
      */
     @Override
     public boolean cancelEvent(String title, String username){
-        schedulingSystem.cancelEvent(title, username);
+        return schedulingSystem.cancelEvent(title, username);
     }
 
 
@@ -261,12 +261,12 @@ public class TechConferenceSystem implements Viewable{
      */
     @Override
     public boolean changeCapacity(String eventName, int capacity, String username){
-        schedulingSystem.changeCapacity(eventName, capacity, username);
+        return schedulingSystem.changeCapacity(eventName, capacity, username);
     }
 
     //return true iff added the room, return false otherwise
     public boolean confirmRoom(String roomNumber, int capacity){
-        schedulingSystem.addRoom(roomNumber, capacity);
+        return schedulingSystem.addRoom(roomNumber, capacity);
     }
 
 
