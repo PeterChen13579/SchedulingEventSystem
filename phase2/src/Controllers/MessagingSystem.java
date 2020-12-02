@@ -314,7 +314,7 @@ public class MessagingSystem {
             boolean found = false;
             for (String event : allEvents) {
                 if (event.equals(title)) {
-                    if (eventManager.getSpeakerUsernameByTitle(event).equals(senderUsername)) {
+                    if (eventManager.getSpeakerUsernameByTitle(event).contains(senderUsername)) {
                         found = true;
                         for (String recipient: eventManager.getAllAttendeesByTitle(event)) {
                             if (!recipients.contains(recipient)) {
