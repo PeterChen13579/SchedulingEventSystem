@@ -251,6 +251,18 @@ public class MessagingSystem {
         return(newMessages);
     }
 
+    public String[][] getChatMessagesInfo(UUID chat) {
+        return userChatManager.getMessagesInfo(chat);
+    }
+
+    public List<UUID> getChats(String userName) {
+        return userChatManager.getUserChats(userName);
+    }
+
+    public List<String> getChatMembers(UUID chat) {
+        return userChatManager.getChatMemberUsernames(chat);
+    }
+
     /**
      * Helper method to send a message to a list of users
      * @param usernames The usernames that the message is being sent to

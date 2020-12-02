@@ -280,10 +280,14 @@ public class MessagingDashboard extends JPanel{
                 if (possibleNum == -1){
                     failedMenu("You must enter a valid integer");
                 }else{
-                    if (sendsInfo.viewChat(possibleNum, currentMenu).equals("false")){
+                    if (sendsInfo.viewChat(possibleNum, currentMenu) == null){
                         failedMenu("The integer you entered is invalid");
                     }else{
-                        String displayMsg = sendsInfo.viewChat(possibleNum, currentMenu);
+                        String[][] msgInfo = sendsInfo.viewChat(possibleNum, currentMenu);
+                        String displayMsg = "";
+                        for (String[] info : msgInfo) {
+                            displayMsg += (info[1] + "  :  " + info[2] + "                              at  " + info[3]);
+                        }
                         displayChatMsg(displayMsg);
                     }
                 }

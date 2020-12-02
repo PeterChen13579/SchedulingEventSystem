@@ -121,14 +121,13 @@ public class TechConferenceSystem implements Viewable{
     public ArrayList <String> sendChatName(String userName){
         ArrayList<String> output = new ArrayList<String>();
 
-        ChatManager chatManager = messagingSystem.getUserChatManager();
-        List<UUID> chats = chatManager.getUserChats(loginSystem.getUsername());
+        List<UUID> chats = messagingSystem.getChats(loginSystem.getUsername());
         int index = 1;
         for (UUID chat: chats) {
             String outputString = index + ". ";
             index ++;
 
-            List<String> members = chatManager.getChatMemberUsernames(chat);
+            List<String> members = messagingSystem.getChatMembers(chat);
             members.remove(loginSystem.getUsername());
             for (String member: members) {
                 outputString += member + ", ";
@@ -143,16 +142,17 @@ public class TechConferenceSystem implements Viewable{
     /**
      *
      * @param chatNumber The chat number that the user wants to view
-     * @return           Return String that the User wants to view; IN VIEW CHAT NUMBER: Return "false" if can not find
+     * @return           Return String that the User wants to view; IN VIEW CHAT NUMBER: Return null if can not find
      *                   chat number;
      */
     @Override
-    public String viewChat(int chatNumber, String currentUsername){
-        List<String> userChats = sendChatName(currentUsername);
+    public String[][] viewChat(int chatNumber, String currentUsername){
+        List<UUID> userChats = messagingSystem.getChats(loginSystem.getUsername());
+
         if (chatNumber >= 1 && chatNumber <= userChats.size()){
-            return userChats.get(chatNumber - 1);
+            return messagingSystem.getChatMessagesInfo(userChats.get(chatNumber-1));
         }else{
-            return "false";
+            return null;
         }
     }
 

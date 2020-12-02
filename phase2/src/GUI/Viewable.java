@@ -18,7 +18,7 @@ public interface Viewable {
     int cancelAttendEvent(String username, String eventTitle);
     ArrayList <String> sendChatName(String username);
     String sendOneMsg(String username, String content, String imagePath);
-    String viewChat(int chatNumber, String username);
+    String[][] viewChat(int chatNumber, String username);
     String addFriend(String username);
     String getNewMessages();
     void msgAllAttendees(String msg, String imagePath);
