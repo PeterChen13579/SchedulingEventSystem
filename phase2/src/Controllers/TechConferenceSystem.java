@@ -157,10 +157,11 @@ public class TechConferenceSystem implements Viewable{
         List<UUID> userChats = messagingSystem.getChats(loginSystem.getUsername());
 
         if (chatNumber >= 1 && chatNumber <= userChats.size()){
-            return messagingSystem.getChatMessagesInfo(userChats.get(chatNumber-1));
+            //return messagingSystem.getChatMessages(userChats.get(chatNumber-1)); // fix this
         }else{
             return null;
         }
+        return null; // remove later
     }
 
     @Override
