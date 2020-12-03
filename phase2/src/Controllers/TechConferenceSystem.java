@@ -286,9 +286,9 @@ public class TechConferenceSystem implements Viewable{
      * @return   All new Messages (View all new messages option)
      */
     @Override
-    public String getNewMessages(String CurrentUsername){
+    public String getNewMessages(String currentUsername){
         String output = "New Messages:\n";
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(CurrentUsername);
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
 
         boolean newMessagesExist = false;
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
@@ -299,7 +299,7 @@ public class TechConferenceSystem implements Viewable{
             // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
             newMessagesExist = true;
             //printing chat name
-            String chatName = messagingSystem.getChatName(chatId);
+            String chatName = getChatNameByUser(currentUsername, chatId);
             output += "\n" +chatName + "\n";
 
             //showing time difference from now and last message
