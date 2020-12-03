@@ -18,6 +18,7 @@ public class MessagingDashboard extends JPanel{
     private JButton confirmOneMessage,confirmChatNumber;
     private JButton allAttendeeMsg, allSpeakerMsg, allEventMsg;
     private JButton nextPanel, back;
+    private JButton deleteMsg;
     private JLabel errorText;
     private JLabel displayUsername, usernameLabel, msgContentLabel;
     private JList chatMsg;
@@ -239,11 +240,13 @@ public class MessagingDashboard extends JPanel{
         confirmFriend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sendsInfo.addFriend(friendAddText.getText()).equals("true")){
+                System.out.println(friendAddText.getText());
+                String result = sendsInfo.addFriend(currentUsername, friendAddText.getText());
+                if (result.equals("true")){
                     messagingMenu();
                     userToDisplay = sendsInfo.sendChatName(currentUsername);
                 }else{
-                    String failedMsg = sendsInfo.addFriend(friendAddText.getText());
+                    String failedMsg = result;
                     failedMenu(failedMsg);
                 }
             }
@@ -252,7 +255,7 @@ public class MessagingDashboard extends JPanel{
         confirmOneMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String result = sendsInfo.sendOneMsg(currentUsername, usernameTextfield.getText(), "");
+                String result = sendsInfo.sendOneMsg(currentUsername,usernameTextfield.getText(), usernameTextfield.getText(), "");
                 if (result.equals("Message sent.")){
                     messagingMenu();
                 }else{
@@ -264,21 +267,24 @@ public class MessagingDashboard extends JPanel{
         allAttendeeMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllAttendees(content.getText(), "");
+                sendsInfo.msgAllAttendees(currentUsername,content.getText(), "");
+                messagingMenu();
             }
         });
         allSpeakerMsg = new JButton("Confirm");
         allSpeakerMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllSpeakers(content.getText(), "");
+                sendsInfo.msgAllSpeakers(currentUsername, content.getText(), "");
+                messagingMenu();
             }
         });
         allEventMsg = new JButton("Confirm");
         allEventMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllAttendeeEvent(new ArrayList<String>(), content.getText(), "");
+                sendsInfo.msgAllAttendeeEvent(currentUsername, new ArrayList<String>(), content.getText(), "");
+                messagingMenu();
             }
         });
         confirmChatNumber = new JButton("Confirm");

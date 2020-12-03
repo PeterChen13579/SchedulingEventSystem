@@ -197,18 +197,18 @@ public class TechConferenceSystem implements Viewable{
     }
 
     @Override
-    public void msgAllAttendees(String msg, String imagePath) {
-        messagingSystem.organizerMessageAllAttendees(loginSystem.getUsername(), msg, imagePath);
+    public void msgAllAttendees(String sender, String msg, String imagePath) {
+        messagingSystem.organizerMessageAllAttendees(sender, msg, imagePath);
     }
 
     @Override
-    public void msgAllSpeakers(String msg, String imagePath) {
-        messagingSystem.organizerMessageAllSpeakers(this.loginSystem.getUsername(), msg, imagePath);
+    public void msgAllSpeakers(String sender, String msg, String imagePath) {
+        messagingSystem.organizerMessageAllSpeakers(sender, msg, imagePath);
     }
 
     @Override
-    public void msgAllAttendeeEvent(List<String> eventTitles, String msg, String imagePath){
-        messagingSystem.speakerMessageEventAttendees(loginSystem.getUsername(), eventTitles, msg, imagePath);
+    public void msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath){
+        messagingSystem.speakerMessageEventAttendees(sender, eventTitles, msg, imagePath);
     }
 
 
@@ -220,8 +220,8 @@ public class TechConferenceSystem implements Viewable{
      */
 
     @Override
-    public String sendOneMsg(String username, String content, String imagePath) {
-        return messagingSystem.messageOneUser(loginSystem.getUsername(), username, content, imagePath);
+    public String sendOneMsg(String sender, String recipient, String content, String imagePath) {
+        return messagingSystem.messageOneUser(sender, recipient, content, imagePath);
     }
 
     /** TO @William Wang and Kailas Moon
@@ -273,8 +273,8 @@ public class TechConferenceSystem implements Viewable{
      *                    An error message if adding the friend was unsuccessful.
      */
     @Override
-    public String addFriend(String username){
-        return messagingSystem.addPeopleToMessage(loginSystem.getUsername(), username);
+    public String addFriend(String mainUsername, String newFriendUsername){
+        return messagingSystem.addPeopleToMessage(mainUsername, newFriendUsername);
     }
 
 
