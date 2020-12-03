@@ -224,14 +224,15 @@ public class TechConferenceSystem implements Viewable{
      * @param imagePath image path
      */
     @Override
-    public void msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath){
-        messagingSystem.speakerMessageEventAttendees(sender, eventTitles, msg, imagePath);
+    public String msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath){
+        return messagingSystem.speakerMessageEventAttendees(sender, eventTitles, msg, imagePath);
     }
 
 
     /** TO @William Wang and Kailas Moon
      *
-     * @param sender    The username this user wants to msg
+     * @param sender The username of the sender
+     * @param recipient    The username this user wants to msg
      * @param content     The text this username wants to send
      * @return   A success or error message based on whether sending the message was successful
      */
@@ -295,23 +296,22 @@ public class TechConferenceSystem implements Viewable{
             UUID chatId = mapItem.getKey();
             List<UUID> messageIds = mapItem.getValue();
 
-            if (messageIds.size() != 0) {
-                newMessagesExist = true;
-                //printing chat name
-                String chatName = messagingSystem.getChatName(chatId);
-                output += "\n" +chatName + "\n";
+            // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
+            newMessagesExist = true;
+            //printing chat name
+            String chatName = messagingSystem.getChatName(chatId);
+            output += "\n" +chatName + "\n";
 
-                //showing time difference from now and last message
-                LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
-                Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
-                output += (timeDifference.toMinutes() + " minutes ago\n");        // might change the format to be more clearer. Also, only prints integers
+            //showing time difference from now and last message
+            LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
+            Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
+            output += (timeDifference.toMinutes() + " minutes ago\n");        // might change the format to be more clearer. Also, only prints integers
 
-                //showing last eight messages
-                List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
-                for (UUID last8Id : last8Messages){   //only prints last 8 Messages
-                    output += (messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
-                            messagingSystem.getMessageContent(chatId, last8Id) + "\n"); //might make this call helper instead
-                }
+            //showing last eight messages
+            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
+                output += (messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
+                        messagingSystem.getMessageContent(chatId, last8Id) + "\n"); //might make this call helper instead
             }
         }
         if (!newMessagesExist) {
@@ -322,6 +322,7 @@ public class TechConferenceSystem implements Viewable{
 
     /** TO @William Wang and Kailas Moon
      *
+     * @param mainUsername The username of the current user
      * @param newFriendUsername    The username this user wants to add
      * @return            "true" if successfully added.
      *                    An error message if adding the friend was unsuccessful.

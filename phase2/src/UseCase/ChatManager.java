@@ -132,6 +132,19 @@ public class ChatManager implements Serializable {
     }
 
     /**
+     * Unarchive a chat for a specific user. It is now no longer hidden.
+     * PRECONDITION : the chat has been archived.
+     * @param username The username of the user
+     * @param chatId The id of the chat
+     */
+    public void unarchiveChat(String username, UUID chatId){
+        if (archivedChats.containsKey(username)){
+            List<UUID> hiddenChats = archivedChats.get(username);
+            hiddenChats.remove(chatId);
+        }
+    }
+
+    /**
      * Get the chat containing only the specified users. Returns null if no such chat exists
      * PRECONDITION : There is only one chat between all the users in usernames
      * @param usernames A list of the usernames of the users in the chat
