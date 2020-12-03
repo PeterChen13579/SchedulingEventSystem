@@ -437,21 +437,12 @@ public class TechConferenceSystem implements Viewable{
 
     //@TO JOY/AMY
     public String[] displayAllEvents() {
-        List<String> events = eventManager.getAllEventTitle();
-        String[] toReturn = events.toArray(new String[0]);
-        return toReturn;
+        return signUpSystem.displayAllEvents();
     }
 
     //@TO JOY/AMY
     public String[] displaySignedUpEvents(String username) {
-        List<String> events;
-        if (userManager.userType(username).equals("Speaker")){
-            events = userManager.getEventsSpeaking(username);
-        }else {
-            events = userManager.getEventAttending(username);
-        }
-        String[] toReturn = events.toArray(new String[0]);
-        return toReturn;
+        return signUpSystem.displaySignedUpEvents(username);
     }
 
     /**  //@TO JOY/AMY
@@ -461,42 +452,12 @@ public class TechConferenceSystem implements Viewable{
      * @return
      */
     public int signUpForEvent(String username, String eventTitle) {
-        if (!eventManager.isEventExist(eventTitle)){
-            return 3;
-        }
-        else if (eventManager.isAttendeeAdded(username, eventTitle)){
-            return 1;
-        }
-        else if(eventManager.isEventFull(username)){
-            return 2;
-        }
-        else if (!userManager.isAttendeeVIP(username) & eventManager.VIP(eventTitle)){
-            return 4;
-        }
-        else{
-            eventManager.addAttendee(username, eventTitle);
-            userManager.signUpEventAttendee(username, eventTitle);
-            userManager.setAttendeeVIP(username);
-        }
-        return 0;
+        return signUpSystem.signUpEvent(username, eventTitle);
     }
 
     //@TO JOY/AMY
     public int cancelAttendEvent(String username, String eventTitle) {
-        try {
-            if (!eventManager.isAttendeeAdded(username, eventTitle)) {
-//            sp.printStatement("You haven't signed up for this event yet.");
-                return 1;
-            }
-            if (eventManager.canDeleteAttendee(username, eventTitle)) {
-                eventManager.deleteAttendee(username, eventTitle);
-                userManager.cancelSpotAttendee(username, eventTitle);
-//            sp.printStatement("You have cancelled the spot for this event.");
-            }
-        } catch (IllegalArgumentException e) {
-            return 2;
-        }
-        return 0;
+        return signUpSystem.cancelSpotEvent(username, eventTitle);
     }
 
     //--------------------------------------------Creating Controller-----------------------------------------
@@ -527,7 +488,7 @@ public class TechConferenceSystem implements Viewable{
     }
 
     public boolean userIsVIP(String username) {
-        return userManager.isAttendeeVIP(username);
+        return signUpSystem.userIsVIP(username);
     }
 
 

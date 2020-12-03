@@ -57,7 +57,7 @@ public class Dashboard{
         createThemes();
 
         frame = new JFrame("Tech Conference System");
-        changeTheme("regular");
+        changeTheme("vip");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1280, 720));
         frame.setLocation(screenSize.width/2 - 640, screenSize.height/2 - 360);
@@ -108,17 +108,6 @@ public class Dashboard{
         refresh();
         
     }
-
-    private void loadConference(){
-        currentMenu = "LoadingConference";
-        buttonPanel.removeAll();
-        buttonPanel.add(filename);
-        buttonPanel.add(confirmFilename);
-        buttonPanel.add(back);
-        refresh();
-        
-    }
-
 
 
 //---------------------------------------Main Menu Features/options ---------------------------------------;
@@ -872,6 +861,9 @@ public class Dashboard{
                 break;
             case "CancelEvent":
                 cancelEvent();
+                break;
+            case "CreateAttendeeMain":
+                createAttendeeAccountMainMenu();
                 break;
         }
     }
