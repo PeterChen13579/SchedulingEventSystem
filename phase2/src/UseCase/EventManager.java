@@ -281,6 +281,7 @@ public class EventManager implements Serializable {
      * @return true iff the event is in its full capacity
      */
     public boolean isEventFull(String eventTitle){
+
         Event event = helperEventTitle(eventTitle);
         int eventNum = event.getMaxNum();
         int currentNum = event.getAttendeeList().size();
@@ -321,6 +322,7 @@ public class EventManager implements Serializable {
     private Event helperEventTitle(String eventTitle) {
         assert isEventExist(eventTitle);
         for (Event event : allEvents) {
+            //issue with allEvents; Try to create a event. and Sign up that event. The error occurs here;
             if (event.getTitle().equals(eventTitle)) {
                 return event;
             }
