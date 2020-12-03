@@ -8,9 +8,15 @@ import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
 
+import java.lang.reflect.Array;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Determines all the behaviour for the text-based UI
@@ -154,14 +160,40 @@ public class TechConferenceSystem implements Viewable{
      */
     @Override
     public String[][] viewChat(int chatNumber, String currentUsername){
-        List<UUID> userChats = messagingSystem.getChats(loginSystem.getUsername());
+        List<UUID> userChats = messagingSystem.getChats(currentUsername);
+        List<List<String>> messageInfoList = new ArrayList<>();
 
         if (chatNumber >= 1 && chatNumber <= userChats.size()){
-            //return messagingSystem.getChatMessages(userChats.get(chatNumber-1)); // fix this
+            UUID chatId = userChats.get(chatNumber-1);
+            List<UUID> chatMessages = messagingSystem.getChatMessages(currentUsername, chatId);
+            for (UUID messageId: chatMessages){
+                List<String> currentMessageInfo = new ArrayList<>(getMessageInfo(chatId, messageId));
+                messageInfoList.add(currentMessageInfo); //add a list of message info for this message
+            }
+
+            String[][] messageInfoArray = new String[messageInfoList.size()][];
+            for (int i = 0; i<messageInfoList.size(); i++){
+                List<String> nestedMessageInfo = messageInfoList.get(i);
+                messageInfoArray[i] = nestedMessageInfo.toArray(new String[0]); //might have a bug idk
+            }
+            return messageInfoArray;
         }else{
             return null;
         }
-        return null; // remove later
+
+    }
+
+    private List<String> getMessageInfo(UUID chatId, UUID messageId){
+        String messageIdString = messageId.toString();
+        String senderUsername = messagingSystem.getMessageSender(chatId, messageId);
+        LocalDateTime timeStamp = messagingSystem.getMessageTimestamp(chatId, messageId);
+        String content = messagingSystem.getMessageContent(chatId, messageId);
+
+        // convert datetime to string
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , yyyy-MM-dd");    //format time
+        String formattedTimestamp = timeStamp.format(formatter);
+
+        return new ArrayList<>(Arrays.asList(messageIdString, senderUsername, content, formattedTimestamp));
     }
 
     @Override

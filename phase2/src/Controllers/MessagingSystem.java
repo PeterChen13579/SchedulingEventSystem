@@ -268,6 +268,36 @@ public class MessagingSystem {
     }
 
     /**
+     * get Message sender in the chat
+     * @param chatId The id of the chat
+     * @param messageId The id of the message
+     * @return The message sender's username
+     */
+    public String getMessageSender(UUID chatId, UUID messageId){
+        return userChatManager.getMessageSenderUsername(chatId, messageId);
+    }
+
+    /**
+     * Get timestamp of the message
+     * @param chatId The id of the chat
+     * @param messageId The id of the message
+     * @return The Local Date Time of the message
+     */
+    public LocalDateTime getMessageTimestamp(UUID chatId, UUID messageId){
+        return userChatManager.getMessageTimeStamp(chatId, messageId);
+    }
+
+    /**
+     * Get the content of the message
+     * @param chatId The id of the chat
+     * @param messageId The id of the message
+     * @return The string representing the content
+     */
+    public String getMessageContent(UUID chatId, UUID messageId){
+        return userChatManager.getMessageContent(chatId, messageId);
+    }
+
+    /**
      * Get the name of the chat
      * @param chatId The id of the chat
      * @return The name of the chat
