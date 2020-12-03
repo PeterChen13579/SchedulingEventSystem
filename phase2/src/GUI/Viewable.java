@@ -23,7 +23,7 @@ public interface Viewable {
     String getNewMessages(String username);
     void msgAllAttendees(String sender, String msg, String imagePath);
     void msgAllSpeakers(String sender, String msg, String imagePath);
-    void msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath);
+    String msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath);
     boolean cancelEvent(String eventName, String username);
     boolean changeCapacity(String eventName, int capacity, String username);
     String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum,

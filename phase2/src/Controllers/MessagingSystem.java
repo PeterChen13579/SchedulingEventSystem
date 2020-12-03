@@ -333,7 +333,7 @@ public class MessagingSystem {
         }
 
         List<UUID> currentChats = new ArrayList<>(allUserChats);
-        //currentChats.removeAll(archivedChats);
+        currentChats.removeAll(archivedChats);
         return currentChats;
     }
 
