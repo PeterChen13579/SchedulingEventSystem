@@ -196,8 +196,8 @@ public class MessagingDashboard extends JPanel{
         viewNewMessages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newMsgs = sendsInfo.getNewMessages(currentUsername);
-                displayNewMessages(newMsgs);
+                //String newMsgs = sendsInfo.getNewMessages(currentUsername);
+                //displayNewMessages(newMsgs);
             }
         });
         addFriend = new JButton("Add Friend");
