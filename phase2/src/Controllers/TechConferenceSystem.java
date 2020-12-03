@@ -124,16 +124,16 @@ public class TechConferenceSystem implements Viewable{
      * display on GUI; Add in the number AND username for this; ie. [1.kailas, 2.william]
      */
     @Override
-    public ArrayList <String> sendChatName(String userName){ //probably change to viewChatnames
+    public ArrayList <String> sendChatName(String currentUsername){ //probably change to viewChatnames
         ArrayList<String> output = new ArrayList<>();
 
-        List<UUID> chats = messagingSystem.getChats(userName);
+        List<UUID> chats = messagingSystem.getCurrentChats(currentUsername);
         int index = 1;
         for (UUID chatId: chats) {
             String outputString = index + ". ";
             index ++;
 
-            String chatName = getChatNameByUser(userName, chatId);
+            String chatName = getChatNameByUser(currentUsername, chatId);
             outputString += chatName + ","; // don't know if we need the comma
             output.add(outputString);
         }
@@ -157,10 +157,11 @@ public class TechConferenceSystem implements Viewable{
      * @param chatNumber The chat number that the user wants to view
      * @return           Return String that the User wants to view; IN VIEW CHAT NUMBER: Return null if can not find
      *                   chat number;
+     *                   The String Array will be in the form [[messageId, senderUsername, content, timestamp],....];
      */
     @Override
     public String[][] viewChat(int chatNumber, String currentUsername){
-        List<UUID> userChats = messagingSystem.getChats(currentUsername);
+        List<UUID> userChats = messagingSystem.getCurrentChats(currentUsername);
         List<List<String>> messageInfoList = new ArrayList<>();
 
         if (chatNumber >= 1 && chatNumber <= userChats.size()){
@@ -196,16 +197,32 @@ public class TechConferenceSystem implements Viewable{
         return new ArrayList<>(Arrays.asList(messageIdString, senderUsername, content, formattedTimestamp));
     }
 
+    /**
+     * Message all Attendees
+     * @param msg message content
+     * @param imagePath image path
+     */
     @Override
     public void msgAllAttendees(String sender, String msg, String imagePath) {
         messagingSystem.organizerMessageAllAttendees(sender, msg, imagePath);
     }
 
+    /**
+     * Message all Speakers
+     * @param msg message content
+     * @param imagePath image path
+     */
     @Override
     public void msgAllSpeakers(String sender, String msg, String imagePath) {
         messagingSystem.organizerMessageAllSpeakers(sender, msg, imagePath);
     }
 
+    /**
+     * Message all attendees
+     * @param eventTitles the list of event titles
+     * @param msg message content
+     * @param imagePath image path
+     */
     @Override
     public void msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath){
         messagingSystem.speakerMessageEventAttendees(sender, eventTitles, msg, imagePath);
@@ -224,16 +241,53 @@ public class TechConferenceSystem implements Viewable{
         return messagingSystem.messageOneUser(sender, recipient, content, imagePath);
     }
 
+    /**
+     * Delete a message from the chat
+     * PRECONDITION : messageIdString wasn't used to call deleteMsg before
+     * @param currentUsername the username of the current user
+     * @param chatIdString the string of the id of the chat (UUID form)
+     * @param messageIdString the string of the id of the message (UUID form)
+     * @return "true" if the action was successful. An error message otherwise.
+     */
+    public String deleteMsg(String currentUsername, String chatIdString, String messageIdString){ //gui should probably refresh messages after running this
+        UUID messageId = UUID.fromString(messageIdString);
+        UUID chatId = UUID.fromString(chatIdString);
+
+        return messagingSystem.deleteUserMessage(currentUsername, chatId, messageId);
+    }
+
+    /**
+     * Mark chat as unread.
+     * @param currentUsername The username of the current user
+     * @param chatIdString The string of the id of the chat (UUID form)
+     * @return "true" if the action was successful. An error message otherwise.
+     */
+    public String markChatAsUnread(String currentUsername, String chatIdString){
+        UUID chatId = UUID.fromString(chatIdString);
+
+        return messagingSystem.markUserChatAsUnread(currentUsername, chatId);
+    }
+
+    /**
+     * Archive chat.
+     * @param currentUsername The username of the current user
+     * @param chatIdString The string of the id of the chat (UUID form)
+     * @return "true" if the action was successful. An error message otherwise.
+     */
+    public String archiveChats(String currentUsername, String chatIdString){
+        UUID chatId = UUID.fromString(chatIdString);
+
+        return messagingSystem.archiveUserChat(currentUsername, chatId);
+    }
+
     /** TO @William Wang and Kailas Moon
      *
      * @return   All new Messages (View all new messages option)
      */
     @Override
-    public String getNewMessages(){
+    public String getNewMessages(String CurrentUsername){
         String output = "New Messages:\n";
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(loginSystem.getUsername());
-
-        ChatManager userChatManager = messagingSystem.getUserChatManager();
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(CurrentUsername);
 
         boolean newMessagesExist = false;
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
@@ -244,19 +298,19 @@ public class TechConferenceSystem implements Viewable{
             if (messageIds.size() != 0) {
                 newMessagesExist = true;
                 //printing chat name
-                String chatName = userChatManager.getChatName(chatId);
-                output += ("\n" +chatName + "\n");
+                String chatName = messagingSystem.getChatName(chatId);
+                output += "\n" +chatName + "\n";
 
                 //showing time difference from now and last message
-                LocalDateTime lastMessageTime = userChatManager.getMessageTimeStamp(chatId, messageIds.get(messageIds.size() - 1));
+                LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
                 Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
                 output += (timeDifference.toMinutes() + " minutes ago\n");        // might change the format to be more clearer. Also, only prints integers
 
                 //showing last eight messages
                 List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
                 for (UUID last8Id : last8Messages){   //only prints last 8 Messages
-                    output += (userChatManager.getMessageSenderUsername(chatId, last8Id) + "  :  " +
-                            userChatManager.getMessageContent(chatId, last8Id) + "\n"); //might make this call helper instead
+                    output += (messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
+                            messagingSystem.getMessageContent(chatId, last8Id) + "\n"); //might make this call helper instead
                 }
             }
         }

@@ -248,8 +248,8 @@ public class MessagingSystem {
      * View all the chat messages
      * @param userName The username of the current user
      */
-    public Map<UUID, List<UUID>> viewAllNewMessages(String userName){   //Will probably be formatted to be separate the messages by chat
-        List<UUID> userChats = userChatManager.getUserChats(userName);
+    public Map<UUID, List<UUID>> viewAllNewMessages(String userName){
+        List<UUID> userChats = userChatManager.getUserChats(userName);  //includes archived chats
         Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
             List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
@@ -311,12 +311,17 @@ public class MessagingSystem {
     }
 
     /**
-     * get the user's chats
+     * get the user's current chats
      * @param userName The username of the current user
      * @return The list of the user's chats
      */
-    public List<UUID> getChats(String userName) {
-        return userChatManager.getUserChats(userName);
+    public List<UUID> getCurrentChats(String userName) {
+        List<UUID> allUserChats = userChatManager.getUserChats(userName);
+        List<UUID> archivedChats = userChatManager.getArchivedChats(userName);
+
+        List<UUID> currentChats = new ArrayList<>(allUserChats);
+        currentChats.removeAll(archivedChats);
+        return currentChats;
     }
 
     /**
@@ -354,12 +359,14 @@ public class MessagingSystem {
      * @param username the username of the user
      * @param chatId the id of the chat
      * @param messageId the id of the message
+     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
      */
-    public void deleteUserMessage(String username, UUID chatId, UUID messageId){ // make sure you discard messageId after since it's gone from the system
+    public String deleteUserMessage(String username, UUID chatId, UUID messageId){ // make sure you discard messageId after since it's gone from the system
         if (userChatManager.getMessageSenderUsername(chatId, messageId).equals(username)){
             userChatManager.deleteMessageFromChat(chatId, messageId);
+            return "true";
         } else{
-            messagingPresenter.error("You cannot delete someone else's message");
+            return "You cannot delete someone else's message";
         }
     }
 
@@ -367,12 +374,14 @@ public class MessagingSystem {
      * mark a user's chat as unread
      * @param username the username of the user
      * @param chatId the id of the chat
+     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
      */
-    public void markUserChatAsUnread(String username, UUID chatId){ //might change it to mark as read/unread in the future
+    public String markUserChatAsUnread(String username, UUID chatId){ //might change it to mark as read/unread in the future
         if (!userChatManager.isChatEmpty(chatId)){
             userChatManager.markChatAsUnread(username, chatId);
+            return "true";
         }else{
-            messagingPresenter.error("Cannot mark empty chat as unread");
+            return "Cannot mark empty chat as unread";
         }
     }
 
@@ -380,14 +389,15 @@ public class MessagingSystem {
      * archive a user's chat
      * @param username the username of the user
      * @param chatId the id of the chat
+     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
      */
-    public void archiveUserChat(String username, UUID chatId){
+    public String archiveUserChat(String username, UUID chatId){
         if (!userChatManager.getArchivedChats(username).contains(chatId)){
             userChatManager.archiveChat(username, chatId);
+            return "true";
         } else{
-            messagingPresenter.error("cannot archive chat that is already archived");
+            return "cannot archive chat that is already archived";
         }
-
     }
 
     /**
