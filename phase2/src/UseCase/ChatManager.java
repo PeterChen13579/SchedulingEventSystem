@@ -191,7 +191,13 @@ public class ChatManager implements Serializable {
      * @return the user's archived chats
      */
     public List<UUID> getArchivedChats(String username) {
-        return archivedChats.get(username);
+        if (archivedChats.containsKey(username)){
+            return archivedChats.get(username);
+        }else{
+            List<UUID> tempChatList = new ArrayList<>();
+            archivedChats.put(username, tempChatList);
+            return tempChatList;
+        }
     }
 
     /**
