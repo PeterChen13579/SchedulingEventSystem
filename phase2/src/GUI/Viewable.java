@@ -25,7 +25,7 @@ public interface Viewable {
     String sendOneMsg(String sender, String recipient, String content, String imagePath);
     String[][] viewChat(int chatNumber, String username);
     String addFriend(String mainUsername, String newFriendUsername);
-    ArrayList<JSONObject> getNewMessages(String username);
+    //ArrayList<JSONObject> getNewMessages(String username);   //commented out for testing purposes
     void msgAllAttendees(String sender, String msg, String imagePath);
     void msgAllSpeakers(String sender, String msg, String imagePath);
     String msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath);

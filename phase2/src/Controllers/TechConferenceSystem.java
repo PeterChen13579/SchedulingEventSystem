@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 /**
  * Determines all the behaviour for the text-based UI
  * @author Joyce Huang, Peter Chen, and Amy Miao
@@ -325,47 +325,50 @@ public class TechConferenceSystem implements Viewable{
         return output;
     }
     */
+
     /** TO @William Wang and Kailas Moon
      *
      * @return   All new Messages (View all new messages option)
      */
-    @Override
-    public ArrayList<JSONObject> getNewMessages(String currentUsername) {
-        ArrayList <JSONObject> output = new ArrayList<>();
 
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+//    @Override
+//    public ArrayList<JSONObject> getNewMessages(String currentUsername) {
+//        ArrayList <JSONObject> output = new ArrayList<>();
+//
+//        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+//
+//        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
+//
+//            JSONObject jo = new JSONObject(); //create a JSONObject for each chat
+//            UUID chatId = mapItem.getKey();
+//            List<UUID> messageIds = mapItem.getValue();
+//
+//            // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
+//            //printing chat name
+//            String chatName = getChatNameByUser(currentUsername, chatId);
+//            jo.put("chatName", chatName);
+//
+//            //showing time difference from now and last message
+//            LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
+//            Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
+//            jo.put("time", timeDifference.toMinutes() + " minutes ago\n");   // might change the format to be more clearer. Also, only prints integers
+//
+//            //showing last eight messages
+//            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+//            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
+//                jo.put("chatMessages" ,messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
+//                        messagingSystem.getMessageContent(chatId, last8Id) + "\n");
+//            }
+//            output.add(jo);
+//        }
+//        /*
+//        if (!newMessagesExist) {               //If no new messages, then output returns an empty array
+//            output += ("\nNo new messages.");
+//        }
+//         */
+//        return output;
+//    }
 
-        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
-
-            JSONObject jo = new JSONObject(); //create a JSONObject for each chat
-            UUID chatId = mapItem.getKey();
-            List<UUID> messageIds = mapItem.getValue();
-
-            // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
-            //printing chat name
-            String chatName = getChatNameByUser(currentUsername, chatId);
-            jo.put("chatName", chatName);
-
-            //showing time difference from now and last message
-            LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
-            Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
-            jo.put("time", timeDifference.toMinutes() + " minutes ago\n");   // might change the format to be more clearer. Also, only prints integers
-
-            //showing last eight messages
-            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
-            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
-                jo.put("chatMessages" ,messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
-                        messagingSystem.getMessageContent(chatId, last8Id) + "\n");
-            }
-            output.add(jo);
-        }
-        /*
-        if (!newMessagesExist) {               //If no new messages, then output returns an empty array
-            output += ("\nNo new messages.");
-        }
-         */
-        return output;
-    }
 
     /** TO @William Wang and Kailas Moon
      *
