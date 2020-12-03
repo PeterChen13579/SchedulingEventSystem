@@ -245,7 +245,7 @@ public class MessagingSystem {
     }
 
     /**
-     * View all the new chat messages. Note : chat is only added into map if there are new messages
+     * View all the new chat messages. Note : chat is only added into the map if there are new messages
      * @param userName The username of the current user
      */
     public Map<UUID, List<UUID>> viewAllNewMessages(String userName){
