@@ -19,7 +19,9 @@ public class MessagingDashboard extends JPanel{
     private JButton allAttendeeMsg, allSpeakerMsg, allEventMsg;
     private JButton nextPanel, back;
     private JLabel errorText;
-    private JLabel displayUsername, usernameLabel, msgContentLabel, chatMsg;
+    private JLabel displayUsername, usernameLabel, msgContentLabel;
+    private JList chatMsg;
+    private String[] chatMsgIds;
     private JTextField friendAddText;
     private JTextField chatNumber;
     private JTextField usernameTextfield;
@@ -131,10 +133,17 @@ public class MessagingDashboard extends JPanel{
         dashboard.refresh();
     }
 
-    private void displayChatMsg(String chatMsgDisplay){
+    private void displayChatMsg(String[][] messages){
         currentMenu = "ViewOneChat";
         this.removeAll();
-        chatMsg.setText(chatMsgDisplay);
+        //chatMsg.setText(chatMsgDisplay);
+        chatMsgIds = new String[messages.length];
+        String[] formattedMessages = new String[messages.length];
+        for (int i=0; i<messages.length; i++) {
+            chatMsgIds[i] = messages[i][0];
+            formattedMessages[i] = "[" + messages[i][3] + "] " + messages[i][1] + ": " + messages[i][0];
+        }
+        chatMsg = new JList(formattedMessages);
         this.add(chatMsg);
         this.add(back);
         dashboard.refresh();
@@ -143,8 +152,8 @@ public class MessagingDashboard extends JPanel{
     private void displayNewMessages(String newMsgs) {
         currentMenu="ViewNewMessage";
         this.removeAll();
-        chatMsg.setText(newMsgs);
-        this.add(chatMsg);
+        //chatMsg.setText(newMsgs);
+        //this.add(chatMsg);
         this.add(back);
         dashboard.refresh();
     }
@@ -187,7 +196,7 @@ public class MessagingDashboard extends JPanel{
         viewNewMessages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newMsgs = sendsInfo.getNewMessages();
+                String newMsgs = sendsInfo.getNewMessages(currentUsername);
                 displayNewMessages(newMsgs);
             }
         });
@@ -284,11 +293,7 @@ public class MessagingDashboard extends JPanel{
                         failedMenu("The integer you entered is invalid");
                     }else{
                         String[][] msgInfo = sendsInfo.viewChat(possibleNum, currentMenu);
-                        String displayMsg = "";
-                        for (String[] info : msgInfo) {
-                            displayMsg += (info[1] + "  :  " + info[2] + "                              at  " + info[3]);
-                        }
-                        displayChatMsg(displayMsg);
+                        displayChatMsg(msgInfo);
                     }
                 }
 
@@ -327,7 +332,7 @@ public class MessagingDashboard extends JPanel{
         msgContentLabel = new JLabel("Msg");
         displayUsername = new JLabel("Username:");
         errorText = new JLabel();
-        chatMsg = new JLabel();
+        chatMsg = new JList();
     }
 
 
