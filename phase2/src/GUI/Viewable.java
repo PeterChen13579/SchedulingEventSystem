@@ -2,13 +2,11 @@ package GUI;
 
 //import org.json.JSONObject;
 
-
 import java.lang.reflect.Array;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
-import org.json.JSONObject;
 
 public interface Viewable {
 
