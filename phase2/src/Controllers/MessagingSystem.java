@@ -245,7 +245,7 @@ public class MessagingSystem {
     }
 
     /**
-     * View all the chat messages
+     * View all the new chat messages. Note : chat is only added into map if there are new messages
      * @param userName The username of the current user
      */
     public Map<UUID, List<UUID>> viewAllNewMessages(String userName){
@@ -253,7 +253,12 @@ public class MessagingSystem {
         Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
             List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
-            newMessages.put(id, chatNewMessages);
+            if (!chatNewMessages.isEmpty()){   //checks if there are new messages
+                newMessages.put(id, chatNewMessages);
+                if (userChatManager.getArchivedChats(userName).contains(id)){  //checks if chat is unarchived
+                    userChatManager.unarchiveChat(userName, id);
+                }
+            }
         }
         return(newMessages);
     }
@@ -318,6 +323,14 @@ public class MessagingSystem {
     public List<UUID> getCurrentChats(String userName) {
         List<UUID> allUserChats = userChatManager.getUserChats(userName);
         List<UUID> archivedChats = userChatManager.getArchivedChats(userName);
+        for (int i=0; i<archivedChats.size(); i++){
+            UUID chatId = archivedChats.get(i);
+            if (userChatManager.areNewMessages(userName, chatId)){ //removes chat from being unarchived if new messages are recieved
+                archivedChats.remove(chatId);
+                userChatManager.unarchiveChat(userName, chatId);
+                i -= 1;
+            }
+        }
 
         List<UUID> currentChats = new ArrayList<>(allUserChats);
         currentChats.removeAll(archivedChats);
@@ -424,8 +437,9 @@ public class MessagingSystem {
      * Helper method for speakers to send a message to attendees of their events
      * @param senderUsername Username of the sender
      * @param content Content of message
+     * @return "true" if the message is sent. Error message otherwise.
      */
-    public void speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
+    public String speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
         List<String> recipients = new ArrayList<>();
 
@@ -441,18 +455,27 @@ public class MessagingSystem {
                             }
                         }
                     } else {
-                        messagingPresenter.error("Sender is not the speaker of " + title);
+                        return "Sender is not the speaker of " + title;
                     }
                 }
             }
             if (!found) {
-                messagingPresenter.error("No event with title " + title + " found.");
+                return "No event with title " + title + " found.";
             }
         }
         this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
+        return "true";
     }
 
-    public void organizerMessageEventSpeakersAndAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
+    /**
+     * Helper method for organizers to send a message to speakers and attendees of their events
+     * @param senderUsername The username of the sender
+     * @param eventTitles The list of event titles
+     * @param content The content of the message
+     * @param imagePath The image path
+     * @return "true" if the message was sent. Error message otherwise.
+     */
+    public String organizerMessageEventSpeakersAndAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
         List<String> recipients = new ArrayList<>();
 
@@ -474,16 +497,17 @@ public class MessagingSystem {
                 }
             }
             if (!found) {
-                messagingPresenter.error("No event with title " + title + " found.");
+                return "No event with title " + title + " found.";
             }
         }
         this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
+        return "true";
     }
 
     /**
      * Add friends to message
      * @param mainUserUsername the current user
-     * @return True if the friend is added or already your friend, false otherwise
+     * @return true if the friend is added or already your friend, false otherwise
      */
     public String addPeopleToMessage(String mainUserUsername, String newFriend){
 
