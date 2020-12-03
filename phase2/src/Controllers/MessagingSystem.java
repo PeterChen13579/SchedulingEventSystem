@@ -320,7 +320,7 @@ public class MessagingSystem {
         List<UUID> archivedChats = userChatManager.getArchivedChats(userName);
 
         List<UUID> currentChats = new ArrayList<>(allUserChats);
-        currentChats.removeAll(archivedChats);
+        //currentChats.removeAll(archivedChats);
         return currentChats;
     }
 

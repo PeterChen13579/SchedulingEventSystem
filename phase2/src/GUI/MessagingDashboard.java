@@ -21,7 +21,7 @@ public class MessagingDashboard extends JPanel{
     private JButton deleteMsg;
     private JLabel errorText;
     private JLabel displayUsername, usernameLabel, msgContentLabel;
-    private JList chatMsg;
+    private JList chatNames, chatMsg;
     private String[] chatMsgIds;
     private JTextField friendAddText;
     private JTextField chatNumber;
@@ -121,16 +121,15 @@ public class MessagingDashboard extends JPanel{
 
 
     private void chatDisplay(ArrayList <String> userToDisplay) {
-        for (String s : userToDisplay) {
-            JLabel addUsernameLabel = new JLabel(s);
-            this.add(addUsernameLabel);
-        }
         currentMenu = "ViewChat";
         this.removeAll();
         this.add(displayChatNumber);
         this.add(chatNumber);
         this.add(confirmChatNumber);
         this.add(back);
+        userToDisplay = sendsInfo.sendChatName(currentUsername);
+        chatNames = new JList<String>((String[]) userToDisplay.toArray());
+        this.add(chatNames);
         dashboard.refresh();
     }
 

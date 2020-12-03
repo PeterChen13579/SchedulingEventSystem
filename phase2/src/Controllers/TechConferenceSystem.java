@@ -134,7 +134,7 @@ public class TechConferenceSystem implements Viewable{
             index ++;
 
             String chatName = getChatNameByUser(currentUsername, chatId);
-            outputString += chatName + ","; // don't know if we need the comma
+            outputString += chatName;
             output.add(outputString);
         }
         return output;
@@ -231,7 +231,7 @@ public class TechConferenceSystem implements Viewable{
 
     /** TO @William Wang and Kailas Moon
      *
-     * @param username    The username this user wants to msg
+     * @param sender    The username this user wants to msg
      * @param content     The text this username wants to send
      * @return   A success or error message based on whether sending the message was successful
      */
@@ -322,7 +322,7 @@ public class TechConferenceSystem implements Viewable{
 
     /** TO @William Wang and Kailas Moon
      *
-     * @param username    The username this user wants to add
+     * @param newFriendUsername    The username this user wants to add
      * @return            "true" if successfully added.
      *                    An error message if adding the friend was unsuccessful.
      */
