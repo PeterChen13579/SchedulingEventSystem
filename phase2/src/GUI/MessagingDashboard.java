@@ -15,16 +15,15 @@ public class MessagingDashboard extends JPanel{
     private JButton viewChat, sendMessage, viewNewMessages;
     private JButton addFriend,confirmFriend;
     private JButton sendOne,sendAllAttendee, sendAllSpeaker, sendAllAttendeeEvent;
-    private JButton confirmOneMessage,confirmChatNumber;
+    private JButton confirmOneMessage,confirmChatNumber, archiveChat, markChatUnread;
     private JButton allAttendeeMsg, allSpeakerMsg, allEventMsg;
     private JButton nextPanel, back;
     private JButton deleteMsg;
     private JLabel errorText;
-    private JLabel displayUsername, usernameLabel, msgContentLabel;
+    private JLabel displayUsername, usernameLabel, msgContentLabel, newMessages;
     private JList chatNames, chatMsg;
-    private String[] chatMsgIds;
+    private int currentChatIndex;
     private JTextField friendAddText;
-    private JTextField chatNumber;
     private JTextField usernameTextfield;
     private JTextField content;
     private JLabel displayChatNumber;
@@ -48,6 +47,7 @@ public class MessagingDashboard extends JPanel{
         }
         createButtons();
         messagingMenu();
+        this.currentChatIndex = -1;
     }
 
 
@@ -120,40 +120,50 @@ public class MessagingDashboard extends JPanel{
     }
 
 
-    private void chatDisplay(ArrayList <String> userToDisplay) {
+    private void chatDisplay() {
         currentMenu = "ViewChat";
         this.removeAll();
         this.add(displayChatNumber);
-        this.add(chatNumber);
         this.add(confirmChatNumber);
+        this.add(archiveChat);
+        this.add(markChatUnread);
         this.add(back);
         userToDisplay = sendsInfo.sendChatName(currentUsername);
-        chatNames = new JList<String>((String[]) userToDisplay.toArray());
-        this.add(chatNames);
+
+        chatNames = new JList<String>(userToDisplay.toArray(new String[userToDisplay.size()]));
+        chatNames.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        chatNames.setLayoutOrientation(JList.VERTICAL);
+        chatNames.setVisibleRowCount(-1);
+        JScrollPane listScroller = new JScrollPane(chatNames);
+        listScroller.setPreferredSize(new Dimension(750, 800));
+        this.add(listScroller);
         dashboard.refresh();
     }
 
     private void displayChatMsg(String[][] messages){
         currentMenu = "ViewOneChat";
         this.removeAll();
-        //chatMsg.setText(chatMsgDisplay);
-        chatMsgIds = new String[messages.length];
         String[] formattedMessages = new String[messages.length];
         for (int i=0; i<messages.length; i++) {
-            chatMsgIds[i] = messages[i][0];
-            formattedMessages[i] = "[" + messages[i][3] + "] " + messages[i][1] + ": " + messages[i][0];
+            formattedMessages[i] = "[" + messages[i][2] + "] " + messages[i][0] + ": " + messages[i][1];
         }
-        chatMsg = new JList(formattedMessages);
-        this.add(chatMsg);
+        chatMsg = new JList<String>(formattedMessages);
+        chatMsg.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        chatMsg.setLayoutOrientation(JList.VERTICAL);
+        chatMsg.setVisibleRowCount(-1);
+        JScrollPane listScroller = new JScrollPane(chatMsg);
+        listScroller.setPreferredSize(new Dimension(750, 800));
+        this.add(listScroller);
+        this.add(deleteMsg);
         this.add(back);
         dashboard.refresh();
     }
 
-    private void displayNewMessages(String newMsgs) {
+    private void displayNewMessages(String newMessagesString) {
         currentMenu="ViewNewMessage";
         this.removeAll();
-        //chatMsg.setText(newMsgs);
-        //this.add(chatMsg);
+        newMessages.setText(newMessagesString);
+        this.add(newMessages);
         this.add(back);
         dashboard.refresh();
     }
@@ -181,7 +191,7 @@ public class MessagingDashboard extends JPanel{
         viewChat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chatDisplay(userToDisplay);
+                chatDisplay();
             }
         });
         sendMessage = new JButton("Send Message");
@@ -286,20 +296,60 @@ public class MessagingDashboard extends JPanel{
                 messagingMenu();
             }
         });
-        confirmChatNumber = new JButton("Confirm");
+        confirmChatNumber = new JButton("View");
         confirmChatNumber.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int possibleNum = tryParse(chatNumber.getText());
-                if (possibleNum == -1){
-                    failedMenu("You must enter a valid integer");
-                }else{
-                    if (sendsInfo.viewChat(possibleNum, currentMenu) == null){
-                        failedMenu("The integer you entered is invalid");
-                    }else{
-                        String[][] msgInfo = sendsInfo.viewChat(possibleNum, currentMenu);
-                        displayChatMsg(msgInfo);
-                    }
+                int chatNum = chatNames.getSelectedIndex();
+                currentChatIndex = chatNum;
+                if (chatNum == -1) {
+                    failedMenu("Please select a chat.");
+                } else {
+                    String[][] msgInfo = sendsInfo.viewChat(chatNum+1, currentUsername);
+                    displayChatMsg(msgInfo);
+                }
+
+            }
+        });
+        archiveChat = new JButton("Archive");
+        archiveChat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int chatNum = chatNames.getSelectedIndex();
+                if (chatNum == -1) {
+                    failedMenu("Please select a chat.");
+                } else {
+                    sendsInfo.archiveChats(currentUsername, chatNum);
+                    chatDisplay();
+                }
+
+            }
+        });
+        markChatUnread = new JButton("Mark as unread");
+        markChatUnread.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int chatNum = chatNames.getSelectedIndex();
+                if (chatNum == -1) {
+                    failedMenu("Please select a chat.");
+                } else {
+                    sendsInfo.markChatAsUnread(currentUsername, chatNum);
+                    chatDisplay();
+                }
+
+            }
+        });
+        deleteMsg = new JButton("Delete selected message");
+        deleteMsg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int messageNum = chatNames.getSelectedIndex();
+                if (messageNum == -1) {
+                    failedMenu("Please select a message to delete.");
+                } else {
+                    sendsInfo.deleteMsg(currentUsername, currentChatIndex, messageNum);
+                    String[][] msgInfo = sendsInfo.viewChat(currentChatIndex+1, currentUsername);
+                    displayChatMsg(msgInfo);
                 }
 
             }
@@ -323,20 +373,20 @@ public class MessagingDashboard extends JPanel{
                         addFriend();
                         break;
                     case "ViewChat":
-                        chatDisplay(userToDisplay);
+                        chatDisplay();
 
                 }
             }
         });
         friendAddText = new JTextField(12);
-        chatNumber = new JTextField(12);
         usernameTextfield = new JTextField(12);
         content = new JTextField(12);
-        displayChatNumber = new JLabel("Chat number:");
+        displayChatNumber = new JLabel("Select a chat and choose an action:");
         usernameLabel = new JLabel("Recipient username");
         msgContentLabel = new JLabel("Msg");
         displayUsername = new JLabel("Username:");
         errorText = new JLabel();
+        newMessages = new JLabel();
         chatMsg = new JList();
     }
 
@@ -347,7 +397,7 @@ public class MessagingDashboard extends JPanel{
                 dashboard.backToMain("Msg");
                 break;
             case "ViewOneChat":
-                chatDisplay(userToDisplay);
+                chatDisplay();
                 break;
             case "ViewChat":
             case "SendMessage":

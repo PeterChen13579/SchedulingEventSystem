@@ -1,7 +1,10 @@
 package GUI;
 
+import java.lang.reflect.Array;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public interface Viewable {
 
@@ -16,7 +19,7 @@ public interface Viewable {
     boolean confirmRoom(String roomNumber, int capacity);
     int signUpForEvent(String username, String eventTitle);
     int cancelAttendEvent(String username, String eventTitle);
-    ArrayList <String> sendChatName(String username);
+    ArrayList<String> sendChatName(String username);
     String sendOneMsg(String sender, String recipient, String content, String imagePath);
     String[][] viewChat(int chatNumber, String username);
     String addFriend(String mainUsername, String newFriendUsername);
@@ -24,6 +27,9 @@ public interface Viewable {
     void msgAllAttendees(String sender, String msg, String imagePath);
     void msgAllSpeakers(String sender, String msg, String imagePath);
     String msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath);
+    String deleteMsg(String currentUsername, int chatIndex, int messageIndex);
+    String markChatAsUnread(String currentUsername, int chatIndex);
+    String archiveChats(String currentUsername, int chatIndex);
     boolean cancelEvent(String eventName, String username);
     boolean changeCapacity(String eventName, int capacity, String username);
     String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum,

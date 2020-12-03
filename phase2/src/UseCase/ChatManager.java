@@ -372,6 +372,9 @@ public class ChatManager implements Serializable {
         }
         return previousMessageId;
     }
+    public UUID getMessageUUIDbyIndex(UUID chatId, int messageIndex) {
+        return allChats.get(chatId).getAllMessages().get(messageIndex);
+    }
 
     private void setBase64String(ImageMessage message, String imageString) {
         message.setImageString(imageString);

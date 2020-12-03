@@ -185,7 +185,6 @@ public class TechConferenceSystem implements Viewable{
     }
 
     private List<String> getMessageInfo(UUID chatId, UUID messageId){
-        String messageIdString = messageId.toString();
         String senderUsername = messagingSystem.getMessageSender(chatId, messageId);
         LocalDateTime timeStamp = messagingSystem.getMessageTimestamp(chatId, messageId);
         String content = messagingSystem.getMessageContent(chatId, messageId);
@@ -194,7 +193,7 @@ public class TechConferenceSystem implements Viewable{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , yyyy-MM-dd");    //format time
         String formattedTimestamp = timeStamp.format(formatter);
 
-        return new ArrayList<>(Arrays.asList(messageIdString, senderUsername, content, formattedTimestamp));
+        return new ArrayList<>(Arrays.asList(senderUsername, content, formattedTimestamp));
     }
 
     /**
@@ -246,13 +245,13 @@ public class TechConferenceSystem implements Viewable{
      * Delete a message from the chat
      * PRECONDITION : messageIdString wasn't used to call deleteMsg before
      * @param currentUsername the username of the current user
-     * @param chatIdString the string of the id of the chat (UUID form)
-     * @param messageIdString the string of the id of the message (UUID form)
+     * @param chatIndex The index of the chat
+     * @param messageIndex the index of the message
      * @return "true" if the action was successful. An error message otherwise.
      */
-    public String deleteMsg(String currentUsername, String chatIdString, String messageIdString){ //gui should probably refresh messages after running this
-        UUID messageId = UUID.fromString(messageIdString);
-        UUID chatId = UUID.fromString(chatIdString);
+    public String deleteMsg(String currentUsername, int chatIndex, int messageIndex){
+        UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
+        UUID messageId = messagingSystem.getMessageByIndex(chatId, messageIndex);
 
         return messagingSystem.deleteUserMessage(currentUsername, chatId, messageId);
     }
@@ -260,11 +259,11 @@ public class TechConferenceSystem implements Viewable{
     /**
      * Mark chat as unread.
      * @param currentUsername The username of the current user
-     * @param chatIdString The string of the id of the chat (UUID form)
+     * @param chatIndex The index of the chat
      * @return "true" if the action was successful. An error message otherwise.
      */
-    public String markChatAsUnread(String currentUsername, String chatIdString){
-        UUID chatId = UUID.fromString(chatIdString);
+    public String markChatAsUnread(String currentUsername, int chatIndex){
+        UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
 
         return messagingSystem.markUserChatAsUnread(currentUsername, chatId);
     }
@@ -272,11 +271,12 @@ public class TechConferenceSystem implements Viewable{
     /**
      * Archive chat.
      * @param currentUsername The username of the current user
-     * @param chatIdString The string of the id of the chat (UUID form)
+     * @param chatIndex The index of the chat
      * @return "true" if the action was successful. An error message otherwise.
      */
-    public String archiveChats(String currentUsername, String chatIdString){
-        UUID chatId = UUID.fromString(chatIdString);
+    public String archiveChats(String currentUsername, int chatIndex){
+
+        UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
 
         return messagingSystem.archiveUserChat(currentUsername, chatId);
     }

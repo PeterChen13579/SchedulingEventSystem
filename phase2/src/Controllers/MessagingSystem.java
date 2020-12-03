@@ -575,5 +575,9 @@ public class MessagingSystem {
             f.printStackTrace();
         }
     }
+
+    public UUID getMessageByIndex(UUID chatId, int messageIndex) {
+        return userChatManager.getMessageUUIDbyIndex(chatId, messageIndex);
+    }
 }
 
