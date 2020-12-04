@@ -5,7 +5,8 @@ import com.sun.xml.internal.ws.addressing.WsaTubeHelper;
 import java.time.LocalDateTime;
 
 public class Request extends Message{
-    public boolean status;
+    public Integer requestNum;
+    public boolean status = false;
     /**
      * Creates a new Message
      *
@@ -15,14 +16,23 @@ public class Request extends Message{
      */
     public Request(String senderUsername, LocalDateTime time, String content) {
         super(senderUsername, time, content);
+        requestNum = 0;
     }
 
     public boolean getStatus(){
         return status;
     }
 
-    public void setStatus(boolean status){
-        this.status = status;
+    public void setStatus(){
+        this.status = true;
+    }
+
+    public Integer getRequestNum() {
+        return requestNum;
+    }
+
+    public void setRequestNum(int requestNum) {
+        this.requestNum = requestNum;
     }
 
 }
