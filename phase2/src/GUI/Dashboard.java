@@ -738,7 +738,7 @@ public class Dashboard{
                     }else{
                         String createdOrNot = "";
                         if (speakerUsernameOne.getText().equals("") && speakerUsernameMulti.getText().equals("")){
-                            createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(),
+                            createdOrNot = sendsInfo.createParty(vip, date.getText(), startTime.getText(),
                                     endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
                                     checkCapacity);
                         }else if(speakerUsernameMulti.getText().equals("")){
