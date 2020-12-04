@@ -416,7 +416,7 @@ public class TechConferenceSystem implements Viewable{
 
 
     /**
-     * Check if the conditions for adding the given event is satisfied and return error messages accordingly.
+     * Check if the conditions for adding the given one speaker/ multi speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
      * @param VIP whether the event is of type VIP
      * @param date the date for the event (YYYYMMDD)
@@ -431,26 +431,26 @@ public class TechConferenceSystem implements Viewable{
     public String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
         System.out.println(speakerUsernames);
-        return schedulingSystem.helper_addEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
-
+        return schedulingSystem.helper_addSpeakerEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
     }
 
     /**
-     *  TO LISA
-     * @param VIP
-     * @param date
-     * @param startTime
-     * @param endTime
-     * @param roomNum
-     * @param speakerUsernames
-     * @param eventTitle
-     * @param capacity
-     * @return
+     * Check if the conditions for adding the given no speaker event is satisfied and return error messages accordingly.
+     * If satisfied, create new event, update speaker's list of events, and print success message.
+     * @param VIP whether the event is of type VIP
+     * @param date the date for the event (YYYYMMDD)
+     * @param startTime the start time for the event (HH:mm:ss)
+     * @param endTime the end time for the event (HH:mm:ss)
+     * @param roomNum the room number for the event
+     * @param speakerUsernames the names of the speakers for the event (SHOULD BE JUST EMPTY)
+     * @param eventTitle the title for the event
+     * @param capacity the maximum/capacity of people that can attend this event
+     * @return the error message according to the error or "true" if event successfully created
      */
     public String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
         System.out.println(speakerUsernames);
-        return schedulingSystem.helper_addEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
+        return schedulingSystem.helper_addParty(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
 
     }
 
