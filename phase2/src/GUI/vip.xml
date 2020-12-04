@@ -2,7 +2,7 @@
     <style id="vip">
         <font name="Century Gothic" size="18"/>
         <state>
-            <color value="#DABB6C" type="BACKGROUND"/>
+            <color value="#ebbe8a" type="BACKGROUND"/>
             <color value="BLACK" type="FOREGROUND"/>
         </state>
     </style>
@@ -13,7 +13,7 @@
         <font name="Century Gothic" size="18"/>
         <insets top="15" left="20" bottom="15" right="20"/>
         <state>
-            <color value="#5C5C5C" type="BACKGROUND"/>
+            <color value="#db8076" type="BACKGROUND"/>
             <color value="WHITE" type="FOREGROUND"/>
         </state>
 

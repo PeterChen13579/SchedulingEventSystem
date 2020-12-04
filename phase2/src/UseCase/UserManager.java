@@ -220,12 +220,22 @@ public class UserManager implements Serializable {
 
     public boolean isAddFriend(String usernameA, String usernameB){
         // This method is called only when the user have logged in to the system, thus the user must exist.
-        Attendee userA = stringToAttendee(usernameA);
 
-        List<String> friends = userA.getFriends();
-        for (String friend: friends){
-            if(friend.equals(usernameB)){
-                return true;
+        if (userType(usernameA).equals("Speaker")){
+            Speaker userA = stringToSpeaker(usernameA);
+            List<String> friends = userA.getFriends();
+            for (String friend: friends){
+                if(friend.equals(usernameB)){
+                    return true;
+                }
+            }
+        }else{
+            Attendee userA = stringToAttendee(usernameA);
+            List<String> friends = userA.getFriends();
+            for (String friend: friends){
+                if(friend.equals(usernameB)){
+                    return true;
+                }
             }
         }
         return false;
@@ -307,17 +317,22 @@ public class UserManager implements Serializable {
     }
 
     /**
-     * PRECONDITION: Attendee account with this username must exist
-     * Returns whether this Attendee is VIP
+     * PRECONDITION: Attendee/Organizer account with this username must exist
+     * Returns whether this Attendee/organizer is VIP
      *
-     * @param userName String username of a Attendee account
-     * @return         true iff this attendee is VIP
+     * @param userName String username of a Attendee/organizer account
+     * @return         true iff this attendee/organizer is VIP
      */
     public boolean isAttendeeVIP(String userName){
         Attendee attendee = stringToAttendee(userName);
         return attendee.isVIP();
     }
 
+
+    /**     Sets Attendee/Organizer account with VIP status
+     *
+     * @param userName Setting this Attendee/Organizer with VIP info;
+     */
     public void setAttendeeVIP(String userName){
         Attendee attendee = stringToAttendee(userName);
         int eventNum = attendee.getEventAttending().size();
