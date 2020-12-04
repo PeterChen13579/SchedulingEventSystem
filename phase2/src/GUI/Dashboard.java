@@ -366,7 +366,6 @@ public class Dashboard{
         buttonPanel.add(errorText);
         buttonPanel.add(nextPanel);
         refresh();
-        
     }
 
     private void successMenu(String successMessage){
@@ -892,6 +891,9 @@ public class Dashboard{
                 break;
             case "CreateAttendeeMain":
                 createAttendeeAccountMainMenu();
+                break;
+            case "changeEventCapacity":
+                schedulingMenu();
                 break;
         }
     }
