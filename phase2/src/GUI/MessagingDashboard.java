@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 public class MessagingDashboard extends JPanel{
     private final String loginType;
@@ -24,7 +25,7 @@ public class MessagingDashboard extends JPanel{
     private JButton nextPanel, back;
     private JButton deleteMsg;
     private JLabel errorText;
-    private JLabel displayUsername, usernameLabel, msgContentLabel, newMessages;
+    private JLabel displayUsername, usernameLabel, msgContentLabel, newMessagesDisplay;
     private JList<String> chatNames, chatMsg;
     private int currentChatIndex;
     private JTextField friendAddText;
@@ -184,11 +185,22 @@ public class MessagingDashboard extends JPanel{
         dashboard.refresh();
     }
 
-    private void displayNewMessages(String newMessagesString) {
+    private void displayNewMessages(List<String[][]> messages, List<String> chatNames, List<String> timestamps) {
         currentMenu="ViewNewMessage";
         this.removeAll();
-        newMessages.setText(newMessagesString);
-        this.add(newMessages);
+        String displayString = "";
+        if (messages.size() == 0) {
+            displayString = "No new messages";
+        } else {
+            for (int i=0; i<messages.size(); i++) {
+                displayString += chatNames.get(i) + " (" + timestamps.get(i) + "):\n";
+                for (String[] message: messages.get(i)) {
+                    displayString += message[0] + ": " + message[1];
+                }
+            }
+        }
+        newMessagesDisplay.setText(displayString);
+        this.add(newMessagesDisplay);
         this.add(back);
         dashboard.refresh();
     }
@@ -231,8 +243,10 @@ public class MessagingDashboard extends JPanel{
         viewNewMessages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //String newMsgs = sendsInfo.getNewMessages(currentUsername);
-                //displayNewMessages(newMsgs);
+                List<String[][]> messages = sendsInfo.getNewMessagesLast8Messages(currentUsername);
+                List<String> chatNames = sendsInfo.getNewMessagesChatNames(currentUsername);
+                List<String> timestamps = sendsInfo.getNewMessagesTimestamp(currentUsername);
+                displayNewMessages(messages, chatNames, timestamps);
             }
         });
         addFriend = new JButton("Add Friend");
@@ -281,8 +295,7 @@ public class MessagingDashboard extends JPanel{
                     refreshTextFields();
                     messagingMenu();
                 }else{
-                    String failedMsg = errorMessage;
-                    failedMenu(failedMsg);
+                    failedMenu(errorMessage);
                 }
             }
         });
@@ -429,7 +442,6 @@ public class MessagingDashboard extends JPanel{
         msgContentLabel = new JLabel("Msg");
         displayUsername = new JLabel("Username:");
         errorText = new JLabel();
-        newMessages = new JLabel();
         chatNames = new JList<String>();
         indexToImage = new HashMap<Integer, byte[]>();
         chatMsg = new JList();
@@ -444,6 +456,7 @@ public class MessagingDashboard extends JPanel{
                 }
             }
         });
+        newMessagesDisplay = new JLabel();
     }
 
 
