@@ -7,8 +7,6 @@ import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-//import com.sun.org.apache.bcel.internal.generic.JsrInstruction;
-//import jdk.nashorn.internal.parser.JSONParser;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
@@ -19,8 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.lang.Long;
 
-//import org.json.JSONObject;
 /**
  * Determines all the behaviour for the text-based UI
  * @author Joyce Huang, Peter Chen, and Amy Miao
@@ -160,7 +158,7 @@ public class TechConferenceSystem implements Viewable{
      * @param chatNumber The chat number that the user wants to view
      * @return           Return String that the User wants to view; IN VIEW CHAT NUMBER: Return null if can not find
      *                   chat number;
-     *                   The String Array will be in the form [[messageId, senderUsername, content, timestamp],....];
+     *                   The String Array will be in the form [[senderUsername, content, timestamp],....]
      */
     @Override
     public String[][] viewChat(int chatNumber, String currentUsername){
@@ -326,49 +324,69 @@ public class TechConferenceSystem implements Viewable{
     }
     */
 
-    /** TO @William Wang and Kailas Moon
-     *
-     * @return   All new Messages (View all new messages option)
+    /**
+     * Get the chat names of all chats with new messages. Note: list elements correspond to the values of the same index in the lists returned from the other newMessages methods.
+     * @param currentUsername The username of the current user
+     * @return An ordered list of all the chat names with new messages
      */
+    public List<String> getNewMessagesChatNames(String currentUsername){
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+        List<String> newMessagesChatNames = new ArrayList<>();
 
-//    @Override
-//    public ArrayList<JSONObject> getNewMessages(String currentUsername) {
-//        ArrayList <JSONObject> output = new ArrayList<>();
-//
-//        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
-//
-//        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
-//
-//            JSONObject jo = new JSONObject(); //create a JSONObject for each chat
-//            UUID chatId = mapItem.getKey();
-//            List<UUID> messageIds = mapItem.getValue();
-//
-//            // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
-//            //printing chat name
-//            String chatName = getChatNameByUser(currentUsername, chatId);
-//            jo.put("chatName", chatName);
-//
-//            //showing time difference from now and last message
-//            LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
-//            Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
-//            jo.put("time", timeDifference.toMinutes() + " minutes ago\n");   // might change the format to be more clearer. Also, only prints integers
-//
-//            //showing last eight messages
-//            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
-//            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
-//                jo.put("chatMessages" ,messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
-//                        messagingSystem.getMessageContent(chatId, last8Id) + "\n");
-//            }
-//            output.add(jo);
-//        }
-//        /*
-//        if (!newMessagesExist) {               //If no new messages, then output returns an empty array
-//            output += ("\nNo new messages.");
-//        }
-//         */
-//        return output;
-//    }
+        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){
+            UUID chatId = mapItem.getKey();
+            String chatName = getChatNameByUser(currentUsername, chatId);
+            newMessagesChatNames.add(chatName);
+        }
+        return newMessagesChatNames;
+    }
 
+    /**
+     * Get the timestamps of the chats with new messages. Note: List elements correspond to the values of the same index in the lists returned from the other newMessages methods.
+     * @param currentUsername The username of the current user
+     * @return An ordered list of
+     */
+    public List<String> getNewMessagesTimestamp(String currentUsername){
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+        List<String> newMessagesTimestamps = new ArrayList<>();
+
+        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){
+            UUID chatId = mapItem.getKey();
+            List<UUID> messageIds = mapItem.getValue();
+
+            //showing time difference from now and last message
+            LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
+            Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
+            newMessagesTimestamps.add(Long.toString(timeDifference.toMinutes()));
+        }
+        return newMessagesTimestamps;
+    }
+
+    /**
+     * Get the last 8 new messages for every chat. Note: List elements correspond to the values of the same index in the lists returned from the other newMessages methods.
+     * @param currentUsername The username of the current user
+     * @return A list of 2d string arrays. Each string array is for a different chat. Each string array will be in the form [[senderUsername, content],....].
+     */
+    public List<String[][]> getNewMessagesLast8Messages(String currentUsername){
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+        List<String[][]> newMessagesLast8 = new ArrayList<>();
+
+        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){
+            UUID chatId = mapItem.getKey();
+            List<UUID> messageIds = mapItem.getValue();  //list will never be empty because of messagingSystem
+
+            //showing last eight messages
+            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+            String[][] chatNew8Messages = new String[last8Messages.size()][]; //stored as [[senderUsername, content],......]
+            for (int i= 0; i< last8Messages.size(); i++){
+                chatNew8Messages[i][0] = messagingSystem.getMessageSender(chatId,last8Messages.get(i)); //set message sender
+                chatNew8Messages[i][1] = messagingSystem.getMessageContent(chatId,last8Messages.get(i)); // set message content
+            }
+            newMessagesLast8.add(chatNew8Messages); // add this chat's new messages to list
+        }
+
+        return newMessagesLast8;
+    }
 
     /** TO @William Wang and Kailas Moon
      *
