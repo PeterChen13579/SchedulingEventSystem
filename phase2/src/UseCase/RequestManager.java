@@ -4,6 +4,7 @@ import Entities.Event;
 import Entities.Request;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,23 @@ public class RequestManager implements Serializable {
         allRequests = new ArrayList<>();
     }
 
+    /**
+     * Create Request object, add it to all Requests list
+     *
+     * @param senderUserName the sender's username
+     * @param time the time that this request been sent
+     * @param content the content of the request
+     */
+    public void createRequest(String senderUserName, LocalDateTime time, String content){
+        Request request = new Request(senderUserName, time, content);
+        allRequests.add(request);
+    }
 
+    /**
+     * Mark the request as addressed
+     *
+     * @param requestNum the request number of the request
+     */
     public void markedAsAddressed(Integer requestNum){
         for(Request request: allRequests ){
             if(request.getRequestNum().equals(requestNum)){
@@ -32,6 +49,7 @@ public class RequestManager implements Serializable {
 
     /**
      * Get all request numbers
+     *
      * @return a list of request numbers (where all request numbers are unique integers)
      */
     public List<Integer> allRequestNum() {
@@ -44,6 +62,7 @@ public class RequestManager implements Serializable {
 
     /**
      * Private helper method to get the request info of a request
+     *
      * @param request a Request
      * @return the string description of the request contains the request number, request content and request status
      */
@@ -59,6 +78,7 @@ public class RequestManager implements Serializable {
 
     /**
      * Get all request info
+     *
      * @return a Arraylist of request info of all requests
      */
     public String[] allRequestInfo(){
