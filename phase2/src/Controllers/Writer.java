@@ -7,7 +7,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 /**
- * A class that deals with the output of data into separate .txt files
+ * A class that deals with the output of data into one file
  * @author Joyce Huang
  */
 public class Writer {

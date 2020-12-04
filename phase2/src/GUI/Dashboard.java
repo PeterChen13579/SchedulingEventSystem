@@ -2,8 +2,18 @@ package GUI;
 
 import Controllers.TechConferenceSystem;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JFileChooser;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,6 +23,10 @@ import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.util.List;
 
+/**
+ * Creates base GUI for the entire program
+ * @author Joyce Huang, Peter Chen
+ */
 public class Dashboard{
 
     private static JFrame frame;
@@ -37,8 +51,7 @@ public class Dashboard{
     private JLabel dateDisplay, startTimeDisplay, endTimeDisplay, VIPDisplay;
     private JLabel speakerUsernameDisplayOne, speakerUsernameDisplayMulti;
     private JPasswordField password;
-    private String currentMenu;
-    private String previousMenu;
+    private String currentMenu, previousMenu;
     private String loginType;
     private JLabel displayCapacity;
     private JLabel eventNameMsg;
@@ -54,6 +67,9 @@ public class Dashboard{
     private SynthLookAndFeel regularTheme, vipTheme;
     private JFileChooser fileChooser;
 
+    /**
+     * Constructor that creates and starts the program
+     */
     public Dashboard() {
         createThemes();
         frame = new JFrame("Tech Conference System");
@@ -70,31 +86,6 @@ public class Dashboard{
         loginType = "";
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
         loadMenu();
-    }
-
-    public Dashboard(Viewable sendsInfo, String loginType, String currentUsername){
-        this.sendsInfo = sendsInfo;
-        this.loginType = loginType;
-        this.currentUsername = currentUsername;
-        frame = new JFrame("Tech Conference System");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        buttonPanel = new JPanel();
-        frame.add(buttonPanel);
-        frame.setVisible(true);
-        createButtons();
-        switch (loginType) {
-            case "Attendee":
-                loggedInAttendee();
-                break;
-            case "Organizer":
-                loggedInOrganizer();
-                break;
-            case "Speaker":
-                loggedInSpeaker();
-                break;
-        }
-
     }
 
 
@@ -203,7 +194,7 @@ public class Dashboard{
 //---------------------------------------LoggedInUsers ---------------------------------------;
 
 
-    public void loggedInAttendee() {
+    private void loggedInAttendee() {
         System.out.println("this happened");
         loginType = "Attendee";
         currentMenu = "LoggedInAttendee";
@@ -215,7 +206,7 @@ public class Dashboard{
         refresh();
     }
 
-    public void loggedInOrganizer() {
+    private void loggedInOrganizer() {
         loginType = "Organizer";
         currentMenu = "LoggedInOrganizer";
         buttonPanel.removeAll();
@@ -227,10 +218,9 @@ public class Dashboard{
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
-        
     }
 
-    public void loggedInSpeaker() {
+    private void loggedInSpeaker() {
         loginType = "Speaker";
         currentMenu = "LoggedInSpeaker";
         buttonPanel.removeAll();
@@ -239,19 +229,17 @@ public class Dashboard{
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
-        
     }
 
 //---------------------------------------Sign up Event Menu ---------------------------------------;
 
 
     private void signUpEventMenu() {
-        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, loginType, this);
+        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, this);
         frame.remove(buttonPanel);
         frame.add(signUpDashboard);
         refresh();
     }
-
 
 
 
@@ -382,7 +370,6 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "LoadOrNewConference";
-//                loadConference();
                 loadFile();
             }
         });
@@ -392,7 +379,6 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginSignup();
-                //Add techconferenceSystem to check it loads successfully or not
             }
         });
         login = new JButton("Login");
@@ -804,6 +790,10 @@ public class Dashboard{
         System.out.println(whichEvent.getText().equals(""));
     }
 
+    /**
+     * Setter that sets the current instance of Viewable to another
+     * @param sendsInfo the instance of Viewable to set
+     */
     public void setView(final Viewable sendsInfo) {
         this.sendsInfo = sendsInfo;
     }
@@ -898,6 +888,9 @@ public class Dashboard{
         }
     }
 
+    /**
+     * Brings the user to the correct options screen depending on the type of user (organizer, attendee, etc.)
+     */
     public void loginType() {
         boolean verifyVIP = false;
         if (sendsInfo.userIsVIP(currentUsername)) {
@@ -908,12 +901,16 @@ public class Dashboard{
             case "Attendee":
                 if (verifyVIP){
                     frame.setTitle("VIP Attendee Account");
+                } else {
+                    frame.setTitle("Attendee Account");
                 }
                 loggedInAttendee();
                 break;
             case "Organizer":
                 if (verifyVIP){
                     frame.setTitle("VIP Organizer Account");
+                } else {
+                    frame.setTitle("Organizer Account");
                 }
                 loggedInOrganizer();
                 break;
@@ -931,6 +928,10 @@ public class Dashboard{
         }
     }
 
+    /**
+     * Returns to the main options menu of a logged in user from the message or sign up menus
+     * @param type
+     */
     public void backToMain(String type) {
         if (type.equals("Msg")){
             frame.remove(messagingDashboard);
@@ -942,6 +943,9 @@ public class Dashboard{
         loginType();
     }
 
+    /**
+     * Sets the size of the JComponents and ensures they display properly
+     */
     public void refresh() {
         frame.pack();
         frame.repaint();
@@ -958,7 +962,11 @@ public class Dashboard{
         }
     }
 
-    private void changeTheme(String themeName) {
+    /**
+     * Changes the theme of the GUI depending on if the user is a VIP or not
+     * @param themeName
+     */
+    public void changeTheme(String themeName) {
         try {
             switch (themeName) {
                 case "regular":

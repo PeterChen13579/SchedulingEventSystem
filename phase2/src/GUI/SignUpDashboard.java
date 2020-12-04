@@ -1,11 +1,21 @@
 package GUI;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ScrollPaneConstants;
 
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Creates all GUI elements and interactions for the menu that allows users to sign up for events
+ * @author Joyce Huang
+ */
 public class SignUpDashboard extends JPanel {
     private String currentMenu, previousMenu, currentUsername;
     private JButton seeAllEvent, seeSignedEvent, back, nextPanel;
@@ -14,26 +24,23 @@ public class SignUpDashboard extends JPanel {
     private final Viewable sendsInfo;
     private JTextField textInput;
     private JLabel errorText, eventName;
-    private boolean running;
     private final Dashboard dashboard;
-    private String loginType;
 
-    SignUpDashboard(Viewable sendsInfo, String currentUsername, String loginType, Dashboard dashboard) {
-        this.setOpaque(true);
-        //this.setSize(900, 600);
-        currentMenu = "SignUpMenu";
-        previousMenu = "LoggedIn";
+    /**
+     * Constructor that creates the SignUpDashboard based off inputs from the Dashboard class
+     * @param sendsInfo the instance of Viewable from the Dashboard class
+     * @param currentUsername the username of the user who is attempting to use options in the sign up menu
+     * @param dashboard the original GUI instance
+     */
+    SignUpDashboard(Viewable sendsInfo, String currentUsername, Dashboard dashboard) {
         this.sendsInfo = sendsInfo;
         this.currentUsername = currentUsername;
         this.dashboard = dashboard;
-        this.loginType = loginType;
+        this.setOpaque(true);
+        currentMenu = "SignUpMenu";
+        previousMenu = "LoggedIn";
         createButtons();
-        running = true;
         run();
-    }
-
-    public boolean getRunning() {
-        return this.running;
     }
 
     private void run() {
@@ -44,7 +51,6 @@ public class SignUpDashboard extends JPanel {
         this.add(cancelAttendEvent);
         this.add(back);
         dashboard.refresh();
-        
     }
 
     private void browseEventMenu() {
@@ -160,6 +166,9 @@ public class SignUpDashboard extends JPanel {
                 switch (result) {
                     case 0:
                         previousMenu();
+                        if (sendsInfo.userIsVIP(currentUsername)) {
+                            dashboard.changeTheme("vip");
+                        }
                         break;
                     case 1:
                         failedMenu("You have signed up for this event before.");
@@ -188,6 +197,9 @@ public class SignUpDashboard extends JPanel {
                 int result = sendsInfo.cancelAttendEvent(currentUsername, textInput.getText());
                 switch (result) {
                     case 0:
+                        if (!sendsInfo.userIsVIP(currentUsername)) {
+                            dashboard.changeTheme("regular");
+                        }
                         previousMenu();
                         break;
                     case 1:
