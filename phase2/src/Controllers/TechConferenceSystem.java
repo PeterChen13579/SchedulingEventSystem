@@ -389,7 +389,7 @@ public class TechConferenceSystem implements Viewable{
 
             //showing last eight messages
             List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
-            String[][] chatNew8Messages = new String[last8Messages.size()][]; //stored as [[senderUsername, content],......]
+            String[][] chatNew8Messages = new String[last8Messages.size()][2]; //stored as [[senderUsername, content],......]
             for (int i= 0; i< last8Messages.size(); i++){
                 chatNew8Messages[i][0] = messagingSystem.getMessageSender(chatId,last8Messages.get(i)); //set message sender
                 chatNew8Messages[i][1] = messagingSystem.getMessageContent(chatId,last8Messages.get(i)); // set message content
