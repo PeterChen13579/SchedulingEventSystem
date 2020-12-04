@@ -192,7 +192,7 @@ public class TechConferenceSystem implements Viewable{
         String imageString = messagingSystem.getMessageImageString(chatId, messageId);
 
         // convert datetime to string
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , yyyy-MM-dd");    //format time
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a,    MMM d");    //format time
         String formattedTimestamp = timeStamp.format(formatter);
 
         if (chatManager.hasImage(chatId, messageId)) {

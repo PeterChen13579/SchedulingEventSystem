@@ -5,6 +5,7 @@ import java.util.List;
 import Entities.Attendee;
 import Entities.Organizer;
 import Entities.Speaker;
+import Entities.User;
 
 /**
  * A UseCase class that manages the functionalities of User class.
@@ -249,25 +250,18 @@ public class UserManager implements Serializable {
      * @return   true if successfully added (iff the user b exists, they aren't already a friend and user b!= user a), false otherwise
      */
     public boolean addFriend(String usernameA, String usernameB){
-        if (userType(usernameA).equals("Speaker")){
-            Speaker userA = stringToSpeaker(usernameA);
-            List<String> friends = userA.getFriends();
-            if (isUserExists(usernameB) && !isAddFriend(usernameA, usernameB) && !usernameA.equals(usernameB)){
-                friends.add(usernameB);
-                userA.setFriends(friends);
-                return true;
-            }else{
-                return false;
-            }
+        User userA;
+        if (userType(usernameA).equals("Speaker")) {
+            userA = stringToSpeaker(usernameA);
+        }else{
+            userA = stringToAttendee(usernameA);
         }
-        // This method is called only when the user have logged in to the system, thus the user must exist.
-        Attendee userA = stringToAttendee(usernameA);
 
         List<String> friends = userA.getFriends();
         if (isUserExists(usernameB) && !isAddFriend(usernameA, usernameB) && !usernameA.equals(usernameB)){
-            friends.add(usernameB);
-            userA.setFriends(friends);
-            return true;
+                friends.add(usernameB);
+                userA.setFriends(friends);
+                return true;
         }
         return false;
     }
