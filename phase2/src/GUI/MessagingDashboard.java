@@ -8,9 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 public class MessagingDashboard extends JPanel{
@@ -26,11 +24,13 @@ public class MessagingDashboard extends JPanel{
     private JButton deleteMsg;
     private JLabel errorText;
     private JLabel displayUsername, usernameLabel, msgContentLabel, newMessagesDisplay;
+    private JLabel eventListText;
     private JList<String> chatNames, chatMsg;
     private int currentChatIndex;
     private JTextField friendAddText;
     private JTextField usernameTextfield;
     private JTextField content;
+    private JTextField eventList;
     private JLabel displayChatNumber;
     private final Viewable sendsInfo;
     private ArrayList <String> userToDisplay;
@@ -64,6 +64,7 @@ public class MessagingDashboard extends JPanel{
         friendAddText.setText("");
         usernameTextfield.setText("");
         content.setText("");
+        eventList.setText("");
     }
 
 
@@ -131,6 +132,8 @@ public class MessagingDashboard extends JPanel{
         this.removeAll();
         this.add(msgContentLabel);
         this.add(content);
+        this.add(eventListText);
+        this.add(eventList);
         this.add(allEventMsg);
         this.add(back);
         dashboard.refresh();
@@ -334,9 +337,13 @@ public class MessagingDashboard extends JPanel{
         allEventMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllAttendeeEvent(currentUsername, new ArrayList<String>(), content.getText(), "");
-                refreshTextFields();
-                messagingMenu();
+                String error = sendsInfo.msgAllAttendeeEvent(currentUsername, Arrays.asList(eventList.getText().split("/")), content.getText(), "");
+                if (error != null) {
+                    failedMenu(error);
+                } else {
+                    refreshTextFields();
+                    messagingMenu();
+                }
             }
         });
         confirmChatNumber = new JButton("View");
@@ -362,8 +369,12 @@ public class MessagingDashboard extends JPanel{
                 if (chatNum == -1) {
                     failedMenu("Please select a chat.");
                 } else {
-                    sendsInfo.archiveChats(currentUsername, chatNum);
-                    chatDisplay();
+                    String error = sendsInfo.archiveChats(currentUsername, chatNum);
+                    if (error != null) {
+                        failedMenu(error);
+                    } else {
+                        chatDisplay();
+                    }
                 }
 
             }
@@ -376,8 +387,12 @@ public class MessagingDashboard extends JPanel{
                 if (chatNum == -1) {
                     failedMenu("Please select a chat.");
                 } else {
-                    sendsInfo.markChatAsUnread(currentUsername, chatNum);
-                    chatDisplay();
+                    String error = sendsInfo.markChatAsUnread(currentUsername, chatNum);
+                    if (error != null) {
+                        failedMenu(error);
+                    } else {
+                        chatDisplay();
+                    }
                 }
 
             }
@@ -390,9 +405,13 @@ public class MessagingDashboard extends JPanel{
                 if (messageNum == -1) {
                     failedMenu("Please select a message to delete.");
                 } else {
-                    sendsInfo.deleteMsg(currentUsername, currentChatIndex, messageNum);
-                    String[][] msgInfo = sendsInfo.viewChat(currentChatIndex+1, currentUsername);
-                    displayChatMsg(msgInfo);
+                    String error = sendsInfo.deleteMsg(currentUsername, currentChatIndex, messageNum);
+                    if (error != null) {
+                        failedMenu(error);
+                    } else {
+                        String[][] msgInfo = sendsInfo.viewChat(currentChatIndex+1, currentUsername);
+                        displayChatMsg(msgInfo);
+                    }
                 }
 
             }
@@ -437,6 +456,7 @@ public class MessagingDashboard extends JPanel{
         friendAddText = new JTextField(12);
         usernameTextfield = new JTextField(12);
         content = new JTextField(12);
+        eventList = new JTextField(12);
         displayChatNumber = new JLabel("Select a chat and choose an action:");
         usernameLabel = new JLabel("Recipient username");
         msgContentLabel = new JLabel("Msg");
@@ -457,6 +477,7 @@ public class MessagingDashboard extends JPanel{
             }
         });
         newMessagesDisplay = new JLabel();
+        eventListText = new JLabel("Enter event titles separated by a '/'");
     }
 
 

@@ -369,12 +369,12 @@ public class MessagingSystem {
      * @param username the username of the user
      * @param chatId the id of the chat
      * @param messageId the id of the message
-     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String deleteUserMessage(String username, UUID chatId, UUID messageId){ // make sure you discard messageId after since it's gone from the system
         if (userChatManager.getMessageSenderUsername(chatId, messageId).equals(username)){
             userChatManager.deleteMessageFromChat(chatId, messageId);
-            return "true";
+            return null;
         } else{
             return "You cannot delete someone else's message";
         }
@@ -384,12 +384,12 @@ public class MessagingSystem {
      * mark a user's chat as unread
      * @param username the username of the user
      * @param chatId the id of the chat
-     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String markUserChatAsUnread(String username, UUID chatId){ //might change it to mark as read/unread in the future
         if (!userChatManager.isChatEmpty(chatId)){
             userChatManager.markChatAsUnread(username, chatId);
-            return "true";
+            return null;
         }else{
             return "Cannot mark empty chat as unread";
         }
@@ -399,12 +399,12 @@ public class MessagingSystem {
      * archive a user's chat
      * @param username the username of the user
      * @param chatId the id of the chat
-     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String archiveUserChat(String username, UUID chatId){
         if (!userChatManager.getArchivedChats(username).contains(chatId)){
             userChatManager.archiveChat(username, chatId);
-            return "true";
+            return null;
         } else{
             return "cannot archive chat that is already archived";
         }
@@ -434,7 +434,7 @@ public class MessagingSystem {
      * Helper method for speakers to send a message to attendees of their events
      * @param senderUsername Username of the sender
      * @param content Content of message
-     * @return "true" if the message is sent. Error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
@@ -461,7 +461,7 @@ public class MessagingSystem {
             }
         }
         this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-        return "true";
+        return null;
     }
 
     /**
@@ -470,7 +470,7 @@ public class MessagingSystem {
      * @param eventTitles The list of event titles
      * @param content The content of the message
      * @param imagePath The image path
-     * @return "true" if the message was sent. Error message otherwise.
+     * @return nul An error message, or null if there are no errors.
      */
     public String organizerMessageEventSpeakersAndAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
@@ -498,7 +498,7 @@ public class MessagingSystem {
             }
         }
         this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-        return "true";
+        return null;
     }
 
     /**
