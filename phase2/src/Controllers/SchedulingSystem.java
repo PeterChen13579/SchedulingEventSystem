@@ -223,7 +223,7 @@ public class SchedulingSystem {
      */
     private boolean helperAreSpeakersExist(List<String> speakerUsernames){
         for(String speakerUsername : speakerUsernames){
-            if(!um.isUserExists(speakerUsername)){
+            if((!um.isUserExists(speakerUsername)) || (!um.userType(speakerUsername).equals("Speaker"))){
                 return false;
             }
         }
