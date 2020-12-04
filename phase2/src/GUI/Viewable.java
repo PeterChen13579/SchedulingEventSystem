@@ -37,4 +37,6 @@ public interface Viewable {
     String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum,
                               List<String> speakerUsernames, String eventTitle, int capacity);
     boolean userIsVIP(String username);
+    String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+            speakerUsernames, String eventTitle, int capacity);
 }

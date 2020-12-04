@@ -317,11 +317,11 @@ public class UserManager implements Serializable {
     }
 
     /**
-     * PRECONDITION: Attendee account with this username must exist
-     * Returns whether this Attendee is VIP
+     * PRECONDITION: Attendee/Organizer account with this username must exist
+     * Returns whether this Attendee/organizer is VIP
      *
-     * @param userName String username of a Attendee account
-     * @return         true iff this attendee is VIP
+     * @param userName String username of a Attendee/organizer account
+     * @return         true iff this attendee/organizer is VIP
      */
     public boolean isAttendeeVIP(String userName){
         Attendee attendee = stringToAttendee(userName);
@@ -329,8 +329,10 @@ public class UserManager implements Serializable {
     }
 
 
-
-
+    /**     Sets Attendee/Organizer account with VIP status
+     *
+     * @param userName Setting this Attendee/Organizer with VIP info;
+     */
     public void setAttendeeVIP(String userName){
         Attendee attendee = stringToAttendee(userName);
         int eventNum = attendee.getEventAttending().size();

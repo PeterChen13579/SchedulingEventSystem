@@ -28,6 +28,7 @@ public class Dashboard{
     private JButton confirmRoomNumber, confirmAddEvent;
     private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
     private JButton confirmCancelEvent, confirmChangeCapacity;
+    private JButton successNextPanel;
     private JTextField cancelEventTextfield;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
@@ -42,7 +43,7 @@ public class Dashboard{
     private JLabel displayCapacity;
     private JLabel eventNameMsg;
     private Viewable sendsInfo;
-    private JLabel errorText;
+    private JLabel errorText, successText;
     private JLabel displayUsername, displayPassword;
     private JLabel cancelEventMsg, changeCapacityMsg;
     private JList displayList;
@@ -369,6 +370,14 @@ public class Dashboard{
         
     }
 
+    private void successMenu(String successMessage){
+        buttonPanel.removeAll();
+        successText.setText(successMessage);
+        buttonPanel.add(successText);
+        buttonPanel.add(successNextPanel);
+        refresh();
+    }
+
     private void createButtons() {
         load = new JButton("Load Existing Conference");
         load.addActionListener(new ActionListener() {
@@ -456,6 +465,13 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 returnToSameMenu();
+            }
+        });
+        successNextPanel = new JButton("Next");
+        successNextPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu();
             }
         });
         back = new JButton("Back");
@@ -578,7 +594,7 @@ public class Dashboard{
                 if (roomNum > -1){
                     if (capacity > 0) {
                         if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
-                            schedulingMenu();
+                            successMenu("You have successfully created a room!");
                         } else {
                             failedMenu("This room has already been created.");
                         }
@@ -592,7 +608,6 @@ public class Dashboard{
                 roomNumber.setText("");
             }
         });
-
         confirmAttendeeSignUp = new JButton("Confirm");
         confirmAttendeeSignUp.addActionListener(new ActionListener() {
             @Override
@@ -602,10 +617,8 @@ public class Dashboard{
                 //user/pass verification to use char array for the password but i'm not doing it so
                 if (sendsInfo.createAttendeeButton(textInput.getText(), password.getText())) {
                     loggedInOrganizer();
-                    System.out.println("hi2");
                 }else{
                     failedMenu("The existing username is in our database. Please try again.");
-                    System.out.println("hi3");
                 }
                 clearTextField();
             }
@@ -740,7 +753,7 @@ public class Dashboard{
                                     roomNumber.getText(), speakerList, eventName.getText(), checkCapacity);
                         }
                         if (createdOrNot.equals("true")){
-                            addEvent();
+                            successMenu("You have successfully created an event!");
                         }else{
                             failedMenu(createdOrNot);
                         }
@@ -779,6 +792,7 @@ public class Dashboard{
         speakerUsernameDisplayMulti = new JLabel("Enter Speaker Usernames ~Separate by commas:");
         VIPDisplay = new JLabel("Vip: (yes or no)");
         eventCapacity = new JTextField(12);
+        successText = new JLabel();
     }
 
     public void setView(final Viewable sendsInfo) {
@@ -821,6 +835,10 @@ public class Dashboard{
             case "ChooseEvent":
                 addEvent();
                 break;
+            case "AddRoom":
+                addRoom();
+                break;
+
         }
     }
 
