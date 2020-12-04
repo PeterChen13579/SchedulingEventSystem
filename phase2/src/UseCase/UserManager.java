@@ -318,6 +318,9 @@ public class UserManager implements Serializable {
         return attendee.isVIP();
     }
 
+
+
+
     public void setAttendeeVIP(String userName){
         Attendee attendee = stringToAttendee(userName);
         int eventNum = attendee.getEventAttending().size();
