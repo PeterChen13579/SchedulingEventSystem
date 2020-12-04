@@ -320,9 +320,9 @@ public class Dashboard{
         buttonPanel.add(eventName);
         buttonPanel.add(changeCapacityMsg);
         buttonPanel.add(changeCapacityEventTextfield);
-        buttonPanel.add(confirmChangeCapacity);
         buttonPanel.add(addRoomLabel);
         buttonPanel.add(roomNumber);
+        buttonPanel.add(confirmChangeCapacity);
         buttonPanel.add(back);
         refresh();
     }
@@ -544,8 +544,12 @@ public class Dashboard{
             public void actionPerformed(ActionEvent e) {
                 int changeCapacity = tryParse(changeCapacityEventTextfield.getText());
                 if (changeCapacity != -1){
-                    sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername, roomNumber.getText());
-                    schedulingMenu();
+                    String changedSuccessfully = sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername, roomNumber.getText());
+                    if (changedSuccessfully.equals("true")){
+                        schedulingMenu();
+                    }else{
+                        failedMenu(changedSuccessfully);
+                    }
                 }else{
                     failedMenu("You must enter an integer.");
                 }
