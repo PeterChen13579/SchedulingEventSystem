@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manages all the requests for the program. Calls methods in Request.
+ * Manage all the requests for the program. Calls methods in Request.
  * @author Xinyi Chen and Xinpeng Shan
  */
 public class RequestManager implements Serializable {
