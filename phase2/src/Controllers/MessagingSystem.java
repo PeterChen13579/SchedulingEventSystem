@@ -324,10 +324,8 @@ public class MessagingSystem {
             UUID chatId = archivedChats.get(i);
             if (userChatManager.areNewMessages(userName, chatId)){ //removes chat from being unarchived if new messages are recieved
                 userChatManager.unarchiveChat(userName, chatId);
-                i -= 1;
             }
         }
-
         List<UUID> currentChats = new ArrayList<>(allUserChats);
         currentChats.removeAll(archivedChats);
         return currentChats;
@@ -509,7 +507,6 @@ public class MessagingSystem {
      * @return An error message, or null if there is none.
      */
     public String addPeopleToMessage(String mainUserUsername, String newFriend){
-
         if (userManager.userType(mainUserUsername).equals("Speaker")) {
             if (userManager.userType(newFriend).equals("Attendee")) {
                 UUID chat = userChatManager.getChatContainingUsers(Arrays.asList(mainUserUsername, newFriend));
