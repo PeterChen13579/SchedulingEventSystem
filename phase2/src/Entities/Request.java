@@ -8,11 +8,11 @@ public class Request extends Message{
     public Integer requestNum;
     public boolean status = false;
     /**
-     * Creates a new Message
+     * Creates a new Request
      *
      * @param senderUsername the username of the sender
-     * @param time           the date/time of the message
-     * @param content        the literal string representing the message
+     * @param time           the date/time of the request
+     * @param content        the literal string representing the request
      */
     public Request(String senderUsername, LocalDateTime time, String content) {
         super(senderUsername, time, content);
