@@ -32,6 +32,9 @@ public interface Viewable {
     String deleteMsg(String currentUsername, int chatIndex, int messageIndex);
     String markChatAsUnread(String currentUsername, int chatIndex);
     String archiveChats(String currentUsername, int chatIndex);
+    public List<String> getNewMessagesChatNames(String currentUsername);
+    public List<String> getNewMessagesTimestamp(String currentUsername);
+    List<String[][]> getNewMessagesLast8Messages(String currentUsername);
     boolean includesImage(String currentUsername, int chatIndex, int messageIndex);
     boolean cancelEvent(String eventName, String username);
     String changeCapacity(String eventName, int capacity, String username, String rmNum);
