@@ -220,12 +220,22 @@ public class UserManager implements Serializable {
 
     public boolean isAddFriend(String usernameA, String usernameB){
         // This method is called only when the user have logged in to the system, thus the user must exist.
-        Attendee userA = stringToAttendee(usernameA);
 
-        List<String> friends = userA.getFriends();
-        for (String friend: friends){
-            if(friend.equals(usernameB)){
-                return true;
+        if (userType(usernameA).equals("Speaker")){
+            Speaker userA = stringToSpeaker(usernameA);
+            List<String> friends = userA.getFriends();
+            for (String friend: friends){
+                if(friend.equals(usernameB)){
+                    return true;
+                }
+            }
+        }else{
+            Attendee userA = stringToAttendee(usernameA);
+            List<String> friends = userA.getFriends();
+            for (String friend: friends){
+                if(friend.equals(usernameB)){
+                    return true;
+                }
             }
         }
         return false;
