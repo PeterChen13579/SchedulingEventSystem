@@ -9,6 +9,7 @@ import UseCase.UserManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,10 +35,6 @@ public class SignUpSystem {
         this.sp = new StatementPresenter();
     }
 
-    /**
-     * Sign up or cancel spot for an event by displaying options and handling user input.
-     * This method ends when user want to return to the main menu.
-     */
     public void run(String userName){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String temp = "";
@@ -89,7 +86,7 @@ public class SignUpSystem {
         else if (em.isAttendeeAdded(userName, eventTitle)){
             return 1;
         }
-        else if(em.isEventFull(userName)){
+        else if(em.isEventFull(eventTitle)){
             return 2;
         }
         else if (!um.isAttendeeVIP(userName) & em.VIP(eventTitle)){
@@ -99,8 +96,8 @@ public class SignUpSystem {
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
             um.setAttendeeVIP(userName);
+            return 0;
         }
-        return 0;
     }
 
     /**
@@ -118,8 +115,8 @@ public class SignUpSystem {
             em.deleteAttendee(userName, eventTitle);
             um.cancelSpotAttendee(userName, eventTitle);
             um.setAttendeeVIP(userName);
+            return 0;
         }
-        return 0;
     }
 
     /**
@@ -129,23 +126,32 @@ public class SignUpSystem {
      */
     public String[] displaySignedUpEvents(String username) {
         List<String> events;
+        List<String> eventinfo = new ArrayList<>();
+        String[] toReturn;
         if (um.userType(username).equals("Speaker")){
             events = um.getEventsSpeaking(username);
+            toReturn = events.toArray(new String[0]);
         }else {
             events = um.getEventAttending(username);
+            for(String event : events){
+                eventinfo.add(em.getEventInfo(event));
+            }
+            toReturn = eventinfo.toArray(new String[0]);
         }
-        String[] toReturn = events.toArray(new String[0]);
         return toReturn;
     }
 
     /**
      * Gets all events possible to display;
-     * @return   A list of events
+     * @return   A list of event info
      */
     public String[] displayAllEvents() {
         List<String> events = em.getAllEventTitle();
-        String[] toReturn = events.toArray(new String[0]);
-        return toReturn;
+        List<String> eventinfo = new ArrayList<>();
+        for(String event : events){
+            eventinfo.add(em.getEventInfo(event));
+        }
+        return eventinfo.toArray(new String[0]);
     }
 
     /**
