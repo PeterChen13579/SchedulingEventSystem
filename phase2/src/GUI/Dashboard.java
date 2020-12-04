@@ -29,7 +29,7 @@ public class Dashboard{
     private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
     private JButton confirmCancelEvent, confirmChangeCapacity;
     private JButton successNextPanel;
-    private JTextField cancelEventTextfield;
+    private JTextField cancelEventTextfield, whichEvent;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
     private JTextField textInput, roomNumber, roomCapacity, filename, eventName, eventCapacity;
@@ -350,9 +350,11 @@ public class Dashboard{
         if (eventType.equals("one")){
             buttonPanel.add(speakerUsernameDisplayOne);
             buttonPanel.add(speakerUsernameOne);
+            whichEvent.setText("one");
         }else if (eventType.equals("multi")){
             buttonPanel.add(speakerUsernameDisplayMulti);
             buttonPanel.add(speakerUsernameMulti);
+            whichEvent.setText("multi");
         }
         buttonPanel.add(confirmAddEvent);
         buttonPanel.add(back);
@@ -738,9 +740,14 @@ public class Dashboard{
                     }else{
                         String createdOrNot = "";
                         if (speakerUsernameOne.getText().equals("") && speakerUsernameMulti.getText().equals("")){
-                            createdOrNot = sendsInfo.createParty(vip, date.getText(), startTime.getText(),
-                                    endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
-                                    checkCapacity);
+                            if (!whichEvent.getText().equals("")){
+                                whichEvent.setText("");
+                                createdOrNot = "You must enter the correct number of speakers for your specified event";
+                            }else{
+                                createdOrNot = sendsInfo.createParty(vip, date.getText(), startTime.getText(),
+                                        endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
+                                        checkCapacity);
+                            }
                         }else if(speakerUsernameMulti.getText().equals("")){
                             speakerList.add(speakerUsernameOne.getText());
                             createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
@@ -793,6 +800,8 @@ public class Dashboard{
         VIPDisplay = new JLabel("Vip: (yes or no)");
         eventCapacity = new JTextField(12);
         successText = new JLabel();
+        whichEvent = new JTextField(12);
+        System.out.println(whichEvent.getText().equals(""));
     }
 
     public void setView(final Viewable sendsInfo) {
