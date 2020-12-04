@@ -1,7 +1,6 @@
 package UseCase;
 
 import Entities.Event;
-import Entities.Room;
 
 
 import java.io.Serializable;
@@ -26,7 +25,7 @@ public class EventManager implements Serializable {
 
 
 
-    //DON'T NEED THIS????
+
     public EventManager() {
         allEvents = new ArrayList<>();
         allParties = new ArrayList<>();
