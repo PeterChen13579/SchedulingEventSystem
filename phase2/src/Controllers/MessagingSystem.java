@@ -1,6 +1,4 @@
 package Controllers;
-import Entities.Chat;
-import Entities.Message;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.UserManager;
@@ -12,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
