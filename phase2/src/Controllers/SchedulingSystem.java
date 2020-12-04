@@ -370,24 +370,26 @@ public class SchedulingSystem {
      * @param username    the username of the organizer that chose to change the capacity of this event
      * @return            true if successfully changed, false otherwise.
      */
-    public boolean changeCapacity(String title, int capacity, String username){
+    public boolean changeCapacity(String title, int capacity, String username, String rmNum){
         //check if event already exists
-        if (em.isEventExist(title)){
-            if (capacity >= em.attendeeNum(title)){
-                List<String> eventTitles = new ArrayList<>();
-                eventTitles.add(title);
-                String content = "ANNOUNCEMENT: One of the events you are participating in: " + eventTitles.get(0) +
-                        " has been updated to allow " + capacity + " attendee(s)! ";
-                ms.organizerMessageEventSpeakersAndAttendees(username, eventTitles, content, "");
-                em.changeEventMaxNum(title, capacity);
-                return true;
-            }else{
-                return false;
-                //menu.printStatement("Uh-oh! The number of attendees already signed up for this event exceeds the new capacity entered!");
-            }
-        }else{
-            return false;
+        if (!em.isEventExist(title)){
             //menu.printStatement("Uh-oh! The event you have entered does not exist!");
+            return false;
+        }else if (capacity < rm.getCapacity(rmNum)){
+            //menu.printStatement("Uh-oh! The new capacity you entered exceeds the room capacity for this event!");
+            return false;
+        }else if (capacity < em.attendeeNum(title)){
+            //menu.printStatement("Uh-oh! The number of attendees already signed up for this event exceeds the new capacity entered!");
+            return false;
+        }else{
+            List<String> eventTitles = new ArrayList<>();
+            eventTitles.add(title);
+            String content = "ANNOUNCEMENT: One of the events you are participating in: " + eventTitles.get(0) +
+                    " has been updated to allow " + capacity + " attendee(s)! ";
+            ms.organizerMessageEventSpeakersAndAttendees(username, eventTitles, content, "");
+            em.changeEventMaxNum(title, capacity);
+            return true;
+
         }
     }
 
