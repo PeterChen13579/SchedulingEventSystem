@@ -15,13 +15,13 @@ public class MessagingDashboard extends JPanel{
     private JButton viewChat, sendMessage, viewNewMessages;
     private JButton addFriend,confirmFriend;
     private JButton sendOne,sendAllAttendee, sendAllSpeaker, sendAllAttendeeEvent;
-    private JButton confirmOneMessage,confirmChatNumber, archiveChat, markChatUnread;
+    private JButton confirmOneMessage,confirmChatNumber, archiveChat, markChatUnread, attachImage;
     private JButton allAttendeeMsg, allSpeakerMsg, allEventMsg;
     private JButton nextPanel, back;
     private JButton deleteMsg;
     private JLabel errorText;
     private JLabel displayUsername, usernameLabel, msgContentLabel, newMessages;
-    private JList chatNames, chatMsg;
+    private JList<String> chatNames, chatMsg;
     private int currentChatIndex;
     private JTextField friendAddText;
     private JTextField usernameTextfield;
@@ -30,6 +30,8 @@ public class MessagingDashboard extends JPanel{
     private final Viewable sendsInfo;
     private ArrayList <String> userToDisplay;
     private final Dashboard dashboard;
+    private JFileChooser fileChooser;
+    private String attachedImagePath;
 
     public MessagingDashboard(Viewable sendsInfo, Dashboard dashboard, String currentUsername, String loginType){
 
@@ -37,7 +39,10 @@ public class MessagingDashboard extends JPanel{
         this.currentUsername = currentUsername;
         this.loginType = loginType;
         this.dashboard = dashboard;
-        userToDisplay = sendsInfo.sendChatName(currentUsername);
+        this.userToDisplay = sendsInfo.sendChatName(currentUsername);
+        this.currentChatIndex = -1;
+        this.fileChooser = new JFileChooser(System.getProperty("user.dir"));
+        this.attachedImagePath = "";
         try {
             SynthLookAndFeel style = new SynthLookAndFeel();
             style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
@@ -47,7 +52,13 @@ public class MessagingDashboard extends JPanel{
         }
         createButtons();
         messagingMenu();
-        this.currentChatIndex = -1;
+    }
+
+    private void refreshTextFields() {
+        attachedImagePath = "";
+        friendAddText.setText("");
+        usernameTextfield.setText("");
+        content.setText("");
     }
 
 
@@ -84,6 +95,7 @@ public class MessagingDashboard extends JPanel{
         this.add(usernameTextfield);
         this.add(msgContentLabel);
         this.add(content);
+        this.add(attachImage);
         this.add(confirmOneMessage);
         this.add(back);
         dashboard.refresh();
@@ -253,47 +265,52 @@ public class MessagingDashboard extends JPanel{
                 System.out.println(friendAddText.getText());
                 String result = sendsInfo.addFriend(currentUsername, friendAddText.getText());
                 if (result.equals("true")){
-                    messagingMenu();
                     userToDisplay = sendsInfo.sendChatName(currentUsername);
+                    refreshTextFields();
+                    messagingMenu();
                 }else{
                     String failedMsg = result;
                     failedMenu(failedMsg);
                 }
             }
         });
-        confirmOneMessage = new JButton("Confirm");
+        confirmOneMessage = new JButton("Send");
         confirmOneMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String result = sendsInfo.sendOneMsg(currentUsername,usernameTextfield.getText(), usernameTextfield.getText(), "");
+                String result = sendsInfo.sendOneMsg(currentUsername,usernameTextfield.getText(), content.getText(), "");
                 if (result.equals("Message sent.")){
                     messagingMenu();
+                    refreshTextFields();
                 }else{
                     failedMenu(result);
                 }
             }
         });
-        allAttendeeMsg = new JButton("Confirm");
+        allAttendeeMsg = new JButton("Send");
         allAttendeeMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sendsInfo.msgAllAttendees(currentUsername,content.getText(), "");
+                refreshTextFields();
                 messagingMenu();
             }
         });
-        allSpeakerMsg = new JButton("Confirm");
+        allSpeakerMsg = new JButton("Send");
         allSpeakerMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sendsInfo.msgAllSpeakers(currentUsername, content.getText(), "");
+                refreshTextFields();
                 messagingMenu();
             }
         });
-        allEventMsg = new JButton("Confirm");
+        allEventMsg = new JButton("Send");
         allEventMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sendsInfo.msgAllAttendeeEvent(currentUsername, new ArrayList<String>(), content.getText(), "");
+                refreshTextFields();
                 messagingMenu();
             }
         });
@@ -355,10 +372,23 @@ public class MessagingDashboard extends JPanel{
 
             }
         });
+        attachImage = new JButton("Attach an image");
+        attachImage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //currentMenu = "LoadingConference";
+                int result = fileChooser.showOpenDialog(new JPanel());
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    attachedImagePath = fileChooser.getSelectedFile().getAbsolutePath();
+                }
+
+            }
+        });
         back = new JButton("Back");
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                refreshTextFields();
                 previousMenu();
             }
         });
