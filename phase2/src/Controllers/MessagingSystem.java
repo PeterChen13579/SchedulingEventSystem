@@ -343,7 +343,7 @@ public class MessagingSystem {
      * @param time The time the message was sent
      * @param content The content of the message
      */
-    public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) {
+    public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) { // we can make this private right?
         String imageString = "";
         if (!imagePath.equals("")) { //Checks to see if imageString is not empty
             imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
@@ -363,7 +363,7 @@ public class MessagingSystem {
             } else {
                 this.userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
             }
-            if (userChatManager.getArchivedChats(username).contains(chat)){  //unarchives chat if it is archived
+            if (userChatManager.getArchivedChats(senderUsername).contains(chat)){  //unarchives chat if it is archived
                 userChatManager.unarchiveChat(senderUsername, chat);
             }
         }
