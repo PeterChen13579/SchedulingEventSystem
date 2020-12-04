@@ -9,6 +9,7 @@ import UseCase.UserManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  * A class that allow Users to sign up/cancel spot for an event
@@ -50,21 +51,14 @@ public class SignUpSystem {
                     case "2": {
                         sp.printStatement("Type the event title for the event you want to sign up:");
                         String eventTitle = br.readLine();
-                        if(signUpEvent(userName, eventTitle) == 0){
-                            em.addAttendee(userName, eventTitle);
-                            um.signUpEventAttendee(userName, eventTitle);
-                            um.setAttendeeVIP(userName);
-                        }
+                        signUpEvent(userName, eventTitle);
                         break;
                     }
                     case "3": {
                         sp.printStatement("Type the event title for the event you want to cancel spot:");
                         String eventTitle = br.readLine();
-                        if(cancelSpotEvent(userName, eventTitle)==0) {
-                            em.deleteAttendee(userName, eventTitle);
-                            um.cancelSpotAttendee(userName, eventTitle);
-                            um.setAttendeeVIP(userName);
-                        }
+                        try{cancelSpotEvent(userName, eventTitle);}
+                        catch(IllegalArgumentException e){sp.printStatement("The event title you have entered is invalid.");}
                         break;
                     }
                     case "1":
@@ -87,32 +81,26 @@ public class SignUpSystem {
      * Method that calls methods in EventManager and UserManager to sign up for an event
      * @param userName the username of this Attendee
      * @param eventTitle the event title of the event that this attendee want to sign up for
-     * @return the number used for implementing GUI
      */
     public int signUpEvent(String userName, String eventTitle){
         if (!em.isEventExist(eventTitle)){
-            //sp.printStatement("The event title you have entered is invalid.");
             return 3;
         }
         else if (em.isAttendeeAdded(userName, eventTitle)){
-            //sp.printStatement("You have signed up for this event before.");
             return 1;
         }
-        else if(em.isEventFull(eventTitle)){
-            //sp.printStatement("Sorry, this event has reached its maximum capacity.");
+        else if(em.isEventFull(userName)){
             return 2;
         }
         else if (!um.isAttendeeVIP(userName) & em.VIP(eventTitle)){
-            //sp.printStatement("Sorry, you are not a VIP user, so you cannot sign up for a VIP event.");
             return 4;
         }
         else{
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
             um.setAttendeeVIP(userName);
-            sp.printStatement("You have successfully signed up for this event!");
-            return 0;
         }
+        return 0;
     }
 
     /**
@@ -122,18 +110,54 @@ public class SignUpSystem {
      */
     public int cancelSpotEvent(String userName, String eventTitle){
         if(!em.isEventExist(eventTitle)){
-            //sp.printStatement("The event title you have entered is invalid.");
             return 2;
         }else if(!em.isAttendeeAdded(userName, eventTitle)){
-            //sp.printStatement("You haven't signed up for this event yet.");
             return 1;
         }
         else{
             em.deleteAttendee(userName, eventTitle);
             um.cancelSpotAttendee(userName, eventTitle);
             um.setAttendeeVIP(userName);
-            sp.printStatement("You have cancelled the spot for this event!");
-            return 0;
+        }
+        return 0;
+    }
+
+    /**
+     * This method gets the event's a username has signed up for
+     * @param username List of events that their signed up for already
+     * @return A list of events that this username has signed up for
+     */
+    public String[] displaySignedUpEvents(String username) {
+        List<String> events;
+        if (um.userType(username).equals("Speaker")){
+            events = um.getEventsSpeaking(username);
+        }else {
+            events = um.getEventAttending(username);
+        }
+        String[] toReturn = events.toArray(new String[0]);
+        return toReturn;
+    }
+
+    /**
+     * Gets all events possible to display;
+     * @return   A list of events
+     */
+    public String[] displayAllEvents() {
+        List<String> events = em.getAllEventTitle();
+        String[] toReturn = events.toArray(new String[0]);
+        return toReturn;
+    }
+
+    /**
+     * Checks whether username meets the requirement for VIP account or not (attends at least 2 events)
+     * @param username
+     * @return
+     */
+    public boolean userIsVIP(String username) {
+        if (um.userType(username).equals("Speaker")){
+            return false;
+        }else{
+            return um.isAttendeeVIP(username);
         }
     }
 }

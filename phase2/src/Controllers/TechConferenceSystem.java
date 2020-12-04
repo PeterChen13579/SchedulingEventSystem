@@ -7,6 +7,8 @@ import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
+//import com.sun.org.apache.bcel.internal.generic.JsrInstruction;
+//import jdk.nashorn.internal.parser.JSONParser;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+//import org.json.JSONObject;
 /**
  * Determines all the behaviour for the text-based UI
  * @author Joyce Huang, Peter Chen, and Amy Miao
@@ -185,7 +188,6 @@ public class TechConferenceSystem implements Viewable{
     }
 
     private List<String> getMessageInfo(UUID chatId, UUID messageId){
-        String messageIdString = messageId.toString();
         String senderUsername = messagingSystem.getMessageSender(chatId, messageId);
         LocalDateTime timeStamp = messagingSystem.getMessageTimestamp(chatId, messageId);
         String content = messagingSystem.getMessageContent(chatId, messageId);
@@ -194,7 +196,7 @@ public class TechConferenceSystem implements Viewable{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , yyyy-MM-dd");    //format time
         String formattedTimestamp = timeStamp.format(formatter);
 
-        return new ArrayList<>(Arrays.asList(messageIdString, senderUsername, content, formattedTimestamp));
+        return new ArrayList<>(Arrays.asList(senderUsername, content, formattedTimestamp));
     }
 
     /**
@@ -246,13 +248,13 @@ public class TechConferenceSystem implements Viewable{
      * Delete a message from the chat
      * PRECONDITION : messageIdString wasn't used to call deleteMsg before
      * @param currentUsername the username of the current user
-     * @param chatIdString the string of the id of the chat (UUID form)
-     * @param messageIdString the string of the id of the message (UUID form)
+     * @param chatIndex The index of the chat
+     * @param messageIndex the index of the message
      * @return "true" if the action was successful. An error message otherwise.
      */
-    public String deleteMsg(String currentUsername, String chatIdString, String messageIdString){ //gui should probably refresh messages after running this
-        UUID messageId = UUID.fromString(messageIdString);
-        UUID chatId = UUID.fromString(chatIdString);
+    public String deleteMsg(String currentUsername, int chatIndex, int messageIndex){
+        UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
+        UUID messageId = messagingSystem.getMessageByIndex(chatId, messageIndex);
 
         return messagingSystem.deleteUserMessage(currentUsername, chatId, messageId);
     }
@@ -260,11 +262,11 @@ public class TechConferenceSystem implements Viewable{
     /**
      * Mark chat as unread.
      * @param currentUsername The username of the current user
-     * @param chatIdString The string of the id of the chat (UUID form)
+     * @param chatIndex The index of the chat
      * @return "true" if the action was successful. An error message otherwise.
      */
-    public String markChatAsUnread(String currentUsername, String chatIdString){
-        UUID chatId = UUID.fromString(chatIdString);
+    public String markChatAsUnread(String currentUsername, int chatIndex){
+        UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
 
         return messagingSystem.markUserChatAsUnread(currentUsername, chatId);
     }
@@ -272,11 +274,12 @@ public class TechConferenceSystem implements Viewable{
     /**
      * Archive chat.
      * @param currentUsername The username of the current user
-     * @param chatIdString The string of the id of the chat (UUID form)
+     * @param chatIndex The index of the chat
      * @return "true" if the action was successful. An error message otherwise.
      */
-    public String archiveChats(String currentUsername, String chatIdString){
-        UUID chatId = UUID.fromString(chatIdString);
+    public String archiveChats(String currentUsername, int chatIndex){
+
+        UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
 
         return messagingSystem.archiveUserChat(currentUsername, chatId);
     }
@@ -285,10 +288,12 @@ public class TechConferenceSystem implements Viewable{
      *
      * @return   All new Messages (View all new messages option)
      */
+    /*
     @Override
-    public String getNewMessages(String CurrentUsername){
+
+    public String getNewMessages(String currentUsername){
         String output = "New Messages:\n";
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(CurrentUsername);
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
 
         boolean newMessagesExist = false;
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
@@ -299,7 +304,7 @@ public class TechConferenceSystem implements Viewable{
             // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
             newMessagesExist = true;
             //printing chat name
-            String chatName = messagingSystem.getChatName(chatId);
+            String chatName = getChatNameByUser(currentUsername, chatId);
             output += "\n" +chatName + "\n";
 
             //showing time difference from now and last message
@@ -319,6 +324,51 @@ public class TechConferenceSystem implements Viewable{
         }
         return output;
     }
+    */
+
+    /** TO @William Wang and Kailas Moon
+     *
+     * @return   All new Messages (View all new messages option)
+     */
+
+//    @Override
+//    public ArrayList<JSONObject> getNewMessages(String currentUsername) {
+//        ArrayList <JSONObject> output = new ArrayList<>();
+//
+//        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+//
+//        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
+//
+//            JSONObject jo = new JSONObject(); //create a JSONObject for each chat
+//            UUID chatId = mapItem.getKey();
+//            List<UUID> messageIds = mapItem.getValue();
+//
+//            // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
+//            //printing chat name
+//            String chatName = getChatNameByUser(currentUsername, chatId);
+//            jo.put("chatName", chatName);
+//
+//            //showing time difference from now and last message
+//            LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
+//            Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
+//            jo.put("time", timeDifference.toMinutes() + " minutes ago\n");   // might change the format to be more clearer. Also, only prints integers
+//
+//            //showing last eight messages
+//            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
+//            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
+//                jo.put("chatMessages" ,messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
+//                        messagingSystem.getMessageContent(chatId, last8Id) + "\n");
+//            }
+//            output.add(jo);
+//        }
+//        /*
+//        if (!newMessagesExist) {               //If no new messages, then output returns an empty array
+//            output += ("\nNo new messages.");
+//        }
+//         */
+//        return output;
+//    }
+
 
     /** TO @William Wang and Kailas Moon
      *
@@ -390,41 +440,27 @@ public class TechConferenceSystem implements Viewable{
 
     //@TO JOY/AMY
     public String[] displayAllEvents() {
-        List<String> events = eventManager.getAllEventTitle();
-        String[] toReturn = events.toArray(new String[0]);
-        return toReturn;
+        return signUpSystem.displayAllEvents();
     }
 
     //@TO JOY/AMY
     public String[] displaySignedUpEvents(String username) {
-        List<String> events;
-        if (userManager.userType(username).equals("Speaker")){
-            events = userManager.getEventsSpeaking(username);
-        }else {
-            events = userManager.getEventAttending(username);
-        }
-        String[] toReturn = events.toArray(new String[0]);
-        return toReturn;
+        return signUpSystem.displaySignedUpEvents(username);
     }
 
     /**  //@TO JOY/AMY
-     * Method that calls methods in signUpSystem
-     * @param userName the username of this Attendee
-     * @param eventTitle the event title of the event that this attendee want to sign up for
-     * @return the number used for GUI
+     *
+     * @param username
+     * @param eventTitle
+     * @return
      */
-    public int signUpForEvent(String userName, String eventTitle) {
-        return signUpSystem.signUpEvent(userName, eventTitle);
+    public int signUpForEvent(String username, String eventTitle) {
+        return signUpSystem.signUpEvent(username, eventTitle);
     }
 
-    /**  //@TO JOY/AMY
-     * Method that calls methods in signUpSystem
-     * @param userName the username of this Attendee
-     * @param eventTitle the event title of the event that this attendee want to cancel spot for
-     * @return the number used for GUI
-     */
-    public int cancelAttendEvent(String userName, String eventTitle) {
-        return signUpSystem.cancelSpotEvent(userName, eventTitle);
+    //@TO JOY/AMY
+    public int cancelAttendEvent(String username, String eventTitle) {
+        return signUpSystem.cancelSpotEvent(username, eventTitle);
     }
 
     //--------------------------------------------Creating Controller-----------------------------------------
@@ -455,7 +491,7 @@ public class TechConferenceSystem implements Viewable{
     }
 
     public boolean userIsVIP(String username) {
-        return userManager.isAttendeeVIP(username);
+        return signUpSystem.userIsVIP(username);
     }
 
 

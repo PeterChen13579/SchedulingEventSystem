@@ -245,7 +245,7 @@ public class MessagingSystem {
     }
 
     /**
-     * View all the new chat messages. Note : chat is only added into map if there are new messages
+     * View all the new chat messages. Note : chat is only added into the map if there are new messages
      * @param userName The username of the current user
      */
     public Map<UUID, List<UUID>> viewAllNewMessages(String userName){
@@ -326,7 +326,6 @@ public class MessagingSystem {
         for (int i=0; i<archivedChats.size(); i++){
             UUID chatId = archivedChats.get(i);
             if (userChatManager.areNewMessages(userName, chatId)){ //removes chat from being unarchived if new messages are recieved
-                archivedChats.remove(chatId);
                 userChatManager.unarchiveChat(userName, chatId);
                 i -= 1;
             }
@@ -363,6 +362,9 @@ public class MessagingSystem {
                 this.userChatManager.sendImageMessageToChat(chat, senderUsername, time, content, imageString); //send an image/message
             } else {
                 this.userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
+            }
+            if (userChatManager.getArchivedChats(username).contains(chat)){  //unarchives chat if it is archived
+                userChatManager.unarchiveChat(senderUsername, chat);
             }
         }
     }
@@ -574,6 +576,10 @@ public class MessagingSystem {
         } catch (IOException f) {
             f.printStackTrace();
         }
+    }
+
+    public UUID getMessageByIndex(UUID chatId, int messageIndex) {
+        return userChatManager.getMessageUUIDbyIndex(chatId, messageIndex);
     }
 }
 

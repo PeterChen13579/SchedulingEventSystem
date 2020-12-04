@@ -114,7 +114,7 @@ public class Chat implements Serializable {
 //     * @param username The username of the user being added
 //     */
 //    public void addUser(String username){
-//        memberUsernames.add(username);
+//        memberUsernames.add(username);  //make sure to set the last viewed message after adding
 //    }
 
     /**

@@ -31,11 +31,7 @@ public class Dashboard{
     private JTextField cancelEventTextfield;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
-    private JTextField textInput;
-    private JTextField roomNumber;
-    private JTextField roomCapacity;
-    private JTextField filename;
-    private JTextField eventName;
+    private JTextField textInput, roomNumber, roomCapacity, filename, eventName, eventCapacity;
     private JTextField date, startTime, endTime, speakerUsernameOne, speakerUsernameMulti, VIP;
     private JLabel dateDisplay, startTimeDisplay, endTimeDisplay, VIPDisplay;
     private JLabel speakerUsernameDisplayOne, speakerUsernameDisplayMulti;
@@ -51,7 +47,6 @@ public class Dashboard{
     private JLabel cancelEventMsg, changeCapacityMsg;
     private JList displayList;
     private String currentUsername;
-    private JLabel speakerNameDisplay, timeDisplay;
     private SignUpDashboard signUpDashboard;
     private MessagingDashboard messagingDashboard;
     private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -113,17 +108,6 @@ public class Dashboard{
         refresh();
         
     }
-
-    private void loadConference(){
-        currentMenu = "LoadingConference";
-        buttonPanel.removeAll();
-        buttonPanel.add(filename);
-        buttonPanel.add(confirmFilename);
-        buttonPanel.add(back);
-        refresh();
-        
-    }
-
 
 
 //---------------------------------------Main Menu Features/options ---------------------------------------;
@@ -306,7 +290,6 @@ public class Dashboard{
         buttonPanel.add(confirmRoomNumber);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void addEvent() {
@@ -335,7 +318,7 @@ public class Dashboard{
     }
 
     private void changeEventCapacity(){
-        currentMenu = "changeEventCapacity";
+        currentMenu = "changeEventCapacity" ;
         buttonPanel.removeAll();
         buttonPanel.add(eventNameMsg);
         buttonPanel.add(eventName);
@@ -344,7 +327,6 @@ public class Dashboard{
         buttonPanel.add(confirmChangeCapacity);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void createEvent(String eventType){
@@ -363,7 +345,7 @@ public class Dashboard{
         buttonPanel.add(addRoomLabel);
         buttonPanel.add(roomNumber);
         buttonPanel.add(displayCapacity);
-        buttonPanel.add(roomCapacity);
+        buttonPanel.add(eventCapacity);
         if (eventType.equals("one")){
             buttonPanel.add(speakerUsernameDisplayOne);
             buttonPanel.add(speakerUsernameOne);
@@ -465,6 +447,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 changeTheme("regular");
+                frame.setTitle("Tech Conference System");
                 loginSignup();
             }
         });
@@ -595,16 +578,18 @@ public class Dashboard{
                 if (roomNum > -1){
                     if (capacity > 0) {
                         if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
-                            loggedInOrganizer();
+                            schedulingMenu();
                         } else {
                             failedMenu("This room has already been created.");
                         }
                     }else{
-                        failedMenu("You have entered an invalid room capacity");
+                        failedMenu("You must enter a valid event capacity");
                     }
                 }else{
                     failedMenu("You have entered an invalid room number");
                 }
+                roomCapacity.setText("");
+                roomNumber.setText("");
             }
         });
 
@@ -631,10 +616,8 @@ public class Dashboard{
             public void actionPerformed(ActionEvent e) {
                 if (sendsInfo.createOrganizerButton(textInput.getText(), password.getText())) {
                     loginSignup();
-                    System.out.println("hi2");
                 }else{
                     failedMenu("The existing username is in our database. Please try again.");
-                    System.out.println("hi3");
                 }
                 clearTextField();
             }
@@ -677,14 +660,17 @@ public class Dashboard{
                         break;
                     case "Attendee":
                         loginType = "Attendee";
+                        frame.setTitle("Attendee Account");
                         loginType();
                         break;
                     case "Organizer":
                         loginType = "Organizer";
+                        frame.setTitle("Organizer Account");
                         loginType();
                         break;
                     case "Speaker":
                         loginType = "Speaker";
+                        frame.setTitle("Speaker Account");
                         loginType();
                         break;
                 }
@@ -733,7 +719,7 @@ public class Dashboard{
                     boolean vip;
                     vip = vipVerify.equalsIgnoreCase("yes");
                     List <String> speakerList = new ArrayList<String>();
-                    int checkCapacity = tryParse(roomCapacity.getText());
+                    int checkCapacity = tryParse(eventCapacity.getText());
                     if (checkCapacity <= 0){
                         failedMenu("Please enter a valid integer for Room Capacity.");
                     }else{
@@ -792,7 +778,7 @@ public class Dashboard{
         speakerUsernameDisplayOne = new JLabel("Enter Speaker Username:");
         speakerUsernameDisplayMulti = new JLabel("Enter Speaker Usernames ~Separate by commas:");
         VIPDisplay = new JLabel("Vip: (yes or no)");
-
+        eventCapacity = new JTextField(12);
     }
 
     public void setView(final Viewable sendsInfo) {
@@ -875,6 +861,9 @@ public class Dashboard{
                 break;
             case "CancelEvent":
                 cancelEvent();
+                break;
+            case "CreateAttendeeMain":
+                createAttendeeAccountMainMenu();
                 break;
         }
     }
