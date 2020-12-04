@@ -408,48 +408,23 @@ public class TechConferenceSystem implements Viewable{
     }
 
     /**  //@TO JOY/AMY
-     *
-     * @param username
-     * @param eventTitle
-     * @return
+     * Method that calls methods in signUpSystem
+     * @param userName the username of this Attendee
+     * @param eventTitle the event title of the event that this attendee want to sign up for
+     * @return the number used for GUI
      */
-    public int signUpForEvent(String username, String eventTitle) {
-        if (!eventManager.isEventExist(eventTitle)){
-            return 3;
-        }
-        else if (eventManager.isAttendeeAdded(username, eventTitle)){
-            return 1;
-        }
-        else if(eventManager.isEventFull(username)){
-            return 2;
-        }
-        else if (!userManager.isAttendeeVIP(username) & eventManager.VIP(eventTitle)){
-            return 4;
-        }
-        else{
-            eventManager.addAttendee(username, eventTitle);
-            userManager.signUpEventAttendee(username, eventTitle);
-            userManager.setAttendeeVIP(username);
-        }
-        return 0;
+    public int signUpForEvent(String userName, String eventTitle) {
+        return signUpSystem.signUpEvent(userName, eventTitle);
     }
 
-    //@TO JOY/AMY
-    public int cancelAttendEvent(String username, String eventTitle) {
-        try {
-            if (!eventManager.isAttendeeAdded(username, eventTitle)) {
-//            sp.printStatement("You haven't signed up for this event yet.");
-                return 1;
-            }
-            if (eventManager.canDeleteAttendee(username, eventTitle)) {
-                eventManager.deleteAttendee(username, eventTitle);
-                userManager.cancelSpotAttendee(username, eventTitle);
-//            sp.printStatement("You have cancelled the spot for this event.");
-            }
-        } catch (IllegalArgumentException e) {
-            return 2;
-        }
-        return 0;
+    /**  //@TO JOY/AMY
+     * Method that calls methods in signUpSystem
+     * @param userName the username of this Attendee
+     * @param eventTitle the event title of the event that this attendee want to cancel spot for
+     * @return the number used for GUI
+     */
+    public int cancelAttendEvent(String userName, String eventTitle) {
+        return signUpSystem.cancelSpotEvent(userName, eventTitle);
     }
 
     //--------------------------------------------Creating Controller-----------------------------------------

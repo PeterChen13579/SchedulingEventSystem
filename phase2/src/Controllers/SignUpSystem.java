@@ -50,14 +50,21 @@ public class SignUpSystem {
                     case "2": {
                         sp.printStatement("Type the event title for the event you want to sign up:");
                         String eventTitle = br.readLine();
-                        signUpEvent(userName, eventTitle);
+                        if(signUpEvent(userName, eventTitle) == 0){
+                            em.addAttendee(userName, eventTitle);
+                            um.signUpEventAttendee(userName, eventTitle);
+                            um.setAttendeeVIP(userName);
+                        }
                         break;
                     }
                     case "3": {
                         sp.printStatement("Type the event title for the event you want to cancel spot:");
                         String eventTitle = br.readLine();
-                        try{cancelSpotEvent(userName, eventTitle);}
-                        catch(IllegalArgumentException e){sp.printStatement("The event title you have entered is invalid.");}
+                        if(cancelSpotEvent(userName, eventTitle)==0) {
+                            em.deleteAttendee(userName, eventTitle);
+                            um.cancelSpotAttendee(userName, eventTitle);
+                            um.setAttendeeVIP(userName);
+                        }
                         break;
                     }
                     case "1":
@@ -80,25 +87,31 @@ public class SignUpSystem {
      * Method that calls methods in EventManager and UserManager to sign up for an event
      * @param userName the username of this Attendee
      * @param eventTitle the event title of the event that this attendee want to sign up for
+     * @return the number used for implementing GUI
      */
-    public void signUpEvent(String userName, String eventTitle){
+    public int signUpEvent(String userName, String eventTitle){
         if (!em.isEventExist(eventTitle)){
-            sp.printStatement("The event title you have entered is invalid.");
+            //sp.printStatement("The event title you have entered is invalid.");
+            return 3;
         }
         else if (em.isAttendeeAdded(userName, eventTitle)){
-            sp.printStatement("You have signed up for this event before.");
+            //sp.printStatement("You have signed up for this event before.");
+            return 1;
         }
-        else if(em.isEventFull(userName)){
-            sp.printStatement("Sorry, this event has reached its maximum capacity.");
+        else if(em.isEventFull(eventTitle)){
+            //sp.printStatement("Sorry, this event has reached its maximum capacity.");
+            return 2;
         }
         else if (!um.isAttendeeVIP(userName) & em.VIP(eventTitle)){
-            sp.printStatement("Sorry, you are not a VIP user, so you cannot sign up for a VIP event.");
+            //sp.printStatement("Sorry, you are not a VIP user, so you cannot sign up for a VIP event.");
+            return 4;
         }
         else{
             em.addAttendee(userName, eventTitle);
             um.signUpEventAttendee(userName, eventTitle);
             um.setAttendeeVIP(userName);
             sp.printStatement("You have successfully signed up for this event!");
+            return 0;
         }
     }
 
@@ -107,17 +120,20 @@ public class SignUpSystem {
      * @param userName the username of this Attendee
      * @param eventTitle the event title of the event that this attendee want to cancel spot
      */
-    public void cancelSpotEvent(String userName, String eventTitle){
+    public int cancelSpotEvent(String userName, String eventTitle){
         if(!em.isEventExist(eventTitle)){
-            sp.printStatement("The event title you have entered is invalid.");
+            //sp.printStatement("The event title you have entered is invalid.");
+            return 2;
         }else if(!em.isAttendeeAdded(userName, eventTitle)){
-            sp.printStatement("You haven't signed up for this event yet.");
+            //sp.printStatement("You haven't signed up for this event yet.");
+            return 1;
         }
         else{
             em.deleteAttendee(userName, eventTitle);
             um.cancelSpotAttendee(userName, eventTitle);
             um.setAttendeeVIP(userName);
             sp.printStatement("You have cancelled the spot for this event!");
+            return 0;
         }
     }
 }
