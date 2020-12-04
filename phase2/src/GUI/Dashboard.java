@@ -733,7 +733,7 @@ public class Dashboard{
                             createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
                                     roomNumber.getText(), speakerList, eventName.getText(),checkCapacity);
                         }else if(speakerUsernameOne.getText().equals("")) {
-                            String addSpeakerUsernames = speakerUsernameDisplayMulti.getText();
+                            String addSpeakerUsernames = speakerUsernameMulti.getText();
                             addSpeakerUsernames = addSpeakerUsernames.replaceAll("\\s+", "");
                             speakerList = Arrays.asList(addSpeakerUsernames.split(","));
                             createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
