@@ -145,7 +145,8 @@ public class MessagingDashboard extends JPanel{
         this.removeAll();
         String[] formattedMessages = new String[messages.length];
         for (int i=0; i<messages.length; i++) {
-            formattedMessages[i] = "[" + messages[i][2] + "] " + messages[i][0] + ": " + messages[i][1];
+            formattedMessages[i] = "          " + messages[i][0] + " :    " + messages[i][1] +
+                    String.format("%1$" + (70 + ("["+ messages[i][2]+"]").length()) + "s", "["+messages[i][2]+"]");
         }
         chatMsg = new JList<String>(formattedMessages);
         chatMsg.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
