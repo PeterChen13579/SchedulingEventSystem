@@ -235,7 +235,7 @@ public class MessagingSystem {
             return("The user " + recipient + " does not exist.");
         } else if (userManager.isAddFriend(senderUsername, recipient)) {
             this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-            return("Message sent.");
+            return(null);
         } else {
             return(recipient + " is not your friend.");
         }
@@ -506,7 +506,7 @@ public class MessagingSystem {
     /**
      * Add friends to message
      * @param mainUserUsername the current user
-     * @return true if the friend is added or already your friend, false otherwise
+     * @return An error message, or null if there is none.
      */
     public String addPeopleToMessage(String mainUserUsername, String newFriend){
 
@@ -528,7 +528,7 @@ public class MessagingSystem {
         } else if (mainUserUsername.equals(newFriend)){
             return("You cannot add yourself as a friend");
         } else if (userManager.addFriend(mainUserUsername, newFriend)) {
-            return("true");
+            return(null);
         } else {
             return(newFriend + " is already a friend.");
         }
@@ -577,6 +577,14 @@ public class MessagingSystem {
 
     public UUID getMessageByIndex(UUID chatId, int messageIndex) {
         return userChatManager.getMessageUUIDbyIndex(chatId, messageIndex);
+    }
+
+    public boolean doesMessageHaveImage(UUID chatId, UUID messageId) {
+        return userChatManager.hasImage(chatId, messageId);
+    }
+
+    public String getMessageImageString(UUID chatId, UUID messageId) {
+        return userChatManager.getImage(chatId, messageId);
     }
 }
 

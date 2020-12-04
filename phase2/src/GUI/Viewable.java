@@ -32,6 +32,7 @@ public interface Viewable {
     String deleteMsg(String currentUsername, int chatIndex, int messageIndex);
     String markChatAsUnread(String currentUsername, int chatIndex);
     String archiveChats(String currentUsername, int chatIndex);
+    boolean includesImage(String currentUsername, int chatIndex, int messageIndex);
     boolean cancelEvent(String eventName, String username);
     String changeCapacity(String eventName, int capacity, String username, String rmNum);
     String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum,

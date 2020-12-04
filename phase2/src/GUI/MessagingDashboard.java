@@ -6,7 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 
 public class MessagingDashboard extends JPanel{
     private final String loginType;
@@ -30,8 +34,9 @@ public class MessagingDashboard extends JPanel{
     private final Viewable sendsInfo;
     private ArrayList <String> userToDisplay;
     private final Dashboard dashboard;
-    private JFileChooser fileChooser;
+    private final JFileChooser fileChooser;
     private String attachedImagePath;
+    private HashMap<Integer, byte[]> indexToImage;
 
     public MessagingDashboard(Viewable sendsInfo, Dashboard dashboard, String currentUsername, String loginType){
 
@@ -42,7 +47,6 @@ public class MessagingDashboard extends JPanel{
         this.userToDisplay = sendsInfo.sendChatName(currentUsername);
         this.currentChatIndex = -1;
         this.fileChooser = new JFileChooser(System.getProperty("user.dir"));
-        this.attachedImagePath = "";
         try {
             SynthLookAndFeel style = new SynthLookAndFeel();
             style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
@@ -142,12 +146,12 @@ public class MessagingDashboard extends JPanel{
         this.add(back);
         userToDisplay = sendsInfo.sendChatName(currentUsername);
 
-        chatNames = new JList<String>(userToDisplay.toArray(new String[userToDisplay.size()]));
+        chatNames.setListData(userToDisplay.toArray(new String[0]));
         chatNames.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         chatNames.setLayoutOrientation(JList.VERTICAL);
         chatNames.setVisibleRowCount(-1);
         JScrollPane listScroller = new JScrollPane(chatNames);
-        listScroller.setPreferredSize(new Dimension(750, 800));
+        listScroller.setPreferredSize(new Dimension(800, 550));
         this.add(listScroller);
         dashboard.refresh();
     }
@@ -156,11 +160,19 @@ public class MessagingDashboard extends JPanel{
         currentMenu = "ViewOneChat";
         this.removeAll();
         String[] formattedMessages = new String[messages.length];
+        indexToImage = new HashMap<Integer, byte[]>();
         for (int i=0; i<messages.length; i++) {
-            formattedMessages[i] = "          " + messages[i][0] + " :    " + messages[i][1] +
-                    String.format("%1$" + (70 + ("["+ messages[i][2]+"]").length()) + "s", "["+messages[i][2]+"]");
+            if (sendsInfo.includesImage(currentUsername, currentChatIndex, i)) {
+                formattedMessages[i] = "          " + messages[i][0] + " :    " + messages[i][1] + "*" +
+                        String.format("%1$" + (70 + ("["+ messages[i][2]+"]").length()) + "s", "["+messages[i][2]+"]");
+                indexToImage.put(i, Base64.getDecoder().decode(messages[i][3]));
+            } else {
+                formattedMessages[i] = "          " + messages[i][0] + " :    " + messages[i][1] +
+                        String.format("%1$" + (70 + ("["+ messages[i][2]+"]").length()) + "s", "["+messages[i][2]+"]");
+            }
+
         }
-        chatMsg = new JList<String>(formattedMessages);
+        chatMsg.setListData(formattedMessages);
         chatMsg.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         chatMsg.setLayoutOrientation(JList.VERTICAL);
         chatMsg.setVisibleRowCount(-1);
@@ -263,13 +275,13 @@ public class MessagingDashboard extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(friendAddText.getText());
-                String result = sendsInfo.addFriend(currentUsername, friendAddText.getText());
-                if (result.equals("true")){
+                String errorMessage = sendsInfo.addFriend(currentUsername, friendAddText.getText());
+                if (errorMessage == null){
                     userToDisplay = sendsInfo.sendChatName(currentUsername);
                     refreshTextFields();
                     messagingMenu();
                 }else{
-                    String failedMsg = result;
+                    String failedMsg = errorMessage;
                     failedMenu(failedMsg);
                 }
             }
@@ -278,12 +290,12 @@ public class MessagingDashboard extends JPanel{
         confirmOneMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String result = sendsInfo.sendOneMsg(currentUsername,usernameTextfield.getText(), content.getText(), "");
-                if (result.equals("Message sent.")){
+                String errorMessage = sendsInfo.sendOneMsg(currentUsername,usernameTextfield.getText(), content.getText(), attachedImagePath);
+                if (errorMessage == null){
                     messagingMenu();
                     refreshTextFields();
                 }else{
-                    failedMenu(result);
+                    failedMenu(errorMessage);
                 }
             }
         });
@@ -372,7 +384,7 @@ public class MessagingDashboard extends JPanel{
 
             }
         });
-        attachImage = new JButton("Attach an image");
+        attachImage = new JButton("Attach image");
         attachImage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -418,7 +430,20 @@ public class MessagingDashboard extends JPanel{
         displayUsername = new JLabel("Username:");
         errorText = new JLabel();
         newMessages = new JLabel();
+        chatNames = new JList<String>();
+        indexToImage = new HashMap<Integer, byte[]>();
         chatMsg = new JList();
+        chatMsg.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                if (event.getClickCount() == 2) {
+                    int index = chatMsg.locationToIndex(event.getPoint());
+                    if (indexToImage.get(index) != null) {
+                        displayImage(indexToImage.get(index));
+                    }
+                }
+            }
+        });
     }
 
 
@@ -443,11 +468,18 @@ public class MessagingDashboard extends JPanel{
         }
     }
 
-    private Integer tryParse(String text){
-        try {
-            return Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
+
+    private void displayImage(byte[] imageBytes) {
+        JFrame imageFrame = new JFrame("Image");
+
+        JLabel label = new JLabel();
+        label.setIcon(new ImageIcon(imageBytes));
+
+        JPanel panel = (JPanel)imageFrame.getContentPane();
+        panel.add(label);
+
+        imageFrame.setLocationRelativeTo(null);
+        imageFrame.pack();
+        imageFrame.setVisible(true);
     }
 }

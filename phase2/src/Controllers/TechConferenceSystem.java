@@ -189,12 +189,17 @@ public class TechConferenceSystem implements Viewable{
         String senderUsername = messagingSystem.getMessageSender(chatId, messageId);
         LocalDateTime timeStamp = messagingSystem.getMessageTimestamp(chatId, messageId);
         String content = messagingSystem.getMessageContent(chatId, messageId);
+        String imageString = messagingSystem.getMessageImageString(chatId, messageId);
 
         // convert datetime to string
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , yyyy-MM-dd");    //format time
         String formattedTimestamp = timeStamp.format(formatter);
 
-        return new ArrayList<>(Arrays.asList(senderUsername, content, formattedTimestamp));
+        if (chatManager.hasImage(chatId, messageId)) {
+            return new ArrayList<>(Arrays.asList(senderUsername, content, formattedTimestamp, imageString));
+        } else {
+            return new ArrayList<>(Arrays.asList(senderUsername, content, formattedTimestamp));
+        }
     }
 
     /**
@@ -281,6 +286,13 @@ public class TechConferenceSystem implements Viewable{
 
         return messagingSystem.archiveUserChat(currentUsername, chatId);
     }
+
+    public boolean includesImage(String currentUsername, int chatIndex, int messageIndex) {
+        UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
+        UUID messageId = messagingSystem.getMessageByIndex(chatId, messageIndex);
+        return messagingSystem.doesMessageHaveImage(chatId, messageId);
+    }
+
 
     /** TO @William Wang and Kailas Moon
      *

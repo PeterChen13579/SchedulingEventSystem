@@ -370,6 +370,14 @@ public class ChatManager implements Serializable {
         return chatMessagesList.get(messageIndex);
     }
 
+    public boolean hasImage(UUID chatId, UUID messageId) {
+        return getChatMessage(chatId, messageId).isImageMessage();
+    }
+
+    public String getImage(UUID chatId, UUID messageId) {
+        return getChatMessage(chatId, messageId).getImageString();
+    }
+
     // Make sure message exists in this chat
     private Message getChatMessage(UUID chatId, UUID messageId){
         Chat chat = allChats.get(chatId);
