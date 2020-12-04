@@ -377,7 +377,7 @@ public class SchedulingSystem {
                 List<String> eventTitles = new ArrayList<>();
                 eventTitles.add(title);
                 String content = "ANNOUNCEMENT: One of the events you are participating in: " + eventTitles.get(0) +
-                        " has been updated to allow " + capacity + "attendees! ";
+                        " has been updated to allow " + capacity + " attendee(s)! ";
                 ms.organizerMessageEventSpeakersAndAttendees(username, eventTitles, content, "");
                 em.changeEventMaxNum(title, capacity);
                 return true;
