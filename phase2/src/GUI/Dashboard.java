@@ -546,7 +546,7 @@ public class Dashboard{
                 int changeCapacity = tryParse(changeCapacityEventTextfield.getText());
                 if (changeCapacity != -1){
                     sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername);
-                    changeEventCapacity();
+                    schedulingMenu();
                 }else{
                     failedMenu("You must enter an integer.");
                 }
