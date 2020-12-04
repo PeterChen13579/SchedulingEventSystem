@@ -435,6 +435,25 @@ public class TechConferenceSystem implements Viewable{
 
     }
 
+    /**
+     *  TO LISA
+     * @param VIP
+     * @param date
+     * @param startTime
+     * @param endTime
+     * @param roomNum
+     * @param speakerUsernames
+     * @param eventTitle
+     * @param capacity
+     * @return
+     */
+    public String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+            speakerUsernames, String eventTitle, int capacity){
+        System.out.println(speakerUsernames);
+        return schedulingSystem.helper_addEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
+
+    }
+
 //--------------------------------------------Sign Up Buttons-----------------------------------------
 
 
