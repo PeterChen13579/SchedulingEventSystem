@@ -122,6 +122,11 @@ public class SignUpSystem {
         return 0;
     }
 
+    /**
+     * This method gets the event's a username has signed up for
+     * @param username List of events that their signed up for already
+     * @return A list of events that this username has signed up for
+     */
     public String[] displaySignedUpEvents(String username) {
         List<String> events;
         if (um.userType(username).equals("Speaker")){
@@ -133,13 +138,26 @@ public class SignUpSystem {
         return toReturn;
     }
 
+    /**
+     * Gets all events possible to display;
+     * @return   A list of events
+     */
     public String[] displayAllEvents() {
         List<String> events = em.getAllEventTitle();
         String[] toReturn = events.toArray(new String[0]);
         return toReturn;
     }
 
+    /**
+     * Checks whether username meets the requirement for VIP account or not (attends at least 2 events)
+     * @param username
+     * @return
+     */
     public boolean userIsVIP(String username) {
-        return um.isAttendeeVIP(username);
+        if (um.userType(username).equals("Speaker")){
+            return false;
+        }else{
+            return um.isAttendeeVIP(username);
+        }
     }
 }
