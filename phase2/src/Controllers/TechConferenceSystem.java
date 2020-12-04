@@ -406,7 +406,7 @@ public class TechConferenceSystem implements Viewable{
      * @return            true if successfully changed, false otherwise.
      */
     @Override
-    public boolean changeCapacity(String eventName, int capacity, String username, String rmNum){
+    public String changeCapacity(String eventName, int capacity, String username, String rmNum){
         return schedulingSystem.changeCapacity(eventName, capacity, username, rmNum);
     }
 

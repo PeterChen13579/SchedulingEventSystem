@@ -56,7 +56,6 @@ public class Dashboard{
 
     public Dashboard() {
         createThemes();
-
         frame = new JFrame("Tech Conference System");
         changeTheme("regular");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -164,7 +163,6 @@ public class Dashboard{
         buttonPanel.add(confirmOrganizerSignUp);
         buttonPanel.add(back);
         refresh();
-        
     }
 
 
@@ -178,7 +176,6 @@ public class Dashboard{
         buttonPanel.add(confirmSpeakerSignUp);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void createAttendeeAccountMainMenu(){
@@ -304,7 +301,6 @@ public class Dashboard{
         buttonPanel.add(noSpeakerEvent);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void cancelEvent(){
@@ -315,7 +311,6 @@ public class Dashboard{
         buttonPanel.add(confirmCancelEvent);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void changeEventCapacity(){
@@ -326,6 +321,8 @@ public class Dashboard{
         buttonPanel.add(changeCapacityMsg);
         buttonPanel.add(changeCapacityEventTextfield);
         buttonPanel.add(confirmChangeCapacity);
+        buttonPanel.add(addRoomLabel);
+        buttonPanel.add(roomNumber);
         buttonPanel.add(back);
         refresh();
     }
@@ -542,12 +539,12 @@ public class Dashboard{
             }
         });
         confirmChangeCapacity = new JButton("Confirm");
-        confirmChangeCapacity.addActionListener(new ActionListener() {
+        confirmChangeCapacity.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 int changeCapacity = tryParse(changeCapacityEventTextfield.getText());
                 if (changeCapacity != -1){
-                    sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername);
+                    sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername, roomNumber.getText());
                     schedulingMenu();
                 }else{
                     failedMenu("You must enter an integer.");
