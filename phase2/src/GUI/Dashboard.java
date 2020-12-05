@@ -738,6 +738,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String vipVerify = VIP.getText();
+                clearEventTextField();
                 if (!(vipVerify.equalsIgnoreCase("yes") || vipVerify.equalsIgnoreCase("no"))){
                     failedMenu("You need to enter 'yes' or 'no' in vip");
                 }else{
@@ -820,13 +821,14 @@ public class Dashboard{
                 tagRequest();
             }
         });
-        //TODO: add error messages for these
         addressed = new JButton("Addressed");
         addressed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int input = tryParse(textInput.getText());
-                sendsInfo.markAddressed(input);
+                if (!sendsInfo.markAddressed(input)) {
+                    failedMenu("This request number does not exist.");
+                }
             }
         });
         pending = new JButton("Pending");
@@ -834,7 +836,9 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int input = tryParse(textInput.getText());
-                sendsInfo.markPending(input);
+                if (!sendsInfo.markPending(input)) {
+                    failedMenu("This request number does not exist.");
+                }
             }
         });
         textInput = new JTextField(12);
@@ -884,7 +888,22 @@ public class Dashboard{
         password.setText("");
     }
 
+    private void clearEventTextField() {
+        textInput.setText("");
+        roomNumber.setText("");
+        roomCapacity.setText("");
+        filename.setText("");
+        eventName.setText("");
+        eventCapacity.setText("");
+        date.setText("");
+        startTime.setText("");
+        endTime.setText("");
+        speakerUsernameOne.setText("");
+        speakerUsernameMulti.setText("");
+        VIP.setText("");
+    }
     private void previousMenu() {
+        clearTextField();
         switch (previousMenu) {
             case "LoggedIn":
                 loginType();
@@ -913,6 +932,7 @@ public class Dashboard{
                 break;
             case "ChooseEvent":
                 addEvent();
+                clearEventTextField();
                 break;
             case "AddRoom":
                 addRoom();
@@ -967,6 +987,9 @@ public class Dashboard{
                 break;
             case "changeEventCapacity":
                 schedulingMenu();
+                break;
+            case "TagRequest":
+                tagRequest();
                 break;
         }
     }

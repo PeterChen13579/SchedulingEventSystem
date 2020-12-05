@@ -522,12 +522,12 @@ public class TechConferenceSystem implements Viewable{
         requestSystem.sendRequest(username, request);
     }
 
-    public void markAddressed(int requestNumber) {
-        requestSystem.markedAsAddressed(requestNumber);
+    public boolean markAddressed(int requestNumber) {
+        return requestSystem.markedAsAddressed(requestNumber);
     }
 
-    public void markPending(int requestNumber) {
-        requestSystem.markedAsPending(requestNumber);
+    public boolean markPending(int requestNumber) {
+        return requestSystem.markedAsPending(requestNumber);
     }
 
     public String[] displayRequests() {

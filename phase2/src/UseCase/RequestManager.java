@@ -70,7 +70,7 @@ public class RequestManager implements Serializable {
      * @return true iff the request number exists and is a natural number
      */
     public boolean isRequestNumValid(Integer requestNum){
-        if (requestNum < 0 || requestNum >= allRequests.size()){
+        if (requestNum < 1 || requestNum > allRequests.size()){
             return false;
         }else{
             return true;
