@@ -114,7 +114,7 @@ public class ChatManager implements Serializable {
     }
 
     /**
-     * Archive a chat for a specific user. The chat still exists but it is hidden from the user.
+     * Archive a chat for a specific user. The chat still exists but it is hidden from the user. Also marks the chat as read.
      * PRECONDITION : User exists in the userManager, the chat id is not already archived by user
      * @param username the username of the user
      * @param chatId the id of the chat to archive
@@ -128,6 +128,7 @@ public class ChatManager implements Serializable {
             hiddenChats.add(chatId);
             archivedChats.put(username, hiddenChats);
         }
+        markChatAsRead(username, chatId);   //call helper
     }
 
     /**
@@ -232,14 +233,9 @@ public class ChatManager implements Serializable {
      * @return A list of all the messages in the chat
      */
     public List<UUID> getChatMessages(String username, UUID chatId) {
-        if (isChatEmpty(chatId)){
-            return new ArrayList<>(); // returns empty list if chat is empty
-        }
-
         Chat chat = allChats.get(chatId);
-        List<UUID> chatMessagesList = chat.getAllMessages();
-        chat.setLastViewedMessage(username, chatMessagesList.get(chatMessagesList.size()-1));  //updates the last viewed message
-        return chatMessagesList;
+        markChatAsRead(username, chatId);  //call helper
+        return chat.getAllMessages();
     }
 
     /**
@@ -406,5 +402,14 @@ public class ChatManager implements Serializable {
     private void setBase64String(ImageMessage message, String imageString) {
         message.setImageString(imageString);
     }
+
+    private void markChatAsRead(String username, UUID chatId){
+        if (!isChatEmpty(chatId)){ //only marks if chat is not empty
+            Chat chat = allChats.get(chatId);
+            List<UUID> chatMessagesList = chat.getAllMessages();
+            chat.setLastViewedMessage(username, chatMessagesList.get(chatMessagesList.size()-1));  //updates the last viewed message
+        }
+    }
+
 
 }
