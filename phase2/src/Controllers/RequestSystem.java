@@ -2,9 +2,6 @@ package Controllers;
 
 import UseCase.RequestManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RequestSystem {
     RequestManager rm;
 
@@ -23,17 +20,29 @@ public class RequestSystem {
     /**
      * Mark the request as addressed
      * @param requestNum the request number that a organizer want to marked addressed
+     * @return true iff the request has been successfully marked as addressed
      */
-    public void markedAsAddressed(int requestNum){
-        rm.markedAsAddressed(requestNum);
+    public boolean markedAsAddressed(int requestNum){
+        if (!rm.isRequestNumValid(requestNum)){
+            return false;
+        }else{
+            rm.markedAsAddressed(requestNum);
+            return true;
+        }
     }
 
     /**
      * Mark the request as pending
      * @param requestNum the request number that a organizer want to marked pending
+     * @return true iff the request has been successfully marked as addressed
      */
-    public void markedAsPending(int requestNum){
-        rm.markedAsPending(requestNum);
+    public boolean markedAsPending(int requestNum){
+        if (!rm.isRequestNumValid(requestNum)){
+            return false;
+        }else{
+            rm.markedAsPending(requestNum);
+            return true;
+        }
     }
 
     /**
