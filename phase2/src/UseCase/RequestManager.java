@@ -4,6 +4,7 @@ import Entities.Event;
 import Entities.Request;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,13 @@ public class RequestManager implements Serializable {
      * Create Request object, add it to all Requests list
      *
      * @param senderUserName the sender's username
-     * @param time the time that this request been sent
      * @param content the content of the request
      */
-    public void createRequest(String senderUserName, LocalDateTime time, String content){
-        Request request = new Request(senderUserName, time, content);
+    public void createRequest(String senderUserName, String content){
+        List<Integer> allRequestNum= allRequestNum();
+        int newRequestNum = allRequestNum.size() + 1;
+        LocalDateTime sendTime =LocalDateTime.now();
+        Request request = new Request(newRequestNum, senderUserName, sendTime, content);
         allRequests.add(request);
     }
 
@@ -42,7 +45,20 @@ public class RequestManager implements Serializable {
     public void markedAsAddressed(Integer requestNum){
         for(Request request: allRequests ){
             if(request.getRequestNum().equals(requestNum)){
-                request.setStatus();
+                request.setStatusAddressed();
+            }
+        }
+    }
+
+    /**
+     * Mark the request as pending
+     *
+     * @param requestNum the request number of the request
+     */
+    public void markedAsPending(Integer requestNum){
+        for(Request request: allRequests ){
+            if(request.getRequestNum().equals(requestNum)){
+                request.setStatusPending();
             }
         }
     }
@@ -73,7 +89,8 @@ public class RequestManager implements Serializable {
         }else {status = "pending";}
         String requestContent = request.getContent();
         Integer requestNum = request.getRequestNum();
-        return  "Request No." + requestNum + " : " + requestContent + " [ " + status + " ] ";
+        String requestSender = request.getSenderUsername();
+        return  "Request No." + requestNum + "(from: " + requestSender + ") : " + requestContent + " [ " + status + " ] ";
     }
 
     /**
