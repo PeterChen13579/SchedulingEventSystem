@@ -1,16 +1,7 @@
 package GUI;
 
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JFileChooser;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JList;
-import javax.swing.UIManager;
-import javax.swing.SwingUtilities;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -18,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.util.List;
 
@@ -363,6 +353,9 @@ public class Dashboard{
     private void viewRequests() {
         currentMenu = "ViewRequests";
         buttonPanel.removeAll();
+        JScrollPane requests = new JScrollPane(new JList(sendsInfo.displayRequests()), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        requests.setPreferredSize(new Dimension(1100, 720));
+        buttonPanel.add(requests);
         buttonPanel.add(back);
         refresh();
     }
@@ -815,6 +808,7 @@ public class Dashboard{
         viewAllRequests.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                previousMenu = "SeeRequests";
                 viewRequests();
             }
         });

@@ -77,7 +77,7 @@ public class SignUpDashboard extends JPanel {
             this.add(errorText);
         } else {
             JScrollPane events =new JScrollPane(new JList(info), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            events.setPreferredSize(new Dimension(640, 720));
+            events.setPreferredSize(new Dimension(1100, 720));
             this.add(events);
         }
         this.add(back);

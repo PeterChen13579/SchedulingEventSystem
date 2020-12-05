@@ -49,4 +49,5 @@ public interface Viewable {
     void addRequest(String username, String request);
     void markAddressed(int requestNumber);
     void markPending(int requestNumber);
+    String[] displayRequests();
 }

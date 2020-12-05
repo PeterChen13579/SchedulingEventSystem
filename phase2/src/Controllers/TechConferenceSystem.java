@@ -530,6 +530,10 @@ public class TechConferenceSystem implements Viewable{
         requestSystem.markedAsPending(requestNumber);
     }
 
+    public String[] displayRequests() {
+        return requestSystem.displayAllRequests();
+    }
+
     //--------------------------------------------Creating Controller-----------------------------------------
     public boolean createProgram() {
         chatManager = new ChatManager();
