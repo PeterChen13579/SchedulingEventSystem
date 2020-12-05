@@ -46,4 +46,7 @@ public interface Viewable {
     boolean userIsVIP(String username);
     String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity);
+    void addRequest(String username, String request);
+    void markAddressed(int requestNumber);
+    void markPending(int requestNumber);
 }

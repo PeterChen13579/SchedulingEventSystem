@@ -43,6 +43,9 @@ public class Dashboard{
     private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
     private JButton confirmCancelEvent, confirmChangeCapacity;
     private JButton successNextPanel;
+    private JButton sendRequest, confirmSendRequest;
+    private JButton seeRequests, viewAllRequests, tagRequest;
+    private JButton addressed, pending;
     private JTextField cancelEventTextfield, whichEvent;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
@@ -195,12 +198,12 @@ public class Dashboard{
 
 
     private void loggedInAttendee() {
-        System.out.println("this happened");
         loginType = "Attendee";
         currentMenu = "LoggedInAttendee";
         buttonPanel.removeAll();
         buttonPanel.add(signUpMenu);
         buttonPanel.add(messageMenu);
+        buttonPanel.add(sendRequest);
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
@@ -215,6 +218,7 @@ public class Dashboard{
         buttonPanel.add(scheduleMenu);
         buttonPanel.add(createSpeaker);
         buttonPanel.add(createAttendee);
+        buttonPanel.add(seeRequests);
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
@@ -342,6 +346,43 @@ public class Dashboard{
             whichEvent.setText("multi");
         }
         buttonPanel.add(confirmAddEvent);
+        buttonPanel.add(back);
+        refresh();
+    }
+
+//---------------------------------------Send Request Menu ---------------------------------------;
+
+    private void sendRequestMenu() {
+        currentMenu = "SendRequest";
+        buttonPanel.removeAll();
+        buttonPanel.add(textInput);
+        buttonPanel.add(confirmSendRequest);
+        buttonPanel.add(back);
+        refresh();
+    }
+
+    private void seeRequestsMenu() {
+        currentMenu = "SeeRequests";
+        buttonPanel.removeAll();
+        buttonPanel.add(viewAllRequests);
+        buttonPanel.add(tagRequest);
+        buttonPanel.add(back);
+        refresh();
+    }
+
+    private void viewRequests() {
+        currentMenu = "ViewRequests";
+        buttonPanel.removeAll();
+        buttonPanel.add(back);
+        refresh();
+    }
+
+    private void tagRequest() {
+        currentMenu = "TagRequest";
+        buttonPanel.removeAll();
+        buttonPanel.add(textInput);
+        buttonPanel.add(addressed);
+        buttonPanel.add(pending);
         buttonPanel.add(back);
         refresh();
     }
@@ -755,6 +796,63 @@ public class Dashboard{
                 }
             }
         });
+        sendRequest = new JButton("Send Request");
+        sendRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "LoggedIn";
+                sendRequestMenu();
+            }
+        });
+        confirmSendRequest = new JButton("Confirm");
+        confirmSendRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendsInfo.addRequest(currentUsername, textInput.getText());
+                clearTextField();
+                previousMenu();
+            }
+        });
+        seeRequests = new JButton("See Requests");
+        seeRequests.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "LoggedIn";
+                seeRequestsMenu();
+            }
+        });
+        viewAllRequests = new JButton("View All Requests");
+        viewAllRequests.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewRequests();
+            }
+        });
+        tagRequest = new JButton("Tag Request");
+        tagRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "SeeRequests";
+                tagRequest();
+            }
+        });
+        //TODO: add error messages for these
+        addressed = new JButton("Addressed");
+        addressed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int input = tryParse(textInput.getText());
+                sendsInfo.markAddressed(input);
+            }
+        });
+        pending = new JButton("Pending");
+        pending.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int input = tryParse(textInput.getText());
+                sendsInfo.markPending(input);
+            }
+        });
         textInput = new JTextField(12);
         password = new JPasswordField(12);
         errorText = new JLabel();
@@ -787,7 +885,6 @@ public class Dashboard{
         eventCapacity = new JTextField(12);
         successText = new JLabel();
         whichEvent = new JTextField(12);
-        System.out.println(whichEvent.getText().equals(""));
     }
 
     /**
@@ -804,7 +901,6 @@ public class Dashboard{
     }
 
     private void previousMenu() {
-        System.out.println(previousMenu);
         switch (previousMenu) {
             case "LoggedIn":
                 loginType();
@@ -837,7 +933,10 @@ public class Dashboard{
             case "AddRoom":
                 addRoom();
                 break;
-
+            case "SeeRequests":
+                seeRequestsMenu();
+                previousMenu = "LoggedIn";
+                break;
         }
     }
 
@@ -958,7 +1057,7 @@ public class Dashboard{
             vipTheme = new SynthLookAndFeel();
             vipTheme.load(Dashboard.class.getResourceAsStream("vip.xml"), Dashboard.class);
         } catch (Exception e) {
-            System.out.println(e);
+            failedMenu("Failed to create themes. Check if you're missing XML files.");
         }
     }
 

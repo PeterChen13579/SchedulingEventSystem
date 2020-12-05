@@ -4,6 +4,7 @@ import UseCase.UserManager;
 import UseCase.RoomManager;
 import UseCase.EventManager;
 import UseCase.ChatManager;
+import UseCase.RequestManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -27,7 +28,7 @@ public class Reader {
      */
     public Object[] loadData(String filename) {
         File file = new File(filename);
-        Object helper[] = new Object[4];
+        Object helper[] = new Object[5];
         try {
             if (file.exists()) {
                 if (file.length() != 0) {
@@ -36,7 +37,7 @@ public class Reader {
                     ObjectInput input = new ObjectInputStream(buffer);
 
                     if (verifySaves(filename)) {
-                        for (int i = 0; i < 4; i++) {
+                        for (int i = 0; i < 5; i++) {
                             helper[i] = input.readObject();
                         }
                     }
@@ -66,8 +67,7 @@ public class Reader {
             inputFile = new FileInputStream(file);
             buffer = new BufferedInputStream(inputFile);
             input = new ObjectInputStream(buffer);
-            System.out.println("hi");
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 System.out.println(i);
                 switch (i) {
                     case 0:
@@ -81,6 +81,9 @@ public class Reader {
                         break;
                     case 3:
                         helper = (UserManager) input.readObject();
+                        break;
+                    case 5:
+                        helper = (RequestManager) input.readObject();
                         break;
                 }
             }

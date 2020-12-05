@@ -128,7 +128,6 @@ public class SignUpDashboard extends JPanel {
         seeAllEvent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("clicked see all");
                 previousMenu = "BrowseMenu";
                 displayEvents(true);
             }
@@ -137,7 +136,6 @@ public class SignUpDashboard extends JPanel {
         seeSignedEvent.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("clicked see signed");
                 previousMenu = "BrowseMenu";
                 displayEvents(false);
             }
@@ -225,7 +223,6 @@ public class SignUpDashboard extends JPanel {
     }
 
     private void previousMenu() {
-        System.out.println(previousMenu);
         switch (previousMenu) {
             case "LoggedIn":
                 //return to dashboard

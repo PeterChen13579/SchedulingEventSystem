@@ -255,7 +255,6 @@ public class MessagingDashboard extends JPanel{
         sendMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("bruh?");
                 sendMessageMenu();
             }
         });
@@ -308,7 +307,6 @@ public class MessagingDashboard extends JPanel{
         confirmFriend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(friendAddText.getText());
                 String errorMessage = sendsInfo.addFriend(currentUsername, friendAddText.getText());
                 if (errorMessage == null){
                     refreshTextFields();

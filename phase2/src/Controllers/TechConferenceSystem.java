@@ -7,6 +7,7 @@ import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
+import UseCase.RequestManager;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
@@ -29,10 +30,12 @@ public class TechConferenceSystem implements Viewable{
     private MessagingSystem messagingSystem;
     private SchedulingSystem schedulingSystem;
     private SignUpSystem signUpSystem;
+    private RequestSystem requestSystem;
     private UserManager userManager;
     private ChatManager chatManager;
     private EventManager eventManager;
     private RoomManager roomManager;
+    private RequestManager requestManager;
     private final Dashboard dashboard;
 
 
@@ -90,6 +93,7 @@ public class TechConferenceSystem implements Viewable{
             eventManager = (EventManager) loadedObjects[1];
             roomManager = (RoomManager) loadedObjects[2];
             userManager = (UserManager) loadedObjects[3];
+            requestManager = (RequestManager) loadedObjects[4];
         } else {
             return false;
         }
@@ -512,12 +516,27 @@ public class TechConferenceSystem implements Viewable{
         return signUpSystem.cancelSpotEvent(username, eventTitle);
     }
 
+    //--------------------------------------------Request Buttons-----------------------------------------
+
+    public void addRequest(String username, String request) {
+        requestSystem.sendRequest(username, request);
+    }
+
+    public void markAddressed(int requestNumber) {
+        requestSystem.markedAsAddressed(requestNumber);
+    }
+
+    public void markPending(int requestNumber) {
+        requestSystem.markedAsPending(requestNumber);
+    }
+
     //--------------------------------------------Creating Controller-----------------------------------------
     public boolean createProgram() {
         chatManager = new ChatManager();
         eventManager = new EventManager();
         roomManager = new RoomManager();
         userManager = new UserManager();
+        requestManager = new RequestManager();
         initializeManagers();
         return true;
     }
@@ -527,15 +546,17 @@ public class TechConferenceSystem implements Viewable{
         messagingSystem = new MessagingSystem(chatManager, userManager, eventManager);
         schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager, messagingSystem);
         signUpSystem = new SignUpSystem(eventManager, userManager, roomManager);
+        requestSystem = new RequestSystem(requestManager);
     }
 
     public void saveProgram(String filename) {
         Writer writer = new Writer();
-        Object saveObjects[] = new Object[4];
+        Object saveObjects[] = new Object[5];
         saveObjects[0] = chatManager;
         saveObjects[1] = eventManager;
         saveObjects[2] = roomManager;
         saveObjects[3] = userManager;
+        saveObjects[4] = requestManager;
         writer.writeToFile(filename, saveObjects);
     }
 
