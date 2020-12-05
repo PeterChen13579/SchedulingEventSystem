@@ -62,6 +62,7 @@ public class MessagingDashboard extends JPanel{
         this.loginType = loginType;
         this.dashboard = dashboard;
         this.currentChatIndex = -1;
+        this.attachedImagePath = "";
         this.fileChooser = new JFileChooser(System.getProperty("user.dir"));
 //        @Peter commenting this out shouldn't change anything since style is set in Dashboard
 //        But I haven't tested it yet so I haven't fully deleted it just in case
