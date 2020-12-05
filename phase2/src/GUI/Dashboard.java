@@ -353,7 +353,8 @@ public class Dashboard{
     private void viewRequests() {
         currentMenu = "ViewRequests";
         buttonPanel.removeAll();
-        JScrollPane requests = new JScrollPane(new JList(sendsInfo.displayRequests()), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane requests = new JScrollPane(new JList(sendsInfo.displayRequests()),
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         requests.setPreferredSize(new Dimension(1100, 720));
         buttonPanel.add(requests);
         buttonPanel.add(back);
@@ -624,9 +625,6 @@ public class Dashboard{
         confirmAttendeeSignUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //fyi password.getText() is deprecated bc java prefers password.getPassword()
-                //which returns a char array instead of a string. idk if anyone wants to change
-                //user/pass verification to use char array for the password but i'm not doing it so
                 if (sendsInfo.createAttendeeButton(textInput.getText(), password.getText())) {
                     loggedInOrganizer();
                 }else{
@@ -680,8 +678,7 @@ public class Dashboard{
                 String status = sendsInfo.LogInButton(currentUsername, password.getText());
                 switch (status) {
                     case "false":
-                        failedMenu("You have entered an invalid username/password or " +
-                                "the username does not exist in the database.");
+                        failedMenu("You have entered an invalid username/password");
                         break;
                     case "Attendee":
                         loginType = "Attendee";
@@ -738,7 +735,6 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String vipVerify = VIP.getText();
-                clearEventTextField();
                 if (!(vipVerify.equalsIgnoreCase("yes") || vipVerify.equalsIgnoreCase("no"))){
                     failedMenu("You need to enter 'yes' or 'no' in vip");
                 }else{
@@ -772,6 +768,7 @@ public class Dashboard{
                         }
                         if (createdOrNot.equals("true")){
                             successMenu("You have successfully created an event!");
+                            clearEventTextField();
                         }else{
                             failedMenu(createdOrNot);
                         }
@@ -932,7 +929,6 @@ public class Dashboard{
                 break;
             case "ChooseEvent":
                 addEvent();
-                clearEventTextField();
                 break;
             case "AddRoom":
                 addRoom();

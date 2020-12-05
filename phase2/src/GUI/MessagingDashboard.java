@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Base64;
 import java.util.Arrays;

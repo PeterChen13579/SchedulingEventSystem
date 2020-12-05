@@ -2,7 +2,6 @@ package Controllers;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.UserManager;
-import Presenters.MessagePresenter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,17 +16,15 @@ import java.util.*;
  * @author William Wang and Kailas Moon
  */
 public class MessagingSystem {
-    private ChatManager userChatManager;
-    private MessagePresenter messagingPresenter;
-    private UserManager userManager;
-    private EventManager eventManager;
+    private final ChatManager userChatManager;
+    private final UserManager userManager;
+    private final EventManager eventManager;
 
     /**
      * Creates the Messaging System
      */
     public MessagingSystem(ChatManager chatManager, UserManager userManager, EventManager eventManager) {
         this.userChatManager = chatManager;
-        this.messagingPresenter = new MessagePresenter(userChatManager);
         this.userManager = userManager;
         this.eventManager = eventManager;
     }
