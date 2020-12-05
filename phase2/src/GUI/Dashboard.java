@@ -2,8 +2,18 @@ package GUI;
 
 import Controllers.TechConferenceSystem;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JFileChooser;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,6 +23,10 @@ import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.util.List;
 
+/**
+ * Creates base GUI for the entire program
+ * @author Joyce Huang, Peter Chen
+ */
 public class Dashboard{
 
     private static JFrame frame;
@@ -28,7 +42,8 @@ public class Dashboard{
     private JButton confirmRoomNumber, confirmAddEvent;
     private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
     private JButton confirmCancelEvent, confirmChangeCapacity;
-    private JTextField cancelEventTextfield;
+    private JButton successNextPanel;
+    private JTextField cancelEventTextfield, whichEvent;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
     private JTextField textInput, roomNumber, roomCapacity, filename, eventName, eventCapacity;
@@ -36,13 +51,12 @@ public class Dashboard{
     private JLabel dateDisplay, startTimeDisplay, endTimeDisplay, VIPDisplay;
     private JLabel speakerUsernameDisplayOne, speakerUsernameDisplayMulti;
     private JPasswordField password;
-    private String currentMenu;
-    private String previousMenu;
+    private String currentMenu, previousMenu;
     private String loginType;
     private JLabel displayCapacity;
     private JLabel eventNameMsg;
     private Viewable sendsInfo;
-    private JLabel errorText;
+    private JLabel errorText, successText;
     private JLabel displayUsername, displayPassword;
     private JLabel cancelEventMsg, changeCapacityMsg;
     private JList displayList;
@@ -53,11 +67,13 @@ public class Dashboard{
     private SynthLookAndFeel regularTheme, vipTheme;
     private JFileChooser fileChooser;
 
+    /**
+     * Constructor that creates and starts the program
+     */
     public Dashboard() {
         createThemes();
-
         frame = new JFrame("Tech Conference System");
-        changeTheme("vip");
+        changeTheme("regular");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1280, 720));
         frame.setLocation(screenSize.width/2 - 640, screenSize.height/2 - 360);
@@ -70,31 +86,6 @@ public class Dashboard{
         loginType = "";
         fileChooser = new JFileChooser(System.getProperty("user.dir"));
         loadMenu();
-    }
-
-    public Dashboard(Viewable sendsInfo, String loginType, String currentUsername){
-        this.sendsInfo = sendsInfo;
-        this.loginType = loginType;
-        this.currentUsername = currentUsername;
-        frame = new JFrame("Tech Conference System");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        buttonPanel = new JPanel();
-        frame.add(buttonPanel);
-        frame.setVisible(true);
-        createButtons();
-        switch (loginType) {
-            case "Attendee":
-                loggedInAttendee();
-                break;
-            case "Organizer":
-                loggedInOrganizer();
-                break;
-            case "Speaker":
-                loggedInSpeaker();
-                break;
-        }
-
     }
 
 
@@ -163,7 +154,6 @@ public class Dashboard{
         buttonPanel.add(confirmOrganizerSignUp);
         buttonPanel.add(back);
         refresh();
-        
     }
 
 
@@ -177,7 +167,6 @@ public class Dashboard{
         buttonPanel.add(confirmSpeakerSignUp);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void createAttendeeAccountMainMenu(){
@@ -205,7 +194,7 @@ public class Dashboard{
 //---------------------------------------LoggedInUsers ---------------------------------------;
 
 
-    public void loggedInAttendee() {
+    private void loggedInAttendee() {
         System.out.println("this happened");
         loginType = "Attendee";
         currentMenu = "LoggedInAttendee";
@@ -217,7 +206,7 @@ public class Dashboard{
         refresh();
     }
 
-    public void loggedInOrganizer() {
+    private void loggedInOrganizer() {
         loginType = "Organizer";
         currentMenu = "LoggedInOrganizer";
         buttonPanel.removeAll();
@@ -229,10 +218,9 @@ public class Dashboard{
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
-        
     }
 
-    public void loggedInSpeaker() {
+    private void loggedInSpeaker() {
         loginType = "Speaker";
         currentMenu = "LoggedInSpeaker";
         buttonPanel.removeAll();
@@ -241,19 +229,17 @@ public class Dashboard{
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
-        
     }
 
 //---------------------------------------Sign up Event Menu ---------------------------------------;
 
 
     private void signUpEventMenu() {
-        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, loginType, this);
+        signUpDashboard = new SignUpDashboard(sendsInfo, currentUsername, this);
         frame.remove(buttonPanel);
         frame.add(signUpDashboard);
         refresh();
     }
-
 
 
 
@@ -303,7 +289,6 @@ public class Dashboard{
         buttonPanel.add(noSpeakerEvent);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void cancelEvent(){
@@ -314,7 +299,6 @@ public class Dashboard{
         buttonPanel.add(confirmCancelEvent);
         buttonPanel.add(back);
         refresh();
-        
     }
 
     private void changeEventCapacity(){
@@ -324,6 +308,8 @@ public class Dashboard{
         buttonPanel.add(eventName);
         buttonPanel.add(changeCapacityMsg);
         buttonPanel.add(changeCapacityEventTextfield);
+        buttonPanel.add(addRoomLabel);
+        buttonPanel.add(roomNumber);
         buttonPanel.add(confirmChangeCapacity);
         buttonPanel.add(back);
         refresh();
@@ -349,9 +335,11 @@ public class Dashboard{
         if (eventType.equals("one")){
             buttonPanel.add(speakerUsernameDisplayOne);
             buttonPanel.add(speakerUsernameOne);
+            whichEvent.setText("one");
         }else if (eventType.equals("multi")){
             buttonPanel.add(speakerUsernameDisplayMulti);
             buttonPanel.add(speakerUsernameMulti);
+            whichEvent.setText("multi");
         }
         buttonPanel.add(confirmAddEvent);
         buttonPanel.add(back);
@@ -366,7 +354,14 @@ public class Dashboard{
         buttonPanel.add(errorText);
         buttonPanel.add(nextPanel);
         refresh();
-        
+    }
+
+    private void successMenu(String successMessage){
+        buttonPanel.removeAll();
+        successText.setText(successMessage);
+        buttonPanel.add(successText);
+        buttonPanel.add(successNextPanel);
+        refresh();
     }
 
     private void createButtons() {
@@ -375,7 +370,6 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "LoadOrNewConference";
-//                loadConference();
                 loadFile();
             }
         });
@@ -385,7 +379,6 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginSignup();
-                //Add techconferenceSystem to check it loads successfully or not
             }
         });
         login = new JButton("Login");
@@ -458,6 +451,13 @@ public class Dashboard{
                 returnToSameMenu();
             }
         });
+        successNextPanel = new JButton("Next");
+        successNextPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu();
+            }
+        });
         back = new JButton("Back");
         back.addActionListener(new ActionListener() {
             @Override
@@ -524,13 +524,17 @@ public class Dashboard{
             }
         });
         confirmChangeCapacity = new JButton("Confirm");
-        confirmChangeCapacity.addActionListener(new ActionListener() {
+        confirmChangeCapacity.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 int changeCapacity = tryParse(changeCapacityEventTextfield.getText());
                 if (changeCapacity != -1){
-                    sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername);
-                    changeEventCapacity();
+                    String changedSuccessfully = sendsInfo.changeCapacity(eventName.getText(), changeCapacity, currentUsername, roomNumber.getText());
+                    if (changedSuccessfully.equals("true")){
+                        schedulingMenu();
+                    }else{
+                        failedMenu(changedSuccessfully);
+                    }
                 }else{
                     failedMenu("You must enter an integer.");
                 }
@@ -578,7 +582,7 @@ public class Dashboard{
                 if (roomNum > -1){
                     if (capacity > 0) {
                         if (sendsInfo.confirmRoom(roomNumber.getText(), capacity)) {
-                            schedulingMenu();
+                            successMenu("You have successfully created a room!");
                         } else {
                             failedMenu("This room has already been created.");
                         }
@@ -592,7 +596,6 @@ public class Dashboard{
                 roomNumber.setText("");
             }
         });
-
         confirmAttendeeSignUp = new JButton("Confirm");
         confirmAttendeeSignUp.addActionListener(new ActionListener() {
             @Override
@@ -602,10 +605,8 @@ public class Dashboard{
                 //user/pass verification to use char array for the password but i'm not doing it so
                 if (sendsInfo.createAttendeeButton(textInput.getText(), password.getText())) {
                     loggedInOrganizer();
-                    System.out.println("hi2");
                 }else{
                     failedMenu("The existing username is in our database. Please try again.");
-                    System.out.println("hi3");
                 }
                 clearTextField();
             }
@@ -725,22 +726,27 @@ public class Dashboard{
                     }else{
                         String createdOrNot = "";
                         if (speakerUsernameOne.getText().equals("") && speakerUsernameMulti.getText().equals("")){
-                            createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(),
-                                    endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
-                                    checkCapacity);
+                            if (!whichEvent.getText().equals("")){
+                                whichEvent.setText("");
+                                createdOrNot = "You must enter the correct number of speakers for your specified event";
+                            }else{
+                                createdOrNot = sendsInfo.createParty(vip, date.getText(), startTime.getText(),
+                                        endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
+                                        checkCapacity);
+                            }
                         }else if(speakerUsernameMulti.getText().equals("")){
                             speakerList.add(speakerUsernameOne.getText());
                             createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
                                     roomNumber.getText(), speakerList, eventName.getText(),checkCapacity);
                         }else if(speakerUsernameOne.getText().equals("")) {
-                            String addSpeakerUsernames = speakerUsernameDisplayMulti.getText();
+                            String addSpeakerUsernames = speakerUsernameMulti.getText();
                             addSpeakerUsernames = addSpeakerUsernames.replaceAll("\\s+", "");
                             speakerList = Arrays.asList(addSpeakerUsernames.split(","));
                             createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
                                     roomNumber.getText(), speakerList, eventName.getText(), checkCapacity);
                         }
                         if (createdOrNot.equals("true")){
-                            addEvent();
+                            successMenu("You have successfully created an event!");
                         }else{
                             failedMenu(createdOrNot);
                         }
@@ -779,8 +785,15 @@ public class Dashboard{
         speakerUsernameDisplayMulti = new JLabel("Enter Speaker Usernames ~Separate by commas:");
         VIPDisplay = new JLabel("Vip: (yes or no)");
         eventCapacity = new JTextField(12);
+        successText = new JLabel();
+        whichEvent = new JTextField(12);
+        System.out.println(whichEvent.getText().equals(""));
     }
 
+    /**
+     * Setter that sets the current instance of Viewable to another
+     * @param sendsInfo the instance of Viewable to set
+     */
     public void setView(final Viewable sendsInfo) {
         this.sendsInfo = sendsInfo;
     }
@@ -821,6 +834,10 @@ public class Dashboard{
             case "ChooseEvent":
                 addEvent();
                 break;
+            case "AddRoom":
+                addRoom();
+                break;
+
         }
     }
 
@@ -865,9 +882,15 @@ public class Dashboard{
             case "CreateAttendeeMain":
                 createAttendeeAccountMainMenu();
                 break;
+            case "changeEventCapacity":
+                schedulingMenu();
+                break;
         }
     }
 
+    /**
+     * Brings the user to the correct options screen depending on the type of user (organizer, attendee, etc.)
+     */
     public void loginType() {
         boolean verifyVIP = false;
         if (sendsInfo.userIsVIP(currentUsername)) {
@@ -878,12 +901,16 @@ public class Dashboard{
             case "Attendee":
                 if (verifyVIP){
                     frame.setTitle("VIP Attendee Account");
+                } else {
+                    frame.setTitle("Attendee Account");
                 }
                 loggedInAttendee();
                 break;
             case "Organizer":
                 if (verifyVIP){
                     frame.setTitle("VIP Organizer Account");
+                } else {
+                    frame.setTitle("Organizer Account");
                 }
                 loggedInOrganizer();
                 break;
@@ -901,6 +928,10 @@ public class Dashboard{
         }
     }
 
+    /**
+     * Returns to the main options menu of a logged in user from the message or sign up menus
+     * @param type
+     */
     public void backToMain(String type) {
         if (type.equals("Msg")){
             frame.remove(messagingDashboard);
@@ -912,6 +943,9 @@ public class Dashboard{
         loginType();
     }
 
+    /**
+     * Sets the size of the JComponents and ensures they display properly
+     */
     public void refresh() {
         frame.pack();
         frame.repaint();
@@ -928,7 +962,11 @@ public class Dashboard{
         }
     }
 
-    private void changeTheme(String themeName) {
+    /**
+     * Changes the theme of the GUI depending on if the user is a VIP or not
+     * @param themeName
+     */
+    public void changeTheme(String themeName) {
         try {
             switch (themeName) {
                 case "regular":

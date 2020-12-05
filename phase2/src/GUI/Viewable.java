@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * Interface containing all methods needed for Dashboard classes to interact with TechConferenceSystem
+ */
 public interface Viewable {
 
     boolean createAttendeeButton(String username, String password);
@@ -32,9 +35,15 @@ public interface Viewable {
     String deleteMsg(String currentUsername, int chatIndex, int messageIndex);
     String markChatAsUnread(String currentUsername, int chatIndex);
     String archiveChats(String currentUsername, int chatIndex);
+    public List<String> getNewMessagesChatNames(String currentUsername);
+    public List<String> getNewMessagesTimestamp(String currentUsername);
+    List<String[][]> getNewMessagesLast8Messages(String currentUsername);
+    boolean includesImage(String currentUsername, int chatIndex, int messageIndex);
     boolean cancelEvent(String eventName, String username);
-    boolean changeCapacity(String eventName, int capacity, String username);
+    String changeCapacity(String eventName, int capacity, String username, String rmNum);
     String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum,
                               List<String> speakerUsernames, String eventTitle, int capacity);
     boolean userIsVIP(String username);
+    String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+            speakerUsernames, String eventTitle, int capacity);
 }

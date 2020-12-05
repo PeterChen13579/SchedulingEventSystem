@@ -191,11 +191,10 @@ public class ChatManager implements Serializable {
      */
     public List<UUID> getArchivedChats(String username) {
         if (archivedChats.containsKey(username)){
-            return archivedChats.get(username);
+            return new ArrayList<>(archivedChats.get(username));
         }else{
-            List<UUID> tempChatList = new ArrayList<>();
-            archivedChats.put(username, tempChatList);
-            return tempChatList;
+            archivedChats.put(username, new ArrayList<>());
+            return new ArrayList<>();
         }
     }
 
@@ -248,12 +247,18 @@ public class ChatManager implements Serializable {
      * PRECONDITION : Username is in the chat
      * @param username The username of the user
      * @param chatId The id of the chat containing the new messages
+     * @param peek Whether the user wants to mark the messages as read or not
      * @return The new messages to that user
      */
-    public List<UUID> getNewMessages(String username, UUID chatId) {
+    public List<UUID> getNewMessages(String username, UUID chatId, Boolean peek) {
         Chat chat = allChats.get(chatId);
         UUID seenMessageId = chat.getLastViewedMessage(username);   // if the user has not seen any messages, then seenMessageId will be null.
-        List<UUID> chatMessagesList = getChatMessages(username, chatId);   //get messages from helper method
+        List<UUID> chatMessagesList;
+        if (peek){  //If user wants to peek, the messages are not marked as viewed
+            chatMessagesList = chat.getAllMessages();
+        }else {
+            chatMessagesList = getChatMessages(username, chatId);   //get messages from helper method
+        }
 
         int newMessageIndex;
         if(seenMessageId == null){ //checks if seenMessageId is null
@@ -261,8 +266,7 @@ public class ChatManager implements Serializable {
         } else{
             newMessageIndex = chatMessagesList.indexOf(seenMessageId) + 1;
         }
-
-        return chatMessagesList.subList(newMessageIndex, chatMessagesList.size());
+        return chatMessagesList.subList(newMessageIndex, chatMessagesList.size()); //return only the new messages
     }
 
     /**
@@ -369,6 +373,14 @@ public class ChatManager implements Serializable {
         Chat chosenChat = allChats.get(chatId);
         List<UUID> chatMessagesList = chosenChat.getAllMessages();
         return chatMessagesList.get(messageIndex);
+    }
+
+    public boolean hasImage(UUID chatId, UUID messageId) {
+        return getChatMessage(chatId, messageId).isImageMessage();
+    }
+
+    public String getImage(UUID chatId, UUID messageId) {
+        return getChatMessage(chatId, messageId).getImageString();
     }
 
     // Make sure message exists in this chat

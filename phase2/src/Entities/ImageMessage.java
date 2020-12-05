@@ -26,4 +26,8 @@ public class ImageMessage extends Message{
     }
 
     public void setImageString(String imageString) {this.imageString = imageString;}
+
+    public boolean isImageMessage() {
+        return true;
+    }
 }

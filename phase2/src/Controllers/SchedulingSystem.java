@@ -39,48 +39,48 @@ public class SchedulingSystem {
         ms = messagingSystem;
     }
 
-    /**
-     * Execute the schedule event process by displaying options and handling user input.
-     * This method ends when user wants to return to main menu.
-     */
-    public void run(String username) {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));//reads from input efficiently
-        String temp = "";//input is being added to temp
-
-        while (!temp.equals("5")) {
-            menu.printStatement("(1) add room;\n(2) add new event;\n (3) cancel an event;\n (4) change the capacity of an event \n (5) go back to main menu ");
-            try {
-                temp = br.readLine();
-                if (temp.equals("1")) {
-                    menu.printStatement("Please enter the room number you want to add: ");
-                    String roomNum = br.readLine();
-                    menu.printStatement("Please enter the capacity of the room: ");
-                    int capacity = Integer.parseInt(br.readLine().trim());
-                    addRoom(roomNum, capacity);
-                } else if (temp.equals("2")) {
-                    String inputEventType = "";
-                    while (!inputEventType.equals("4")) {
-                        menu.printStatement("Please enter the type of event you want to create:\n" +
-                                "(1) a talk (one-speaker)\n(2) a panel (multi-speaker)\n(3) a party (no speaker)\n(4) exit");
-                        inputEventType = br.readLine();
-                        addEvent(inputEventType);
-                    }
-                } else if (temp.equals("3")) {
-                    menu.printStatement("Please enter the event title for which you want to cancel: ");
-                    String title = br.readLine();
-                    cancelEvent(title, username);
-                } else if (temp.equals("4")) {
-                    menu.printStatement("Please enter the event title for which you want to change the capacity of: ");
-                    String title = br.readLine();
-                    menu.printStatement("Please enter the new capacity for this event (new capacity >= current attendee number): ");
-                    int capacity = Integer.parseInt(br.readLine().trim());
-                    changeCapacity(title, capacity, username);
-                }
-            } catch (IOException e) {
-                menu.printStatement("Oops! Something unexpected happened!");
-            }
-        }
-    }
+//    /**
+//     * Execute the schedule event process by displaying options and handling user input.
+//     * This method ends when user wants to return to main menu.
+//     */
+//    public void run(String username) {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));//reads from input efficiently
+//        String temp = "";//input is being added to temp
+//
+//        while (!temp.equals("5")) {
+//            menu.printStatement("(1) add room;\n(2) add new event;\n (3) cancel an event;\n (4) change the capacity of an event \n (5) go back to main menu ");
+//            try {
+//                temp = br.readLine();
+//                if (temp.equals("1")) {
+//                    menu.printStatement("Please enter the room number you want to add: ");
+//                    String roomNum = br.readLine();
+//                    menu.printStatement("Please enter the capacity of the room: ");
+//                    int capacity = Integer.parseInt(br.readLine().trim());
+//                    addRoom(roomNum, capacity);
+//                } else if (temp.equals("2")) {
+//                    String inputEventType = "";
+//                    while (!inputEventType.equals("4")) {
+//                        menu.printStatement("Please enter the type of event you want to create:\n" +
+//                                "(1) a talk (one-speaker)\n(2) a panel (multi-speaker)\n(3) a party (no speaker)\n(4) exit");
+//                        inputEventType = br.readLine();
+//                        addEvent(inputEventType);
+//                    }
+//                } else if (temp.equals("3")) {
+//                    menu.printStatement("Please enter the event title for which you want to cancel: ");
+//                    String title = br.readLine();
+//                    cancelEvent(title, username);
+//                } else if (temp.equals("4")) {
+//                    menu.printStatement("Please enter the event title for which you want to change the capacity of: ");
+//                    String title = br.readLine();
+//                    menu.printStatement("Please enter the new capacity for this event (new capacity >= current attendee number): ");
+//                    int capacity = Integer.parseInt(br.readLine().trim());
+//                    changeCapacity(title, capacity, username);
+//                }
+//            } catch (IOException e) {
+//                menu.printStatement("Oops! Something unexpected happened!");
+//            }
+//        }
+//    }
 
     /**
      * Check if the conditions for adding the given room is satisfied and display error messages accordingly.
@@ -101,43 +101,43 @@ public class SchedulingSystem {
         }
     }
 
-    private void addEvent(String EventType){
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        try{
-            menu.printStatement("Please enter 'VIP' if you want to create a vip event, otherwise, leave it blank");
-            boolean inputVIP = br.readLine().equals("VIP");
-            menu.printStatement("Please enter the date for the new event (in the format 'YYYYMMDD'): ");
-            String inputDate = br.readLine();
-            menu.printStatement("Please enter the start time for the new event (24-hour time, in the format 'HH:MM:SS'): ");
-            String inputStartTime = br.readLine();
-            menu.printStatement("Please enter the end time for the new event (24-hour time, in the format 'HH:MM:SS'): ");
-            String inputEndTime = br.readLine();
-            menu.printStatement("Please enter the room number for the new event: ");
-            String inputRoom = br.readLine();
-            menu.printStatement("Please enter a unique title for the new event: ");
-            String inputTitle = br.readLine();
-            List<String> inputSpeakerList= new ArrayList<>();
-            if(EventType.equals("1")){
-                menu.printStatement("Please enter the speaker's username for the new talk: ");
-                inputSpeakerList.add(br.readLine());
-            }
-            else if(EventType.equals("2")){
-                menu.printStatement("Please enter the speaker's usernames for the new talk: " +
-                        "\n(Please type different speaker usernames in separate lines, click enter twice to end)");
-                while (!br.readLine().isEmpty() ){ inputSpeakerList.add(br.readLine());}
-            }
-            menu.printStatement("Please enter the maximum number (positive integer) of people who can attend the event: ");
-            int maxNum = Integer.parseInt(br.readLine().trim());
-            helper_addEvent(inputVIP, inputDate, inputStartTime, inputEndTime, inputRoom, inputSpeakerList, inputTitle, maxNum);
-        }catch (IOException e){
-            menu.printStatement("Oops! Something unexpected happened!");
-        }
-    }
+//    private void addEvent(String EventType){
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        try{
+//            menu.printStatement("Please enter 'VIP' if you want to create a vip event, otherwise, leave it blank");
+//            boolean inputVIP = br.readLine().equals("VIP");
+//            menu.printStatement("Please enter the date for the new event (in the format 'YYYYMMDD'): ");
+//            String inputDate = br.readLine();
+//            menu.printStatement("Please enter the start time for the new event (24-hour time, in the format 'HH:MM:SS'): ");
+//            String inputStartTime = br.readLine();
+//            menu.printStatement("Please enter the end time for the new event (24-hour time, in the format 'HH:MM:SS'): ");
+//            String inputEndTime = br.readLine();
+//            menu.printStatement("Please enter the room number for the new event: ");
+//            String inputRoom = br.readLine();
+//            menu.printStatement("Please enter a unique title for the new event: ");
+//            String inputTitle = br.readLine();
+//            List<String> inputSpeakerList= new ArrayList<>();
+//            if(EventType.equals("1")){
+//                menu.printStatement("Please enter the speaker's username for the new talk: ");
+//                inputSpeakerList.add(br.readLine());
+//            }
+//            else if(EventType.equals("2")){
+//                menu.printStatement("Please enter the speaker's usernames for the new talk: " +
+//                        "\n(Please type different speaker usernames in separate lines, click enter twice to end)");
+//                while (!br.readLine().isEmpty() ){ inputSpeakerList.add(br.readLine());}
+//            }
+//            menu.printStatement("Please enter the maximum number (positive integer) of people who can attend the event: ");
+//            int maxNum = Integer.parseInt(br.readLine().trim());
+//            helper_addSpeakerEvent(inputVIP, inputDate, inputStartTime, inputEndTime, inputRoom, inputSpeakerList, inputTitle, maxNum);
+//        }catch (IOException e){
+//            menu.printStatement("Oops! Something unexpected happened!");
+//        }
+//    }
 
 
 
     /**
-     * Check if the conditions for adding the given event is satisfied and return error messages accordingly.
+     * Check if the conditions for adding the given one speaker event/ multi speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
      * @param date the date for the event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
@@ -148,7 +148,7 @@ public class SchedulingSystem {
      * @param maxNum the maximum/ capacity of people that can attend this event
      * @return the error message according to the error or "true" if event successfully created
      */
-    public String helper_addEvent (Boolean VIP, String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
+    public String helper_addSpeakerEvent (Boolean VIP, String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
         //check if date is valid format and value
         if (!em.parseStringToLocalDate(date)){
             return "Uh-oh! The date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
@@ -185,10 +185,6 @@ public class SchedulingSystem {
         else if(!em.isEventTitleUnique(title)){
             return"Uh-oh! The event title has already been taken!";
         }
-        // Check if the maxNum is an integer.
-//        else if (!helper_isMaxNumInt(maxNum)){
-//            menu.printStatement("Uh-oh! The maximum number of people who can attend should be an integer. ");
-//        }
         else if (maxNum <= 0){
             return"Uh-oh! The maximum number of people who can attend should be a positive integer. ";
         }
@@ -197,7 +193,7 @@ public class SchedulingSystem {
             return "Uh-oh! The maximum number of people who can attend the event exceeds the room capacity.";
         }
         //if everything works out
-        else if(canAddEvent(date, startTime, endTime, rmNum, speakerUsernames, title, maxNum)){
+        else if(canAddSpeakerEvent(date, startTime, endTime, rmNum, speakerUsernames, title, maxNum)){
             em.createEvent(VIP, title, date, startTime, endTime, rmNum, maxNum, speakerUsernames);
             //update the speaker's list of events
             for (String speakerUsername : speakerUsernames){ um.addEventToSpeaker(title, speakerUsername);}
@@ -206,24 +202,17 @@ public class SchedulingSystem {
         return "Event was not created due to some unexpected reason.";
     }
 
-
-//    private boolean helper_isMaxNumInt(String maxNum){
-//        try {
-//            Integer.parseInt(maxNum);
-//        }catch (Exception NumberFormatException){
-//            return false;
-//        }
-//        return true;
-//    }
-
     /**
      * Helper method to check if all speakers in the list exists
      * @param speakerUsernames the list of names of the speakers for the event
      * @return true iff all speakers in the list exists
      */
     private boolean helperAreSpeakersExist(List<String> speakerUsernames){
+        if (speakerUsernames.isEmpty()){
+            return false;
+        }
         for(String speakerUsername : speakerUsernames){
-            if(!um.isUserExists(speakerUsername)){
+            if((!um.isUserExists(speakerUsername)) || (!um.userType(speakerUsername).equals("Speaker"))){
                 return false;
             }
         }
@@ -239,6 +228,9 @@ public class SchedulingSystem {
      * @return true iff all speakers in the list are available
      */
     private boolean helperAreSpeakersAvailable(String date, String startTime, String endTime, List<String> speakerUsernames){
+        if (speakerUsernames.isEmpty()){
+            return false;
+        }
         for(String speakerUsername : speakerUsernames){
             if(!em.isSpeakerAvailableAtTime(date,startTime,endTime, speakerUsername)){
                 return false;
@@ -258,12 +250,84 @@ public class SchedulingSystem {
      * @param title the title for the event
      * @return true iff the event can be created
      */
-    private boolean canAddEvent(String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
+    private boolean canAddSpeakerEvent(String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
         return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(startTime) && em.parseStringToLocalTime(endTime)
                 && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)
                 && helperAreSpeakersExist(speakerUsernames) && helperAreSpeakersAvailable(date, startTime, endTime, speakerUsernames)
                 && em.isEventTitleUnique(title) && maxNum > 0 && maxNum <= rm.getCapacity(rmNum);
     }
+
+    /**
+     * Check whether or not the given event can be created satisfying all the requirements detailed in the description.
+     * @param date the date for the event (YYYYMMDD)
+     * @param startTime the start time for the event (HH:mm:ss)
+     * @param endTime the end time for the event (HH:mm:ss)
+     * @param rmNum the room number for the event
+     * @param title the title for the event
+     * @return true iff the event can be created
+     */
+    private boolean canAddParty (String date, String startTime, String endTime, String rmNum, String title, int maxNum){
+        return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(startTime) && em.parseStringToLocalTime(endTime)
+                && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)
+                && em.isEventTitleUnique(title) && maxNum > 0 && maxNum <= rm.getCapacity(rmNum);
+    }
+
+    /**
+     * Check if the conditions for adding the given no speaker event is satisfied and return error messages accordingly.
+     * If satisfied, create new event, update speaker's list of events, and print success message.
+     * @param date the date for the event (YYYYMMDD)
+     * @param startTime the start time for the event (HH:mm:ss)
+     * @param endTime the end time for the event (HH:mm:ss)
+     * @param rmNum the room number for the event
+     * @param speakerUsernames the names of the speakers for the event (should just be empty)
+     * @param title the title for the event
+     * @param maxNum the maximum/ capacity of people that can attend this event
+     * @return the error message according to the error or "true" if event successfully created
+     */
+    public String helper_addParty (Boolean VIP, String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
+        //check if date is valid format and value
+        if (!em.parseStringToLocalDate(date)){
+            return "Uh-oh! The date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
+        }
+        //check if start time is valid format and value
+        else if (!em.parseStringToLocalTime(startTime)){
+            return "Uh-oh! The start time entered is not a valid date or not written in the correct format (24-hour time, HH:MM:SS)!";
+        }
+        //check if end time is valid format and value
+        else if (!em.parseStringToLocalTime(endTime)){
+            return "Uh-oh! The end time entered is not a valid date or not written in the correct format (24-hour time, HH:MM:SS)!";
+        }
+        //check if start time < endtime
+        else if (!em.isTimeValid(date, startTime, endTime)){
+            return "Uh-oh! The end time entered should be after the start time for this event!";
+        }
+        //check if room exists
+        else if(!rm.doesRoomExist(rmNum)){
+            return "Uh-oh! Room does not exist! Please add this room first!";
+        }
+        //check if room is booked already at this time
+        else if(!em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)){
+            return "Uh-oh! Room is already booked at the given time!";
+        }
+        //check if event title is unique
+        else if(!em.isEventTitleUnique(title)){
+            return"Uh-oh! The event title has already been taken!";
+        }
+        else if (maxNum <= 0){
+            return"Uh-oh! The maximum number of people who can attend should be a positive integer. ";
+        }
+        // check if the maximum number of the people who can attend the event exceeds the assigned room capacity.
+        else if (maxNum > rm.getCapacity(rmNum)){
+            return "Uh-oh! The maximum number of people who can attend the event exceeds the room capacity.";
+        }
+        //if everything works out
+        else if(canAddParty(date, startTime, endTime, rmNum, title, maxNum)){
+            em.createEvent(VIP, title, date, startTime, endTime, rmNum, maxNum, speakerUsernames);
+            return "true";
+        }
+        return "Event was not created due to some unexpected reason.";
+    }
+
 
     /**
      * Perform necessary checks & operations for cancelling an event.
@@ -306,24 +370,25 @@ public class SchedulingSystem {
      * @param username    the username of the organizer that chose to change the capacity of this event
      * @return            true if successfully changed, false otherwise.
      */
-    public boolean changeCapacity(String title, int capacity, String username){
+    public String changeCapacity(String title, int capacity, String username, String rmNum){
         //check if event already exists
-        if (em.isEventExist(title)){
-            if (capacity >= em.attendeeNum(title)){
-                List<String> eventTitles = new ArrayList<>();
-                eventTitles.add(title);
-                String content = "ANNOUNCEMENT: One of the events you are participating in: " + eventTitles.get(0) +
-                        " has been updated to allow " + capacity + "attendees! ";
-                ms.organizerMessageEventSpeakersAndAttendees(username, eventTitles, content, "");
-                em.changeEventMaxNum(title, capacity);
-                return true;
-            }else{
-                return false;
-                //menu.printStatement("Uh-oh! The number of attendees already signed up for this event exceeds the new capacity entered!");
-            }
-        }else{
-            return false;
+        if (!em.isEventExist(title)){
             //menu.printStatement("Uh-oh! The event you have entered does not exist!");
+            return "Uh-oh! The event you have entered does not exist!";
+        }else if (capacity > rm.getCapacity(rmNum)){
+            //menu.printStatement("Uh-oh! The new capacity you entered exceeds the room capacity for this event!");
+            return "Uh-oh! The new capacity you entered exceeds the room capacity for this event!";
+        }else if (capacity < em.attendeeNum(title)){
+            //menu.printStatement("Uh-oh! The number of attendees already signed up for this event exceeds the new capacity entered!");
+            return "Uh-oh! The number of attendees already signed up for this event exceeds the new capacity entered! It's not nice to kick people out :))";
+        }else{
+            List<String> eventTitles = new ArrayList<>();
+            eventTitles.add(title);
+            String content = "ANNOUNCEMENT: One of the events you are participating in: " + eventTitles.get(0) +
+                    " has been updated to allow " + capacity + " attendee(s)! ";
+            ms.organizerMessageEventSpeakersAndAttendees(username, eventTitles, content, "");
+            em.changeEventMaxNum(title, capacity);
+            return "true";
         }
     }
 

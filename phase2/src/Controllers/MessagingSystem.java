@@ -1,6 +1,4 @@
 package Controllers;
-import Entities.Chat;
-import Entities.Message;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.UserManager;
@@ -12,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -238,7 +235,7 @@ public class MessagingSystem {
             return("The user " + recipient + " does not exist.");
         } else if (userManager.isAddFriend(senderUsername, recipient)) {
             this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-            return("Message sent.");
+            return(null);
         } else {
             return(recipient + " is not your friend.");
         }
@@ -247,15 +244,16 @@ public class MessagingSystem {
     /**
      * View all the new chat messages. Note : chat is only added into the map if there are new messages
      * @param userName The username of the current user
+     * @param peek Whether the user wants to mark the messages as read or not
      */
-    public Map<UUID, List<UUID>> viewAllNewMessages(String userName){
+    public Map<UUID, List<UUID>> viewAllNewMessages(String userName, Boolean peek){
         List<UUID> userChats = userChatManager.getUserChats(userName);  //includes archived chats
         Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
-            List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
+            List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id, peek);
             if (!chatNewMessages.isEmpty()){   //checks if there are new messages
                 newMessages.put(id, chatNewMessages);
-                if (userChatManager.getArchivedChats(userName).contains(id)){  //checks if chat is unarchived
+                if (userChatManager.getArchivedChats(userName).contains(id) && !peek){  //checks if chat is unarchived
                     userChatManager.unarchiveChat(userName, id);
                 }
             }
@@ -326,12 +324,9 @@ public class MessagingSystem {
         for (int i=0; i<archivedChats.size(); i++){
             UUID chatId = archivedChats.get(i);
             if (userChatManager.areNewMessages(userName, chatId)){ //removes chat from being unarchived if new messages are recieved
-                archivedChats.remove(chatId);
                 userChatManager.unarchiveChat(userName, chatId);
-                i -= 1;
             }
         }
-
         List<UUID> currentChats = new ArrayList<>(allUserChats);
         currentChats.removeAll(archivedChats);
         return currentChats;
@@ -344,7 +339,7 @@ public class MessagingSystem {
      * @param time The time the message was sent
      * @param content The content of the message
      */
-    public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) {
+    public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) { // we can make this private right?
         String imageString = "";
         if (!imagePath.equals("")) { //Checks to see if imageString is not empty
             imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
@@ -364,6 +359,9 @@ public class MessagingSystem {
             } else {
                 this.userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
             }
+            if (userChatManager.getArchivedChats(senderUsername).contains(chat)){  //unarchives chat if it is archived
+                userChatManager.unarchiveChat(senderUsername, chat);
+            }
         }
     }
 
@@ -372,12 +370,12 @@ public class MessagingSystem {
      * @param username the username of the user
      * @param chatId the id of the chat
      * @param messageId the id of the message
-     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String deleteUserMessage(String username, UUID chatId, UUID messageId){ // make sure you discard messageId after since it's gone from the system
         if (userChatManager.getMessageSenderUsername(chatId, messageId).equals(username)){
             userChatManager.deleteMessageFromChat(chatId, messageId);
-            return "true";
+            return null;
         } else{
             return "You cannot delete someone else's message";
         }
@@ -387,12 +385,12 @@ public class MessagingSystem {
      * mark a user's chat as unread
      * @param username the username of the user
      * @param chatId the id of the chat
-     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String markUserChatAsUnread(String username, UUID chatId){ //might change it to mark as read/unread in the future
         if (!userChatManager.isChatEmpty(chatId)){
             userChatManager.markChatAsUnread(username, chatId);
-            return "true";
+            return null;
         }else{
             return "Cannot mark empty chat as unread";
         }
@@ -402,12 +400,12 @@ public class MessagingSystem {
      * archive a user's chat
      * @param username the username of the user
      * @param chatId the id of the chat
-     * @return A string saying the result of the operation. "true" if successful, error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String archiveUserChat(String username, UUID chatId){
         if (!userChatManager.getArchivedChats(username).contains(chatId)){
             userChatManager.archiveChat(username, chatId);
-            return "true";
+            return null;
         } else{
             return "cannot archive chat that is already archived";
         }
@@ -437,7 +435,7 @@ public class MessagingSystem {
      * Helper method for speakers to send a message to attendees of their events
      * @param senderUsername Username of the sender
      * @param content Content of message
-     * @return "true" if the message is sent. Error message otherwise.
+     * @return An error message, or null if there are no errors.
      */
     public String speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
@@ -464,7 +462,7 @@ public class MessagingSystem {
             }
         }
         this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-        return "true";
+        return null;
     }
 
     /**
@@ -473,7 +471,7 @@ public class MessagingSystem {
      * @param eventTitles The list of event titles
      * @param content The content of the message
      * @param imagePath The image path
-     * @return "true" if the message was sent. Error message otherwise.
+     * @return nul An error message, or null if there are no errors.
      */
     public String organizerMessageEventSpeakersAndAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
@@ -501,16 +499,15 @@ public class MessagingSystem {
             }
         }
         this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-        return "true";
+        return null;
     }
 
     /**
      * Add friends to message
      * @param mainUserUsername the current user
-     * @return true if the friend is added or already your friend, false otherwise
+     * @return An error message, or null if there is none.
      */
     public String addPeopleToMessage(String mainUserUsername, String newFriend){
-
         if (userManager.userType(mainUserUsername).equals("Speaker")) {
             if (userManager.userType(newFriend).equals("Attendee")) {
                 UUID chat = userChatManager.getChatContainingUsers(Arrays.asList(mainUserUsername, newFriend));
@@ -529,7 +526,7 @@ public class MessagingSystem {
         } else if (mainUserUsername.equals(newFriend)){
             return("You cannot add yourself as a friend");
         } else if (userManager.addFriend(mainUserUsername, newFriend)) {
-            return("true");
+            return(null);
         } else {
             return(newFriend + " is already a friend.");
         }
@@ -578,6 +575,14 @@ public class MessagingSystem {
 
     public UUID getMessageByIndex(UUID chatId, int messageIndex) {
         return userChatManager.getMessageUUIDbyIndex(chatId, messageIndex);
+    }
+
+    public boolean doesMessageHaveImage(UUID chatId, UUID messageId) {
+        return userChatManager.hasImage(chatId, messageId);
+    }
+
+    public String getMessageImageString(UUID chatId, UUID messageId) {
+        return userChatManager.getImage(chatId, messageId);
     }
 }
 

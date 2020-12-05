@@ -50,5 +50,13 @@ public class Message implements Serializable {
         return content;
     }
 
+    public boolean isImageMessage() {
+        return false;
+    }
+
+    public String getImageString() {
+        return null;
+    }
+
 
 }

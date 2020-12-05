@@ -68,7 +68,7 @@ public class Chat implements Serializable {
      * @return The usernames of all the members
      */
     public List<String> getMemberUsernames() {
-        return memberUsernames;
+        return new ArrayList<>(memberUsernames);
     }
 
     /**
