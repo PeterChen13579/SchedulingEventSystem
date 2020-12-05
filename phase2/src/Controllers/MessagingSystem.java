@@ -244,15 +244,16 @@ public class MessagingSystem {
     /**
      * View all the new chat messages. Note : chat is only added into the map if there are new messages
      * @param userName The username of the current user
+     * @param peek Whether the user wants to mark the messages as read or not
      */
-    public Map<UUID, List<UUID>> viewAllNewMessages(String userName){
+    public Map<UUID, List<UUID>> viewAllNewMessages(String userName, Boolean peek){
         List<UUID> userChats = userChatManager.getUserChats(userName);  //includes archived chats
         Map<UUID, List<UUID>> newMessages = new HashMap<>();
         for (UUID id: userChats){
-            List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id);
+            List<UUID> chatNewMessages = userChatManager.getNewMessages(userName, id, peek);
             if (!chatNewMessages.isEmpty()){   //checks if there are new messages
                 newMessages.put(id, chatNewMessages);
-                if (userChatManager.getArchivedChats(userName).contains(id)){  //checks if chat is unarchived
+                if (userChatManager.getArchivedChats(userName).contains(id) && !peek){  //checks if chat is unarchived
                     userChatManager.unarchiveChat(userName, id);
                 }
             }

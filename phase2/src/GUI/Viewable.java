@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * Interface containing all methods needed for Dashboard classes to interact with TechConferenceSystem
+ */
 public interface Viewable {
 
     boolean createAttendeeButton(String username, String password);

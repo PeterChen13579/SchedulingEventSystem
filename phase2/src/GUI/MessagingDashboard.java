@@ -1,14 +1,24 @@
 package GUI;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JList;
+import javax.swing.JFileChooser;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.ImageIcon;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JLabel;
-import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Base64;
+import java.util.Arrays;
 import java.util.List;
 
 public class MessagingDashboard extends JPanel{
@@ -38,6 +48,13 @@ public class MessagingDashboard extends JPanel{
     private String attachedImagePath;
     private HashMap<Integer, byte[]> indexToImage;
 
+    /**
+     * Creates UI for messaging menu for a logged in user
+     * @param sendsInfo the instance of Viewable from the Dashboard class
+     * @param dashboard the instance of Dashboard that creates the rest of the UI
+     * @param currentUsername the username of the user attempting to use the messaging menu
+     * @param loginType what type of user the current user is
+     */
     public MessagingDashboard(Viewable sendsInfo, Dashboard dashboard, String currentUsername, String loginType){
 
         this.sendsInfo = sendsInfo;
@@ -46,13 +63,15 @@ public class MessagingDashboard extends JPanel{
         this.dashboard = dashboard;
         this.currentChatIndex = -1;
         this.fileChooser = new JFileChooser(System.getProperty("user.dir"));
-        try {
-            SynthLookAndFeel style = new SynthLookAndFeel();
-            style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
-            UIManager.setLookAndFeel(style);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+//        @Peter commenting this out shouldn't change anything since style is set in Dashboard
+//        But I haven't tested it yet so I haven't fully deleted it just in case
+//        try {
+//            SynthLookAndFeel style = new SynthLookAndFeel();
+//            style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
+//            UIManager.setLookAndFeel(style);
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
         createButtons();
         messagingMenu();
     }
@@ -91,7 +110,6 @@ public class MessagingDashboard extends JPanel{
         dashboard.refresh();
     }
 
-    //TODO: fill in
     private void sendOneMessage() {
         currentMenu = "SendOneMessage";
         this.removeAll();
@@ -194,9 +212,9 @@ public class MessagingDashboard extends JPanel{
             displayString = "No new messages";
         } else {
             for (int i=0; i<messages.size(); i++) {
-                displayString += chatNames.get(i) + " (" + timestamps.get(i) + "):\n";
+                displayString += chatNames.get(i) + " (" + timestamps.get(i) + " minutes ago):%n";
                 for (String[] message: messages.get(i)) {
-                    displayString += message[0] + ": " + message[1];
+                    displayString += message[0] + ": " + message[1] + "%n";
                 }
             }
         }
@@ -243,10 +261,10 @@ public class MessagingDashboard extends JPanel{
         viewNewMessages = new JButton("View New Messages");
         viewNewMessages.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                List<String[][]> messages = sendsInfo.getNewMessagesLast8Messages(currentUsername);
+            public void actionPerformed(ActionEvent e) { //must be called in the order of chatNames, timestamp then messages since messages updates last viewed
                 List<String> chatNames = sendsInfo.getNewMessagesChatNames(currentUsername);
                 List<String> timestamps = sendsInfo.getNewMessagesTimestamp(currentUsername);
+                List<String[][]> messages = sendsInfo.getNewMessagesLast8Messages(currentUsername);
                 displayNewMessages(messages, chatNames, timestamps);
             }
         });
