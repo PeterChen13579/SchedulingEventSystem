@@ -214,9 +214,9 @@ public class MessagingDashboard extends JPanel{
             displayString = "No new messages";
         } else {
             for (int i=0; i<messages.size(); i++) {
-                displayString += chatNames.get(i) + " (" + timestamps.get(i) + "):\n";
+                displayString += chatNames.get(i) + " (" + timestamps.get(i) + " minutes ago):%n";
                 for (String[] message: messages.get(i)) {
-                    displayString += message[0] + ": " + message[1];
+                    displayString += message[0] + ": " + message[1] + "%n";
                 }
             }
         }
@@ -263,10 +263,10 @@ public class MessagingDashboard extends JPanel{
         viewNewMessages = new JButton("View New Messages");
         viewNewMessages.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                List<String[][]> messages = sendsInfo.getNewMessagesLast8Messages(currentUsername);
+            public void actionPerformed(ActionEvent e) { //must be called in the order of chatNames, timestamp then messages since messages updates last viewed
                 List<String> chatNames = sendsInfo.getNewMessagesChatNames(currentUsername);
                 List<String> timestamps = sendsInfo.getNewMessagesTimestamp(currentUsername);
+                List<String[][]> messages = sendsInfo.getNewMessagesLast8Messages(currentUsername);
                 displayNewMessages(messages, chatNames, timestamps);
             }
         });

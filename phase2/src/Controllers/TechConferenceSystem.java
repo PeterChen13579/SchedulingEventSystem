@@ -342,7 +342,7 @@ public class TechConferenceSystem implements Viewable{
      * @return An ordered list of all the chat names with new messages
      */
     public List<String> getNewMessagesChatNames(String currentUsername){
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername, true);
         List<String> newMessagesChatNames = new ArrayList<>();
 
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){
@@ -356,10 +356,10 @@ public class TechConferenceSystem implements Viewable{
     /**
      * Get the timestamps of the chats with new messages. Note: List elements correspond to the values of the same index in the lists returned from the other newMessages methods.
      * @param currentUsername The username of the current user
-     * @return An ordered list of
+     * @return An ordered list of the chat timestamps
      */
     public List<String> getNewMessagesTimestamp(String currentUsername){
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername, true);
         List<String> newMessagesTimestamps = new ArrayList<>();
 
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){
@@ -380,7 +380,7 @@ public class TechConferenceSystem implements Viewable{
      * @return A list of 2d string arrays. Each string array is for a different chat. Each string array will be in the form [[senderUsername, content],....].
      */
     public List<String[][]> getNewMessagesLast8Messages(String currentUsername){
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
+        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername,false);
         List<String[][]> newMessagesLast8 = new ArrayList<>();
 
         for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){
@@ -396,7 +396,6 @@ public class TechConferenceSystem implements Viewable{
             }
             newMessagesLast8.add(chatNew8Messages); // add this chat's new messages to list
         }
-
         return newMessagesLast8;
     }
 
