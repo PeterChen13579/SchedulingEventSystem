@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class Request extends Message{
     public Integer requestNum;
+    public LocalDateTime time;
     public boolean status;
     /**
      * Creates a new Request
@@ -14,9 +15,9 @@ public class Request extends Message{
      * @param time           the date/time of the request
      * @param content        the literal string representing the request
      */
-    public Request(String senderUsername, LocalDateTime time, String content) {
+    public Request(int requestNum, String senderUsername, LocalDateTime time, String content) {
         super(senderUsername, time, content);
-        requestNum = 0;
+        this.requestNum = requestNum;
     }
 
     public boolean getStatus(){
@@ -33,10 +34,6 @@ public class Request extends Message{
 
     public Integer getRequestNum() {
         return requestNum;
-    }
-
-    public void setRequestNum(int requestNum) {
-        this.requestNum = requestNum;
     }
 
 }

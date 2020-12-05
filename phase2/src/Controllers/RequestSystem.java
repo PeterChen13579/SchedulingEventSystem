@@ -16,6 +16,10 @@ public class RequestSystem {
         this.rm = rm;
     }
 
+    public void sendRequest(String senderUsername, String content){
+        rm.createRequest(senderUsername, content);
+    }
+
     /**
      * Mark the request as addressed
      * @param requestNum the request number that a organizer want to marked addressed
@@ -25,8 +29,8 @@ public class RequestSystem {
     }
 
     /**
-     * Mark the request as addressed
-     * @param requestNum the request number that a organizer want to marked addressed
+     * Mark the request as pending
+     * @param requestNum the request number that a organizer want to marked pending
      */
     public void markedAsPending(int requestNum){
         rm.markedAsPending(requestNum);
