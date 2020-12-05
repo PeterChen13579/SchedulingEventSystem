@@ -1,6 +1,5 @@
 package GUI;
 
-import Controllers.TechConferenceSystem;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -38,7 +37,8 @@ public class Dashboard{
     private JButton changeCapacity, seeListEvents;
     private JButton confirmAttendeeSignUp, confirmAttendeeSignUpMainMenu, confirmOrganizerSignUp ;
     private JButton confirmSpeakerSignUp, confirmLogIn;
-    private JButton nextPanel,confirmFilename,save, confirmSave;
+    private JButton nextPanel;
+    private JButton save;
     private JButton confirmRoomNumber, confirmAddEvent;
     private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
     private JButton confirmCancelEvent, confirmChangeCapacity;
@@ -62,13 +62,11 @@ public class Dashboard{
     private JLabel errorText, successText;
     private JLabel displayUsername, displayPassword;
     private JLabel cancelEventMsg, changeCapacityMsg;
-    private JList displayList;
     private String currentUsername;
     private SignUpDashboard signUpDashboard;
     private MessagingDashboard messagingDashboard;
-    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private SynthLookAndFeel regularTheme, vipTheme;
-    private JFileChooser fileChooser;
+    private final JFileChooser fileChooser;
 
     /**
      * Constructor that creates and starts the program
@@ -79,6 +77,7 @@ public class Dashboard{
         changeTheme("regular");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1280, 720));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(screenSize.width/2 - 640, screenSize.height/2 - 360);
         buttonPanel = new JPanel();
         frame.add(buttonPanel);
@@ -184,15 +183,6 @@ public class Dashboard{
         refresh();
     }
 
-    private void saveMenu() {
-        buttonPanel.removeAll();
-        buttonPanel.add(textInput);
-        buttonPanel.add(confirmSave);
-        refresh();
-        
-    }
-
-
 
 //---------------------------------------LoggedInUsers ---------------------------------------;
 
@@ -297,7 +287,7 @@ public class Dashboard{
 
     private void cancelEvent(){
         currentMenu = "CancelEvent";
-        buttonPanel.removeAll();;
+        buttonPanel.removeAll();
         buttonPanel.add(cancelEventMsg);
         buttonPanel.add(cancelEventTextfield);
         buttonPanel.add(confirmCancelEvent);
@@ -719,7 +709,7 @@ public class Dashboard{
                 clearTextField();
             }
         });
-        confirmFilename = new JButton("Confirm");
+        JButton confirmFilename = new JButton("Confirm");
         confirmFilename.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -741,7 +731,7 @@ public class Dashboard{
                 saveFile();
             }
         });
-        confirmSave = new JButton("Confirm");
+        JButton confirmSave = new JButton("Confirm");
         confirmSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -856,7 +846,7 @@ public class Dashboard{
         textInput = new JTextField(12);
         password = new JPasswordField(12);
         errorText = new JLabel();
-        displayList = new JList();
+        JList displayList = new JList();
         filename = new JTextField("File Name", 12);
         roomNumber = new JTextField(12);
         roomCapacity = new JTextField(12);
@@ -1063,7 +1053,7 @@ public class Dashboard{
 
     /**
      * Changes the theme of the GUI depending on if the user is a VIP or not
-     * @param themeName
+     * @param themeName  Either regular or vip theme.
      */
     public void changeTheme(String themeName) {
         try {
