@@ -33,7 +33,6 @@ public class MessagingDashboard extends JPanel{
     private JTextField eventList;
     private JLabel displayChatNumber;
     private final Viewable sendsInfo;
-    private ArrayList <String> userToDisplay;
     private final Dashboard dashboard;
     private final JFileChooser fileChooser;
     private String attachedImagePath;
@@ -45,7 +44,6 @@ public class MessagingDashboard extends JPanel{
         this.currentUsername = currentUsername;
         this.loginType = loginType;
         this.dashboard = dashboard;
-        this.userToDisplay = sendsInfo.sendChatName(currentUsername);
         this.currentChatIndex = -1;
         this.fileChooser = new JFileChooser(System.getProperty("user.dir"));
         try {
@@ -148,7 +146,7 @@ public class MessagingDashboard extends JPanel{
         this.add(archiveChat);
         this.add(markChatUnread);
         this.add(back);
-        userToDisplay = sendsInfo.sendChatName(currentUsername);
+        List<String> userToDisplay = sendsInfo.sendChatName(currentUsername);
 
         chatNames.setListData(userToDisplay.toArray(new String[0]));
         chatNames.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -294,7 +292,6 @@ public class MessagingDashboard extends JPanel{
                 System.out.println(friendAddText.getText());
                 String errorMessage = sendsInfo.addFriend(currentUsername, friendAddText.getText());
                 if (errorMessage == null){
-                    userToDisplay = sendsInfo.sendChatName(currentUsername);
                     refreshTextFields();
                     messagingMenu();
                 }else{
