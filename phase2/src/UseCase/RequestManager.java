@@ -42,7 +42,20 @@ public class RequestManager implements Serializable {
     public void markedAsAddressed(Integer requestNum){
         for(Request request: allRequests ){
             if(request.getRequestNum().equals(requestNum)){
-                request.setStatus();
+                request.setStatusAddressed();
+            }
+        }
+    }
+
+    /**
+     * Mark the request as pending
+     *
+     * @param requestNum the request number of the request
+     */
+    public void markedAsPending(Integer requestNum){
+        for(Request request: allRequests ){
+            if(request.getRequestNum().equals(requestNum)){
+                request.setStatusPending();
             }
         }
     }

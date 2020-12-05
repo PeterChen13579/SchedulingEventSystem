@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class Request extends Message{
     public Integer requestNum;
-    public boolean status = false;
+    public boolean status;
     /**
      * Creates a new Request
      *
@@ -23,8 +23,12 @@ public class Request extends Message{
         return status;
     }
 
-    public void setStatus(){
+    public void setStatusAddressed(){
         this.status = true;
+    }
+
+    public void setStatusPending(){
+        this.status = false;
     }
 
     public Integer getRequestNum() {

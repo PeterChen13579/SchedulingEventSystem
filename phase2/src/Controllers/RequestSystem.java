@@ -17,10 +17,26 @@ public class RequestSystem {
     }
 
     /**
+     * Mark the request as addressed
+     * @param requestNum the request number that a organizer want to marked addressed
+     */
+    public void markedAsAddressed(int requestNum){
+        rm.markedAsAddressed(requestNum);
+    }
+
+    /**
+     * Mark the request as addressed
+     * @param requestNum the request number that a organizer want to marked addressed
+     */
+    public void markedAsPending(int requestNum){
+        rm.markedAsPending(requestNum);
+    }
+
+    /**
      * Gets all requests possible to display;
      * @return   A list of requests
      */
-    public String[] displayAllEvents() {
+    public String[] displayAllRequests() {
         return rm.allRequestInfo();
     }
 }
