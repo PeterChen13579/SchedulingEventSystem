@@ -421,7 +421,7 @@ public class MessagingDashboard extends JPanel{
                 if (messageNum == -1) {
                     failedMenu("Please select a message to delete.");
                 } else {
-                    String error = sendsInfo.deleteMsg(currentUsername, currentChatIndex, messageNum);
+                    String error = sendsInfo.deleteMsg(currentUsername, currentChatIndex+1, messageNum);
                     if (error != null) {
                         failedMenu(error);
                     } else {
