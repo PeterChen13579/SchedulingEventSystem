@@ -470,18 +470,25 @@ public class MessagingDashboard extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 refreshTextFields();
                 switch (currentMenu) {
-                    case "SendOneMessage" -> sendOneMessage();
-                    case "AddFriend" -> addFriend();
-                    case "ViewChat" -> chatDisplay();
-                    case "ViewOneChat" -> {
+                    case "SendOneMessage":
+                        sendOneMessage();
+                    case "AddFriend":
+                        addFriend();
+                    case "ViewChat":
+                        chatDisplay();
+                    case "ViewOneChat":
                         String[][] msgInfo = sendsInfo.viewChat(currentChatIndex, currentUsername);
                         displayChatMsg(msgInfo);
-                    }
-                    case "sendMessage" -> messagingMenu();
-                    case "MsgAllAttendeeEvent" -> sendAllAttendeeEvent();
-                    case "MsgAllAttendees" -> sendAllAttendee();
-                    case "MsgAllSpeakers" -> sendAllSpeaker();
-                    default -> sendMessageMenu();
+                    case "sendMessage":
+                        messagingMenu();
+                    case "MsgAllAttendeeEvent":
+                        sendAllAttendeeEvent();
+                    case "MsgAllAttendees":
+                        sendAllAttendee();
+                    case "MsgAllSpeakers":
+                        sendAllSpeaker();
+                    default:
+                        dashboard.backToMain("Msg");
                 }
             }
         });
@@ -525,10 +532,17 @@ public class MessagingDashboard extends JPanel{
 
     private void previousMenu() {
         switch (currentMenu) {
-            case "Messaging" -> dashboard.backToMain("Msg");
-            case "ViewOneChat" -> chatDisplay();
-            case "ViewChat", "SendMessage", "ViewNewMessage", "AddFriend" -> messagingMenu();
-            default -> sendMessageMenu();
+            case "Messaging":
+                dashboard.backToMain("Msg");
+            case "ViewOneChat":
+                chatDisplay();
+            case "ViewChat":
+            case "SendMessage":
+            case "ViewNewMessage":
+            case "AddFriend":
+                sendMessageMenu();
+            default:
+                sendMessageMenu();
         }
     }
 
