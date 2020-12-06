@@ -469,27 +469,7 @@ public class MessagingDashboard extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 refreshTextFields();
-                switch (currentMenu) {
-                    case "SendOneMessage":
-                        sendOneMessage();
-                    case "AddFriend":
-                        addFriend();
-                    case "ViewChat":
-                        chatDisplay();
-                    case "ViewOneChat":
-                        String[][] msgInfo = sendsInfo.viewChat(currentChatIndex, currentUsername);
-                        displayChatMsg(msgInfo);
-                    case "sendMessage":
-                        messagingMenu();
-                    case "MsgAllAttendeeEvent":
-                        sendAllAttendeeEvent();
-                    case "MsgAllAttendees":
-                        sendAllAttendee();
-                    case "MsgAllSpeakers":
-                        sendAllSpeaker();
-                    default:
-                        dashboard.backToMain("Msg");
-                }
+                errorScreenNext();
             }
         });
         friendAddText = new JTextField(12);
@@ -532,17 +512,40 @@ public class MessagingDashboard extends JPanel{
 
     private void previousMenu() {
         switch (currentMenu) {
-            case "Messaging":
-                dashboard.backToMain("Msg");
             case "ViewOneChat":
                 chatDisplay();
+                break;
             case "ViewChat":
             case "SendMessage":
             case "ViewNewMessage":
             case "AddFriend":
-                sendMessageMenu();
+                messagingMenu();
+                break;
             default:
-                sendMessageMenu();
+                dashboard.backToMain("Msg");
+        }
+    }
+
+    private void errorScreenNext() {
+        System.out.println(currentMenu);
+        switch (currentMenu) {
+            case "SendOneMessage":
+                sendOneMessage();
+            case "AddFriend":
+                addFriend();
+            case "ViewChat":
+                chatDisplay();
+            case "ViewOneChat":
+                String[][] msgInfo = sendsInfo.viewChat(currentChatIndex, currentUsername);
+                displayChatMsg(msgInfo);
+            case "sendMessage":
+                messagingMenu();
+            case "MsgAllAttendeeEvent":
+                sendAllAttendeeEvent();
+            case "MsgAllAttendees":
+                sendAllAttendee();
+            case "MsgAllSpeakers":
+                sendAllSpeaker();
         }
     }
 
