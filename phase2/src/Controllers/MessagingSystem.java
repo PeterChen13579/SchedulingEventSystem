@@ -2,7 +2,6 @@ package Controllers;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.UserManager;
-import Presenters.MessagePresenter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,17 +16,15 @@ import java.util.*;
  * @author William Wang and Kailas Moon
  */
 public class MessagingSystem {
-    private ChatManager userChatManager;
-    private MessagePresenter messagingPresenter;
-    private UserManager userManager;
-    private EventManager eventManager;
+    private final ChatManager userChatManager;
+    private final UserManager userManager;
+    private final EventManager eventManager;
 
     /**
      * Creates the Messaging System
      */
     public MessagingSystem(ChatManager chatManager, UserManager userManager, EventManager eventManager) {
         this.userChatManager = chatManager;
-        this.messagingPresenter = new MessagePresenter(userChatManager);
         this.userManager = userManager;
         this.eventManager = eventManager;
     }
@@ -321,9 +318,8 @@ public class MessagingSystem {
     public List<UUID> getCurrentChats(String userName) {
         List<UUID> allUserChats = userChatManager.getUserChats(userName);
         List<UUID> archivedChats = userChatManager.getArchivedChats(userName);
-        for (int i=0; i<archivedChats.size(); i++){
-            UUID chatId = archivedChats.get(i);
-            if (userChatManager.areNewMessages(userName, chatId)){ //removes chat from being unarchived if new messages are recieved
+        for (UUID chatId : archivedChats) {
+            if (userChatManager.areNewMessages(userName, chatId)) { //removes chat from being unarchived if new messages are recieved
                 userChatManager.unarchiveChat(userName, chatId);
             }
         }
@@ -373,6 +369,8 @@ public class MessagingSystem {
      * @return An error message, or null if there are no errors.
      */
     public String deleteUserMessage(String username, UUID chatId, UUID messageId){ // make sure you discard messageId after since it's gone from the system
+        System.out.println("original sender: "+userChatManager.getMessageSenderUsername(chatId, messageId));
+        System.out.println("current user: " + username);
         if (userChatManager.getMessageSenderUsername(chatId, messageId).equals(username)){
             userChatManager.deleteMessageFromChat(chatId, messageId);
             return null;

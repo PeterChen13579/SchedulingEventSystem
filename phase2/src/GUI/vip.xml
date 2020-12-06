@@ -18,7 +18,7 @@
         </state>
 
         <state value="MOUSE_OVER">
-            <color value="#333333" type="BACKGROUND"/>
+            <color value="#D05B4E" type="BACKGROUND"/>
         </state>
 
     </style>
@@ -29,8 +29,12 @@
         <font name="Century Gothic" size="18"/>
         <insets top="15" left="20" bottom="15" right="20"/>
         <state>
-            <color value="#5C5C5C" type="BACKGROUND"/>
+            <color value="#db8076" type="BACKGROUND"/>
             <color value="WHITE" type="FOREGROUND"/>
+        </state>
+
+        <state value="SELECTED">
+            <color value="#D05B4E" type="TEXT_BACKGROUND"/>
         </state>
     </style>
     <bind style="textfield" type="region" key="TextField"/>
@@ -39,7 +43,7 @@
     <style id="scrollbar">
         <opaque value="TRUE"/>
         <state>
-            <color value="#858585" type="BACKGROUND"/>
+            <color value="#E6A59E" type="BACKGROUND"/>
         </state>
     </style>
     <bind style="scrollbar" type="region" key="ScrollBarTrack"/>
@@ -47,7 +51,7 @@
     <style id="extras">
         <opaque value="TRUE"/>
         <state>
-            <color value="#1F1F1F" type="BACKGROUND"/>
+            <color value="#D05B4E" type="BACKGROUND"/>
         </state>
     </style>
     <bind style="extras" type="region" key="ScrollBarThumb"/>

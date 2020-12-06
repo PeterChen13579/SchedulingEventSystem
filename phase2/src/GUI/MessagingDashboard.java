@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Base64;
 import java.util.Arrays;
@@ -255,7 +254,6 @@ public class MessagingDashboard extends JPanel{
         sendMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("bruh?");
                 sendMessageMenu();
             }
         });
@@ -308,7 +306,6 @@ public class MessagingDashboard extends JPanel{
         confirmFriend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(friendAddText.getText());
                 String errorMessage = sendsInfo.addFriend(currentUsername, friendAddText.getText());
                 if (errorMessage == null){
                     refreshTextFields();
@@ -421,7 +418,7 @@ public class MessagingDashboard extends JPanel{
                 if (messageNum == -1) {
                     failedMenu("Please select a message to delete.");
                 } else {
-                    String error = sendsInfo.deleteMsg(currentUsername, currentChatIndex, messageNum);
+                    String error = sendsInfo.deleteMsg(currentUsername, currentChatIndex+1, messageNum);
                     if (error != null) {
                         failedMenu(error);
                     } else {
