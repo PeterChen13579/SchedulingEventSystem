@@ -17,11 +17,11 @@ public class SchedulingTest {
 //        controllerTest();
 //        eventPresenterTest();
 //        getAllAttendeesTest();
-        doTimesOverlapTest();
+    //    doTimesOverlapTest();
 
 
     }
-    public static void doTimesOverlapTest(){
+  /*  public static void doTimesOverlapTest(){
         EventManager em = new EventManager();
         List<LocalDateTime> time = em.parseStringToLocalDateTime("20201109", "09:07:00", "10:28:00");
         List<LocalDateTime> time2 = em.parseStringToLocalDateTime("20201109", "10:28:00", "11:28:00");
@@ -98,6 +98,6 @@ public class SchedulingTest {
 //        em.addAttendee("Lisa","Intro 101");
 //        System.out.println(em.getAllAttendeesByTitle("Intro 101"));
 //
-//    }
+//    } */
 
 }

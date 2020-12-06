@@ -139,7 +139,8 @@ public class SchedulingSystem {
     /**
      * Check if the conditions for adding the given one speaker event/ multi speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param rmNum the room number for the event
@@ -148,10 +149,13 @@ public class SchedulingSystem {
      * @param maxNum the maximum/ capacity of people that can attend this event
      * @return the error message according to the error or "true" if event successfully created
      */
-    public String helper_addSpeakerEvent (Boolean VIP, String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
-        //check if date is valid format and value
-        if (!em.parseStringToLocalDate(date)){
-            return "Uh-oh! The date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
+    public String helper_addSpeakerEvent (Boolean VIP, String startDate, String endDate, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
+        //check if dates is valid format and value
+        if (!em.parseStringToLocalDate(startDate)){
+            return "Uh-oh! The start date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
+        }
+        else if (!em.parseStringToLocalDate(endDate)){
+            return "Uh-oh! The end date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
         }
         //check if start time is valid format and value
         else if (!em.parseStringToLocalTime(startTime)){
@@ -162,7 +166,7 @@ public class SchedulingSystem {
             return "Uh-oh! The end time entered is not a valid date or not written in the correct format (24-hour time, HH:MM:SS)!";
         }
         //check if start time < endtime
-        else if (!em.isTimeValid(date, startTime, endTime)){
+        else if (!em.isTimeValid(startDate, endDate, startTime, endTime)){
             return "Uh-oh! The end time entered should be after the start time for this event!";
         }
         //check if room exists
@@ -170,7 +174,7 @@ public class SchedulingSystem {
             return "Uh-oh! Room does not exist! Please add this room first!";
         }
         //check if room is booked already at this time
-        else if(!em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)){
+        else if(!em.isRoomAvailableAtTime(rmNum, startDate, endDate, startTime, endTime)){
             return "Uh-oh! Room is already booked at the given time!";
         }
         //check if speaker exists
@@ -178,7 +182,7 @@ public class SchedulingSystem {
             return "Uh-oh! One or More Speakers you entered does not exist! Please create an account for these speakers first!";
         }
         //check if speaker is already giving another talk at this time
-        else if(!helperAreSpeakersAvailable(date,startTime, endTime, speakerUsernames)){
+        else if(!helperAreSpeakersAvailable(startDate, endDate, startTime, endTime, speakerUsernames)){
             return"Uh-oh! One or More Speakers you entered is already booked for another event at the given time!";
         }
         //check if event title is unique
@@ -193,8 +197,8 @@ public class SchedulingSystem {
             return "Uh-oh! The maximum number of people who can attend the event exceeds the room capacity.";
         }
         //if everything works out
-        else if(canAddSpeakerEvent(date, startTime, endTime, rmNum, speakerUsernames, title, maxNum)){
-            em.createEvent(VIP, title, date, startTime, endTime, rmNum, maxNum, speakerUsernames);
+        else if(canAddSpeakerEvent(startDate, endDate, startTime, endTime, rmNum, speakerUsernames, title, maxNum)){
+            em.createEvent(VIP, title, startDate, endDate, startTime, endTime, rmNum, maxNum, speakerUsernames);
             //update the speaker's list of events
             for (String speakerUsername : speakerUsernames){ um.addEventToSpeaker(title, speakerUsername);}
             return "true";
@@ -221,18 +225,19 @@ public class SchedulingSystem {
 
     /**
      * Helper method to check if all speakers in the list are available
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param speakerUsernames the list of names of the speakers for the event
      * @return true iff all speakers in the list are available
      */
-    private boolean helperAreSpeakersAvailable(String date, String startTime, String endTime, List<String> speakerUsernames){
+    private boolean helperAreSpeakersAvailable(String startDate, String endDate, String startTime, String endTime, List<String> speakerUsernames){
         if (speakerUsernames.isEmpty()){
             return false;
         }
         for(String speakerUsername : speakerUsernames){
-            if(!em.isSpeakerAvailableAtTime(date,startTime,endTime, speakerUsername)){
+            if(!em.isSpeakerAvailableAtTime(startDate, endDate, startTime,endTime, speakerUsername)){
                 return false;
             }
         }
@@ -242,7 +247,8 @@ public class SchedulingSystem {
 
     /**
      * Check whether or not the given event can be created satisfying all the requirements detailed in the description.
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param rmNum the room number for the event
@@ -250,32 +256,34 @@ public class SchedulingSystem {
      * @param title the title for the event
      * @return true iff the event can be created
      */
-    private boolean canAddSpeakerEvent(String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
-        return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(startTime) && em.parseStringToLocalTime(endTime)
-                && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)
-                && helperAreSpeakersExist(speakerUsernames) && helperAreSpeakersAvailable(date, startTime, endTime, speakerUsernames)
+    private boolean canAddSpeakerEvent(String startDate, String endDate, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
+        return em.parseStringToLocalDate(startDate) && em.parseStringToLocalTime(startTime) && em.parseStringToLocalTime(endTime)
+                && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, startDate, endDate, startTime, endTime)
+                && helperAreSpeakersExist(speakerUsernames) && helperAreSpeakersAvailable(startDate, endDate, startTime, endTime, speakerUsernames)
                 && em.isEventTitleUnique(title) && maxNum > 0 && maxNum <= rm.getCapacity(rmNum);
     }
 
     /**
      * Check whether or not the given event can be created satisfying all the requirements detailed in the description.
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param rmNum the room number for the event
      * @param title the title for the event
      * @return true iff the event can be created
      */
-    private boolean canAddParty (String date, String startTime, String endTime, String rmNum, String title, int maxNum){
-        return em.parseStringToLocalDate(date) && em.parseStringToLocalTime(startTime) && em.parseStringToLocalTime(endTime)
-                && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)
+    private boolean canAddParty (String startDate, String endDate, String startTime, String endTime, String rmNum, String title, int maxNum){
+        return em.parseStringToLocalDate(startDate) && em.parseStringToLocalTime(startTime) && em.parseStringToLocalTime(endTime)
+                && rm.doesRoomExist(rmNum) && em.isRoomAvailableAtTime(rmNum, startDate, endDate, startTime, endTime)
                 && em.isEventTitleUnique(title) && maxNum > 0 && maxNum <= rm.getCapacity(rmNum);
     }
 
     /**
      * Check if the conditions for adding the given no speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param rmNum the room number for the event
@@ -284,10 +292,13 @@ public class SchedulingSystem {
      * @param maxNum the maximum/ capacity of people that can attend this event
      * @return the error message according to the error or "true" if event successfully created
      */
-    public String helper_addParty (Boolean VIP, String date, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
-        //check if date is valid format and value
-        if (!em.parseStringToLocalDate(date)){
-            return "Uh-oh! The date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
+    public String helper_addParty (Boolean VIP, String startDate, String endDate, String startTime, String endTime, String rmNum, List<String> speakerUsernames, String title, int maxNum){
+        //check if dates is valid format and value
+        if (!em.parseStringToLocalDate(startDate)){
+            return "Uh-oh! The start date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
+        }
+        else if (!em.parseStringToLocalDate(endDate)){
+            return "Uh-oh! The end date entered is not a valid date or not written in the correct format (YYYYMMDD)!";
         }
         //check if start time is valid format and value
         else if (!em.parseStringToLocalTime(startTime)){
@@ -298,7 +309,7 @@ public class SchedulingSystem {
             return "Uh-oh! The end time entered is not a valid date or not written in the correct format (24-hour time, HH:MM:SS)!";
         }
         //check if start time < endtime
-        else if (!em.isTimeValid(date, startTime, endTime)){
+        else if (!em.isTimeValid(startDate, endDate, startTime, endTime)){
             return "Uh-oh! The end time entered should be after the start time for this event!";
         }
         //check if room exists
@@ -306,7 +317,7 @@ public class SchedulingSystem {
             return "Uh-oh! Room does not exist! Please add this room first!";
         }
         //check if room is booked already at this time
-        else if(!em.isRoomAvailableAtTime(rmNum, date, startTime, endTime)){
+        else if(!em.isRoomAvailableAtTime(rmNum, startDate, endDate, startTime, endTime)){
             return "Uh-oh! Room is already booked at the given time!";
         }
         //check if event title is unique
@@ -321,8 +332,8 @@ public class SchedulingSystem {
             return "Uh-oh! The maximum number of people who can attend the event exceeds the room capacity.";
         }
         //if everything works out
-        else if(canAddParty(date, startTime, endTime, rmNum, title, maxNum)){
-            em.createEvent(VIP, title, date, startTime, endTime, rmNum, maxNum, speakerUsernames);
+        else if(canAddParty(startDate, endDate, startTime, endTime, rmNum, title, maxNum)){
+            em.createEvent(VIP, title, startDate, endDate, startTime, endTime, rmNum, maxNum, speakerUsernames);
             return "true";
         }
         return "Event was not created due to some unexpected reason.";

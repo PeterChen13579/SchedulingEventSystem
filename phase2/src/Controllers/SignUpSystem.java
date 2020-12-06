@@ -156,8 +156,8 @@ public class SignUpSystem {
 
     /**
      * Checks whether username meets the requirement for VIP account or not (attends at least 2 events)
-     * @param username
-     * @return
+     * @param username the username want to check
+     * @return iff the user is VIP
      */
     public boolean userIsVIP(String username) {
         if (um.userType(username).equals("Speaker")){

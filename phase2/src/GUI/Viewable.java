@@ -35,16 +35,16 @@ public interface Viewable {
     String deleteMsg(String currentUsername, int chatIndex, int messageIndex);
     String markChatAsUnread(String currentUsername, int chatIndex);
     String archiveChats(String currentUsername, int chatIndex);
-    public List<String> getNewMessagesChatNames(String currentUsername);
-    public List<String> getNewMessagesTimestamp(String currentUsername);
+    List<String> getNewMessagesChatNames(String currentUsername);
+    List<String> getNewMessagesTimestamp(String currentUsername);
     List<String[][]> getNewMessagesLast8Messages(String currentUsername);
     boolean includesImage(String currentUsername, int chatIndex, int messageIndex);
     boolean cancelEvent(String eventName, String username);
     String changeCapacity(String eventName, int capacity, String username, String rmNum);
-    String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum,
-                              List<String> speakerUsernames, String eventTitle, int capacity);
+    String createSpeakerEvent(boolean VIP, String startDate, String endDate, String startTime, String endTime,
+                              String roomNum, List<String> speakerUsernames, String eventTitle, int capacity);
     boolean userIsVIP(String username);
-    String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+    String createParty(boolean VIP, String startDate, String endDate, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity);
     void addRequest(String username, String request);
     boolean markAddressed(int requestNumber);

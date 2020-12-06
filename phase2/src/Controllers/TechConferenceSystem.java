@@ -164,8 +164,8 @@ public class TechConferenceSystem implements Viewable{
         List<UUID> userChats = messagingSystem.getCurrentChats(currentUsername);
         List<List<String>> messageInfoList = new ArrayList<>();
 
-        if (chatNumber >= 1 && chatNumber <= userChats.size()){
-            UUID chatId = userChats.get(chatNumber-1);
+        if (chatNumber >= 0 && chatNumber < userChats.size()){
+            UUID chatId = userChats.get(chatNumber);
             List<UUID> chatMessages = messagingSystem.getChatMessages(currentUsername, chatId);
             for (UUID messageId: chatMessages){
                 List<String> currentMessageInfo = new ArrayList<>(getMessageInfo(chatId, messageId));
@@ -413,7 +413,8 @@ public class TechConferenceSystem implements Viewable{
      * Check if the conditions for adding the given one speaker/ multi speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
      * @param VIP whether the event is of type VIP
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param roomNum the room number for the event
@@ -422,17 +423,18 @@ public class TechConferenceSystem implements Viewable{
      * @param capacity the maximum/capacity of people that can attend this event
      * @return the error message according to the error or "true" if event successfully created
      */
-    public String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+    public String createSpeakerEvent(boolean VIP, String startDate, String endDate, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
         System.out.println(speakerUsernames);
-        return schedulingSystem.helper_addSpeakerEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
+        return schedulingSystem.helper_addSpeakerEvent(VIP, startDate, endDate, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
     }
 
     /**
      * Check if the conditions for adding the given no speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
      * @param VIP whether the event is of type VIP
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param roomNum the room number for the event
@@ -441,22 +443,29 @@ public class TechConferenceSystem implements Viewable{
      * @param capacity the maximum/capacity of people that can attend this event
      * @return the error message according to the error or "true" if event successfully created
      */
-    public String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+    public String createParty(boolean VIP, String startDate, String endDate, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
         System.out.println(speakerUsernames);
-        return schedulingSystem.helper_addParty(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
+        return schedulingSystem.helper_addParty(VIP, startDate, endDate, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
 
     }
 
 //--------------------------------------------Sign Up Buttons-----------------------------------------
 
 
-    //@TO JOY/AMY
+    /**
+     * Method to send all possible events to display onto GUI
+     * @return   A string list of events
+     */
     public String[] displayAllEvents() {
         return signUpSystem.displayAllEvents();
     }
 
-    //@TO JOY/AMY
+    /**
+     * Method to send all events that this username has signed up for to display onto GUI
+     * @param username   This username's event that has already been signed up for
+     * @return          A string list of events
+     */
     public String[] displaySignedUpEvents(String username) {
         return signUpSystem.displaySignedUpEvents(username);
     }
@@ -532,6 +541,11 @@ public class TechConferenceSystem implements Viewable{
         writer.writeToFile(filename, saveObjects);
     }
 
+    /**
+     * Method to determine if user is VIP or not
+     * @param username    To check if this username is VIp
+     * @return            true if user is vip, false otherwise.
+     */
     public boolean userIsVIP(String username) {
         return signUpSystem.userIsVIP(username);
     }
