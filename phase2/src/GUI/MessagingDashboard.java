@@ -61,7 +61,6 @@ public class MessagingDashboard extends JPanel{
         this.currentUsername = currentUsername;
         this.loginType = loginType;
         this.dashboard = dashboard;
-        this.currentChatIndex = -1;
         this.attachedImagePath = "";
         this.fileChooser = new JFileChooser(System.getProperty("user.dir"));
 //        @Peter commenting this out shouldn't change anything since style is set in Dashboard
@@ -371,7 +370,7 @@ public class MessagingDashboard extends JPanel{
                 if (chatNum == -1) {
                     failedMenu("Please select a chat.");
                 } else {
-                    String[][] msgInfo = sendsInfo.viewChat(chatNum+1, currentUsername);
+                    String[][] msgInfo = sendsInfo.viewChat(chatNum, currentUsername);
                     displayChatMsg(msgInfo);
                 }
 
@@ -417,15 +416,15 @@ public class MessagingDashboard extends JPanel{
         deleteMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int messageNum = chatNames.getSelectedIndex();
+                int messageNum = chatMsg.getSelectedIndex();
                 if (messageNum == -1) {
                     failedMenu("Please select a message to delete.");
                 } else {
-                    String error = sendsInfo.deleteMsg(currentUsername, currentChatIndex+1, messageNum);
+                    String error = sendsInfo.deleteMsg(currentUsername, currentChatIndex, messageNum);
                     if (error != null) {
                         failedMenu(error);
                     } else {
-                        String[][] msgInfo = sendsInfo.viewChat(currentChatIndex+1, currentUsername);
+                        String[][] msgInfo = sendsInfo.viewChat(currentChatIndex, currentUsername);
                         displayChatMsg(msgInfo);
                     }
                 }
@@ -465,7 +464,17 @@ public class MessagingDashboard extends JPanel{
                         break;
                     case "ViewChat":
                         chatDisplay();
-
+                        break;
+                    case "ViewOneChat":
+                        String[][] msgInfo = sendsInfo.viewChat(currentChatIndex, currentUsername);
+                        displayChatMsg(msgInfo);
+                        break;
+                    case "sendMessage":
+                        messagingMenu();
+                        break;
+                    case "MsgAllAttendeeEvent":
+                        sendAllAttendeeEvent();
+                        break;
                 }
             }
         });
@@ -494,6 +503,7 @@ public class MessagingDashboard extends JPanel{
         });
         newMessagesDisplay = new JLabel();
         eventListText = new JLabel("Enter event titles separated by a '/'");
+        currentChatIndex = -1;
     }
 
 
@@ -506,8 +516,14 @@ public class MessagingDashboard extends JPanel{
                 chatDisplay();
                 break;
             case "ViewChat":
+                messagingMenu();
+                break;
             case "SendMessage":
+                messagingMenu();
+                break;
             case "ViewNewMessage":
+                messagingMenu();
+                break;
             case "AddFriend":
                 messagingMenu();
                 break;

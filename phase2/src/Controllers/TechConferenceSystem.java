@@ -165,8 +165,8 @@ public class TechConferenceSystem implements Viewable{
         List<UUID> userChats = messagingSystem.getCurrentChats(currentUsername);
         List<List<String>> messageInfoList = new ArrayList<>();
 
-        if (chatNumber >= 1 && chatNumber <= userChats.size()){
-            UUID chatId = userChats.get(chatNumber-1);
+        if (chatNumber >= 0 && chatNumber < userChats.size()){
+            UUID chatId = userChats.get(chatNumber);
             List<UUID> chatMessages = messagingSystem.getChatMessages(currentUsername, chatId);
             for (UUID messageId: chatMessages){
                 List<String> currentMessageInfo = new ArrayList<>(getMessageInfo(chatId, messageId));
