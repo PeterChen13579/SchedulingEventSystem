@@ -114,14 +114,6 @@ public class Event implements Serializable {
     }
 
     /**
-     * Setter for the speaker username of this event
-     * @param speakerUserNames the new speaker username of this event
-     */
-    public void setSpeakerUserName(List<String> speakerUserNames) {
-        this.speakerUserNames = speakerUserNames;
-    }
-
-    /**
      * Getter for the type of event
      * @return "Party" if there are no speakers; "Talk" if there is one speaker; "Panel" if there are multiple speakers
      */

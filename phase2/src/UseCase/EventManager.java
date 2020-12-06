@@ -381,10 +381,16 @@ public class EventManager implements Serializable {
             }
         String roomNum = event.getRoomNum();
         String eventType = "( " + event.getEventType() + " )";
-        if(event.getVIP()){return eventTitle + eventType +"[VIP-only]"+ ": " + startTime + " - " + endTime + ", in Room " + roomNum +
+        if(event.getVIP() & event.getEventType().equals("Party"))
+        {return eventTitle + eventType +"[VIP-only]"+ ": " + startTime + " - " + endTime + ", in Room " + roomNum +
+                ".";}
+        else if(event.getVIP() & !event.getEventType().equals("Party")){{return eventTitle + eventType +"[VIP-only]"+ ": " + startTime + " - " + endTime + ", in Room " + roomNum +
+                ". Speaker: " + speakers;}}
+        else if(!event.getVIP() & !event.getEventType().equals("Party")){return eventTitle + eventType + ": " + startTime + " - " + endTime + ", in Room " + roomNum +
                 ". Speaker: " + speakers;}
         else{return eventTitle + eventType + ": " + startTime + " - " + endTime + ", in Room " + roomNum +
-                ". Speaker: " + speakers;}
+                ". ";}
+
     }
 
     /**
