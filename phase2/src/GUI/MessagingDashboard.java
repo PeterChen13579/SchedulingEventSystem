@@ -24,7 +24,7 @@ public class MessagingDashboard extends JPanel{
     private JButton viewChat, sendMessage, viewNewMessages;
     private JButton addFriend,confirmFriend;
     private JButton sendOne,sendAllAttendee, sendAllSpeaker, sendAllAttendeeEvent;
-    private JButton confirmOneMessage,confirmChatNumber, archiveChat, markChatUnread, attachImage;
+    private JButton confirmOneMessage,confirmChatNumber, archiveChat, markChatUnread, attachImage, clearImage;
     private JButton allAttendeeMsg, allSpeakerMsg, allEventMsg;
     private JButton nextPanel, back;
     private JButton deleteMsg;
@@ -114,6 +114,7 @@ public class MessagingDashboard extends JPanel{
         this.add(msgContentLabel);
         this.add(content);
         this.add(attachImage);
+        this.add(clearImage);
         this.add(confirmOneMessage);
         this.add(back);
         dashboard.refresh();
@@ -164,7 +165,7 @@ public class MessagingDashboard extends JPanel{
 
         chatNames.setListData(userToDisplay.toArray(new String[0]));
         JScrollPane listScroller = new JScrollPane(chatNames);
-        listScroller.setPreferredSize(new Dimension(800, 550));
+        listScroller.setPreferredSize(new Dimension(800, 450));
         this.add(listScroller);
         dashboard.refresh();
     }
@@ -187,7 +188,7 @@ public class MessagingDashboard extends JPanel{
         }
         chatMsg.setListData(formattedMessages);
         JScrollPane listScroller = new JScrollPane(chatMsg);
-        listScroller.setPreferredSize(new Dimension(750, 800));
+        listScroller.setPreferredSize(new Dimension(750, 450));
         this.add(listScroller);
         this.add(deleteMsg);
         this.add(back);
@@ -213,7 +214,7 @@ public class MessagingDashboard extends JPanel{
         newChatMsg.setListData(displayItems.toArray(new String[0]));
         this.add(newChatMsg);
         JScrollPane listScroller = new JScrollPane(newChatMsg);
-        listScroller.setPreferredSize(new Dimension(800, 550));
+        listScroller.setPreferredSize(new Dimension(800, 450));
         this.add(listScroller);
         this.add(back);
         dashboard.refresh();
@@ -321,6 +322,13 @@ public class MessagingDashboard extends JPanel{
                 }else{
                     failedMenu(errorMessage);
                 }
+            }
+        });
+        clearImage = new JButton("Clear image");
+        clearImage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attachedImagePath = "";
             }
         });
         allAttendeeMsg = new JButton("Send");
@@ -448,6 +456,7 @@ public class MessagingDashboard extends JPanel{
         nextPanel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                refreshTextFields();
                 switch (currentMenu){
                     case "SendOneMessage":
                         sendOneMessage();
@@ -539,6 +548,7 @@ public class MessagingDashboard extends JPanel{
 
     private void displayImage(byte[] imageBytes) {
         JFrame imageFrame = new JFrame("Image");
+        imageFrame.setMaximumSize(new Dimension(600,600));
 
         JLabel label = new JLabel();
         label.setIcon(new ImageIcon(imageBytes));

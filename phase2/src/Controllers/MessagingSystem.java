@@ -231,8 +231,7 @@ public class MessagingSystem {
         if (!userManager.isUserExists(recipient)) {
             return("The user " + recipient + " does not exist.");
         } else if (userManager.isAddFriend(senderUsername, recipient)) {
-            this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-            return(null);
+            return this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
         } else {
             return(recipient + " is not your friend.");
         }
@@ -335,10 +334,13 @@ public class MessagingSystem {
      * @param time The time the message was sent
      * @param content The content of the message
      */
-    public void sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) { // we can make this private right?
+    public String sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) { // we can make this private right?
         String imageString = "";
         if (!imagePath.equals("")) { //Checks to see if imageString is not empty
             imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
+        }
+        if (imageString == "Image does not exist or cannot be found.") {
+            return imageString;
         }
         for (String username : usernames) {
 
@@ -353,12 +355,13 @@ public class MessagingSystem {
             if (!imageString.isEmpty()) { //If the Base64 String is not empty, then call sendImageMessageToChat
                 this.userChatManager.sendImageMessageToChat(chat, senderUsername, time, content, imageString); //send an image/message
             } else {
-                this.userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
+                userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
             }
             if (userChatManager.getArchivedChats(senderUsername).contains(chat)){  //unarchives chat if it is archived
                 userChatManager.unarchiveChat(senderUsername, chat);
             }
         }
+        return null;
     }
 
     /**
@@ -544,7 +547,7 @@ public class MessagingSystem {
             imageFile.read(imageBytes);
             encodedFile = Base64.getEncoder().encodeToString(imageBytes);
         } catch (FileNotFoundException e) {
-            System.out.println("Image does not exist or cannot be found. ");
+            return "Image does not exist or cannot be found.";
         } catch (IOException f) {
             f.printStackTrace();
         }
