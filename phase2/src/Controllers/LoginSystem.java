@@ -15,7 +15,6 @@ import UseCase.UserManager;
  */
 public class LoginSystem implements Serializable {
     UserManager manager;
-    private String username;
 
     public LoginSystem(UserManager manager) {
         this.manager = manager;
@@ -77,10 +76,5 @@ public class LoginSystem implements Serializable {
         return manager.userType(username);
     }
 
-    /**
-     * Grabs the Username of the User once successfully logged in.
-     * @return Username of the User
-     */
-    public String getUsername() { return this.username; }
 
 }
