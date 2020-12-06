@@ -25,28 +25,14 @@ public class EventManager implements Serializable {
 
 
 
-
+    /**
+     * Initialize a new EventManager.
+     */
     public EventManager() {
         allEvents = new ArrayList<>();
         allParties = new ArrayList<>();
         allTalks = new ArrayList<>();
         allPanels = new ArrayList<>();
-    }
-
-    /**
-     * Initialize a new EventManager with given lists parties, talks and panels.
-     * @param parties the list of parties (no-speaker events)
-     * @param talks   the list of talks (one-speaker events)
-     * @param panels  the list of panels (multi-speaker events)
-     */
-    public EventManager(List<Event> parties, List<Event> talks, List<Event> panels) {
-        this.allEvents = new ArrayList<>();
-        allEvents.addAll(parties);
-        allEvents.addAll(talks);
-        allEvents.addAll(panels);
-        this.allParties = parties;
-        this.allTalks = talks;
-        this.allPanels = panels;
     }
 
     /**
@@ -78,6 +64,10 @@ public class EventManager implements Serializable {
         }
     }
 
+    /**
+     * Delete event from the corresponding list variable
+     * @param title the title for the event
+     */
     //delete event from the corresponding list variable
     public void deleteEvent(String title){
         Event event = helperEventTitle(title);
@@ -96,7 +86,10 @@ public class EventManager implements Serializable {
         allEvents.removeIf(e -> e.getTitle().equals(title));
     }
 
-    //change event maxNum from the corresponding list variable
+    /**
+     * Change event maxNum from the corresponding list variable
+     * @param title the title for the event
+     */
     public void changeEventMaxNum(String title, int maxNum){
         Event event = helperEventTitle(title);
         String type = event.getEventType();
@@ -305,29 +298,6 @@ public class EventManager implements Serializable {
         return eventNum <= currentNum;
 
     }
-    /**
-     * Returns whether or not we can
-     *
-     * add the username of this attendee to the attendeeList of this event,
-     * calls the above helper methods (isEventExist isAttendeeAdded roomNotFull)
-     * @param userName the username of the attendee that we want to add
-     * @param eventTitle the event title that we want to check if we can add this attendee
-     * @return true iff we can add the username of this attendee to the attendeeList of this event
-     */
-    public boolean canAddAttendee(String userName, String eventTitle){
-        return isEventExist(eventTitle) && !isAttendeeAdded(userName, eventTitle) && isEventFull(eventTitle);
-    }
-
-    /**
-     * Returns whether or not we can delete the username of this attendee from the attendeeList of this event,
-     * calls the above helper methods (isEventExist isAttendeeAdded)
-     * @param userName the username of the attendee that we want to delete
-     * @param eventTitle the event title that we want to check if we can delete this attendee
-     * @return true iff we can delete the username of this attendee from the attendeeList of this event
-     */
-    public boolean canDeleteAttendee(String userName, String eventTitle){
-        return isEventExist(eventTitle) && isAttendeeAdded(userName, eventTitle);
-    }
 
     /**
      * private helper method for finding corresponding Event base on eventTitle
@@ -358,15 +328,6 @@ public class EventManager implements Serializable {
         return event.getAttendeeList().size();
     }
 
-    /**
-     * get the room number of this event
-     * @param eventTitle the event title that we want to check
-     * @return the room number of this event
-     */
-    public String getRoomNum(String eventTitle){
-        Event event = helperEventTitle(eventTitle);
-        return event.getRoomNum();
-    }
 
     /**
      * Add attendee to the attendeeList stored in Event
