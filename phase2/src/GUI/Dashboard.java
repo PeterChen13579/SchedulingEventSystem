@@ -39,6 +39,7 @@ public class Dashboard{
     private JTextField cancelEventTextfield, whichEvent;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
+    private JLabel requestLabel;
     private JTextField textInput, roomNumber, roomCapacity, filename, eventName, eventCapacity;
     private JTextField date, startTime, endTime, speakerUsernameOne, speakerUsernameMulti, VIP;
     private JLabel dateDisplay, startTimeDisplay, endTimeDisplay, VIPDisplay;
@@ -364,6 +365,7 @@ public class Dashboard{
     private void tagRequest() {
         currentMenu = "TagRequest";
         buttonPanel.removeAll();
+        buttonPanel.add(requestLabel);
         buttonPanel.add(textInput);
         buttonPanel.add(addressed);
         buttonPanel.add(pending);
@@ -825,7 +827,7 @@ public class Dashboard{
                 int input = tryParse(textInput.getText());
                 if (!sendsInfo.markAddressed(input)) {
                     failedMenu("This request number does not exist.");
-                }
+                }else{previousMenu();}
             }
         });
         pending = new JButton("Pending");
@@ -835,7 +837,7 @@ public class Dashboard{
                 int input = tryParse(textInput.getText());
                 if (!sendsInfo.markPending(input)) {
                     failedMenu("This request number does not exist.");
-                }
+                }else{previousMenu();}
             }
         });
         textInput = new JTextField(12);
@@ -849,6 +851,7 @@ public class Dashboard{
         changeCapacityEventTextfield = new JTextField(12);
         cancelEventTextfield = new JTextField(12);
         addRoomLabel = new JLabel("Room Number:");
+        requestLabel = new JLabel("Enter the request number:");
         displayCapacity = new JLabel("Capacity:");
         displayUsername = new JLabel("Username:");
         displayPassword = new JLabel("Password:");
