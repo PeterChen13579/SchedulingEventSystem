@@ -342,6 +342,9 @@ public class MessagingSystem {
         if (imageString == "Image does not exist or cannot be found.") {
             return imageString;
         }
+        if (content.length() == 0 && imagePath.length() ==0) {
+            return "You cannot send an empty message.";
+        }
         for (String username : usernames) {
 
             List<String> thisChatUsernames = new ArrayList<>();
@@ -415,9 +418,9 @@ public class MessagingSystem {
      * @param senderUsername Username of the sender
      * @param content Content of message
      */
-    public void organizerMessageAllAttendees(String senderUsername, String content, String imagePath) {
+    public String organizerMessageAllAttendees(String senderUsername, String content, String imagePath) {
         List<String> allAttendees = userManager.getAllAttendee();
-        this.sendMessageToUsers(allAttendees, senderUsername, LocalDateTime.now(), content, imagePath);
+        return sendMessageToUsers(allAttendees, senderUsername, LocalDateTime.now(), content, imagePath);
     }
 
     /**
@@ -425,9 +428,9 @@ public class MessagingSystem {
      * @param senderUsername Username of the sender
      * @param content Content of message
      */
-    public void organizerMessageAllSpeakers(String senderUsername, String content, String imagePath) {
+    public String organizerMessageAllSpeakers(String senderUsername, String content, String imagePath) {
         List<String> allSpeakers = userManager.getAllSpeaker();
-        this.sendMessageToUsers(allSpeakers, senderUsername, LocalDateTime.now(), content, imagePath);
+        return sendMessageToUsers(allSpeakers, senderUsername, LocalDateTime.now(), content, imagePath);
     }
 
     /**
@@ -460,8 +463,7 @@ public class MessagingSystem {
                 return "No event with title " + title + " found.";
             }
         }
-        this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
-        return null;
+        return sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
     }
 
     /**

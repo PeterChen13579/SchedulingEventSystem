@@ -29,8 +29,8 @@ public interface Viewable {
     String[][] viewChat(int chatNumber, String username);
     String addFriend(String mainUsername, String newFriendUsername);
     //ArrayList<JSONObject> getNewMessages(String username);   //commented out for testing purposes
-    void msgAllAttendees(String sender, String msg, String imagePath);
-    void msgAllSpeakers(String sender, String msg, String imagePath);
+    String msgAllAttendees(String sender, String msg, String imagePath);
+    String msgAllSpeakers(String sender, String msg, String imagePath);
     String msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath);
     String deleteMsg(String currentUsername, int chatIndex, int messageIndex);
     String markChatAsUnread(String currentUsername, int chatIndex);

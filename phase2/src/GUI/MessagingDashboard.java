@@ -125,6 +125,8 @@ public class MessagingDashboard extends JPanel{
         this.removeAll();
         this.add(msgContentLabel);
         this.add(content);
+        this.add(attachImage);
+        this.add(clearImage);
         this.add(allAttendeeMsg);
         this.add(back);
         dashboard.refresh();
@@ -135,6 +137,8 @@ public class MessagingDashboard extends JPanel{
         this.removeAll();
         this.add(msgContentLabel);
         this.add(content);
+        this.add(attachImage);
+        this.add(clearImage);
         this.add(allSpeakerMsg);
         this.add(back);
         dashboard.refresh();
@@ -335,18 +339,26 @@ public class MessagingDashboard extends JPanel{
         allAttendeeMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllAttendees(currentUsername,content.getText(), "");
-                refreshTextFields();
-                messagingMenu();
+                String error = sendsInfo.msgAllAttendees(currentUsername,content.getText(), attachedImagePath);
+                if (error != null) {
+                    failedMenu(error);
+                } else {
+                    refreshTextFields();
+                    messagingMenu();
+                }
             }
         });
         allSpeakerMsg = new JButton("Send");
         allSpeakerMsg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sendsInfo.msgAllSpeakers(currentUsername, content.getText(), "");
-                refreshTextFields();
-                messagingMenu();
+                String error = sendsInfo.msgAllSpeakers(currentUsername, content.getText(), attachedImagePath);
+                if (error != null) {
+                    failedMenu(error);
+                } else {
+                    refreshTextFields();
+                    messagingMenu();
+                }
             }
         });
         allEventMsg = new JButton("Send");
@@ -457,26 +469,19 @@ public class MessagingDashboard extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 refreshTextFields();
-                switch (currentMenu){
-                    case "SendOneMessage":
-                        sendOneMessage();
-                        break;
-                    case "AddFriend":
-                        addFriend();
-                        break;
-                    case "ViewChat":
-                        chatDisplay();
-                        break;
-                    case "ViewOneChat":
+                switch (currentMenu) {
+                    case "SendOneMessage" -> sendOneMessage();
+                    case "AddFriend" -> addFriend();
+                    case "ViewChat" -> chatDisplay();
+                    case "ViewOneChat" -> {
                         String[][] msgInfo = sendsInfo.viewChat(currentChatIndex, currentUsername);
                         displayChatMsg(msgInfo);
-                        break;
-                    case "sendMessage":
-                        messagingMenu();
-                        break;
-                    case "MsgAllAttendeeEvent":
-                        sendAllAttendeeEvent();
-                        break;
+                    }
+                    case "sendMessage" -> messagingMenu();
+                    case "MsgAllAttendeeEvent" -> sendAllAttendeeEvent();
+                    case "MsgAllAttendees" -> sendAllAttendee();
+                    case "MsgAllSpeakers" -> sendAllSpeaker();
+                    default -> sendMessageMenu();
                 }
             }
         });
@@ -520,28 +525,10 @@ public class MessagingDashboard extends JPanel{
 
     private void previousMenu() {
         switch (currentMenu) {
-            case "Messaging":
-                dashboard.backToMain("Msg");
-                break;
-            case "ViewOneChat":
-                chatDisplay();
-                break;
-            case "ViewChat":
-                messagingMenu();
-                break;
-            case "SendMessage":
-                messagingMenu();
-                break;
-            case "ViewNewMessage":
-                messagingMenu();
-                break;
-            case "AddFriend":
-                messagingMenu();
-                break;
-            default:
-                sendMessageMenu();
-                break;
-
+            case "Messaging" -> dashboard.backToMain("Msg");
+            case "ViewOneChat" -> chatDisplay();
+            case "ViewChat", "SendMessage", "ViewNewMessage", "AddFriend" -> messagingMenu();
+            default -> sendMessageMenu();
         }
     }
 

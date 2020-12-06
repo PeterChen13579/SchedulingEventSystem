@@ -207,8 +207,8 @@ public class TechConferenceSystem implements Viewable{
      * @param imagePath image path
      */
     @Override
-    public void msgAllAttendees(String sender, String msg, String imagePath) {
-        messagingSystem.organizerMessageAllAttendees(sender, msg, imagePath);
+    public String msgAllAttendees(String sender, String msg, String imagePath) {
+        return messagingSystem.organizerMessageAllAttendees(sender, msg, imagePath);
     }
 
     /**
@@ -217,8 +217,8 @@ public class TechConferenceSystem implements Viewable{
      * @param imagePath image path
      */
     @Override
-    public void msgAllSpeakers(String sender, String msg, String imagePath) {
-        messagingSystem.organizerMessageAllSpeakers(sender, msg, imagePath);
+    public String msgAllSpeakers(String sender, String msg, String imagePath) {
+        return messagingSystem.organizerMessageAllSpeakers(sender, msg, imagePath);
     }
 
     /**
