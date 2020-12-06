@@ -337,6 +337,11 @@ public class MessagingSystem {
     public String sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) { // we can make this private right?
         String imageString = "";
         if (!imagePath.equals("")) { //Checks to see if imageString is not empty
+            String extension = imagePath.substring(imagePath.lastIndexOf(".")+1);
+            String[] validExtensions = new String[] {"jpg", "jpeg", "png", "gif", "bmp", "tiff"};
+            if (!Arrays.asList(validExtensions).contains(extension.toLowerCase())) {
+                return "Invalid file extension.";
+            }
             imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
         }
         if (imageString == "Image does not exist or cannot be found.") {
@@ -541,6 +546,7 @@ public class MessagingSystem {
      */
 
     public static String imageToBase64(String imagePath) {
+
         String encodedFile = null;
         File file = new File(imagePath);
         try {
@@ -554,24 +560,6 @@ public class MessagingSystem {
             f.printStackTrace();
         }
         return encodedFile;
-    }
-
-    /**
-     Takes in a Base64 string and converts it into an image to be saved onto the computer. Does not return
-     * anything. Should be called after imagetoBase64.
-     * @param base64Image String that represents the base64 string
-     * @param imagePath The filepath where the image will be saved.
-     */
-    public static void base64ToImage(String base64Image, String imagePath) {
-        try {
-            FileOutputStream imageFile = new FileOutputStream(imagePath);
-            byte[] imageByteArray = Base64.getDecoder().decode(base64Image);
-            imageFile.write(imageByteArray);
-        } catch (FileNotFoundException e) {
-            System.out.println("Image could not send.");
-        } catch (IOException f) {
-            f.printStackTrace();
-        }
     }
 
     public UUID getMessageByIndex(UUID chatId, int messageIndex) {
