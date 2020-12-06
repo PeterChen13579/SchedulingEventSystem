@@ -369,8 +369,6 @@ public class MessagingSystem {
      * @return An error message, or null if there are no errors.
      */
     public String deleteUserMessage(String username, UUID chatId, UUID messageId){ // make sure you discard messageId after since it's gone from the system
-        System.out.println("original sender: "+userChatManager.getMessageSenderUsername(chatId, messageId));
-        System.out.println("current user: " + username);
         if (userChatManager.getMessageSenderUsername(chatId, messageId).equals(username)){
             userChatManager.deleteMessageFromChat(chatId, messageId);
             return null;

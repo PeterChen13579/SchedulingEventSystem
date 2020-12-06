@@ -202,10 +202,12 @@ public class MessagingDashboard extends JPanel{
             displayItems.add("No new messages");
         } else {
             for (int i=0; i<messages.size(); i++) {
-                displayItems.add(chatNames.get(i) + " (" + timestamps.get(i) + " minutes ago):");
+                displayItems.add(chatNames.get(i));
+                displayItems.add("(" + timestamps.get(i) + " minutes ago)");
                 for (String[] message: messages.get(i)) {
                     displayItems.add(message[0] + ": " + message[1]);
                 }
+                displayItems.addAll(Collections.nCopies(15, "")); //add 15 blank spaces between each chat
             }
         }
         newChatMsg.setListData(displayItems.toArray(new String[0]));
