@@ -413,7 +413,8 @@ public class TechConferenceSystem implements Viewable{
      * Check if the conditions for adding the given one speaker/ multi speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
      * @param VIP whether the event is of type VIP
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param roomNum the room number for the event
@@ -422,17 +423,18 @@ public class TechConferenceSystem implements Viewable{
      * @param capacity the maximum/capacity of people that can attend this event
      * @return the error message according to the error or "true" if event successfully created
      */
-    public String createSpeakerEvent(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+    public String createSpeakerEvent(boolean VIP, String startDate, String endDate, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
         System.out.println(speakerUsernames);
-        return schedulingSystem.helper_addSpeakerEvent(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
+        return schedulingSystem.helper_addSpeakerEvent(VIP, startDate, endDate, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
     }
 
     /**
      * Check if the conditions for adding the given no speaker event is satisfied and return error messages accordingly.
      * If satisfied, create new event, update speaker's list of events, and print success message.
      * @param VIP whether the event is of type VIP
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the end time for the event (HH:mm:ss)
      * @param roomNum the room number for the event
@@ -441,10 +443,10 @@ public class TechConferenceSystem implements Viewable{
      * @param capacity the maximum/capacity of people that can attend this event
      * @return the error message according to the error or "true" if event successfully created
      */
-    public String createParty(boolean VIP, String date, String startTime, String endTime, String roomNum, List<String>
+    public String createParty(boolean VIP, String startDate, String endDate, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
         System.out.println(speakerUsernames);
-        return schedulingSystem.helper_addParty(VIP, date, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
+        return schedulingSystem.helper_addParty(VIP, startDate, endDate, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
 
     }
 

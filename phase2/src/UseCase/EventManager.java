@@ -53,16 +53,17 @@ public class EventManager implements Serializable {
      * Create an Event object based on the parameters and add it into the list of talks/panels/parties accordingly.
      * @param VIP whether or not the event is VIP
      * @param title the title for the event
-     * @param date the date for the event (YYYYMMDD)
+     * @param startDate the date for the event (YYYYMMDD)
+     * @param endDate the date for the event (YYYYMMDD)
      * @param startTime the start time for the party (HH:mm:ss)
      * @param endTime the start time for the party (HH:mm:ss)
      * @param rmNum the room number for the party
      * @param maxNum the maximum number of people that can attend this event
      * @param speakerUserNames the list of speaker usernames for this event
      */
-    public void createEvent(boolean VIP, String title, String date, String startTime, String endTime,
+    public void createEvent(boolean VIP, String title, String startDate, String endDate, String startTime, String endTime,
                                String rmNum, int maxNum, List<String> speakerUserNames){
-        List<LocalDateTime> time = parseStringToLocalDateTime(date, startTime, endTime);
+        List<LocalDateTime> time = parseStringToLocalDateTime(startDate, endDate, startTime, endTime);
 
         // Create an event object with the specification
         Event event = new Event(title, time.get(0), time.get(1), rmNum, VIP, maxNum, speakerUserNames);
@@ -126,24 +127,25 @@ public class EventManager implements Serializable {
 
     /**
      * Returns a list of 2 LocalDateTime object representing the start time and end time of a potential event
-     * (endTime will automatically be 1 hour after startTime)
-     * @param date the date for the potential event (YYYYMMDD)
+     * @param startDate the date for the event (YYYYMMDD)
+     * @param endDate the date for the event (YYYYMMDD)
      * @param startTime the start time for the event (HH:mm:ss)
      * @param endTime the start time for the event (HH:mm:ss)
      * @return a list of LocalDateTime objects parsed from the date and startTime parameters
      */
-    public List<LocalDateTime> parseStringToLocalDateTime (String date, String startTime, String endTime){
+    public List<LocalDateTime> parseStringToLocalDateTime (String startDate, String endDate, String startTime, String endTime){
         //parse date to LocalDate format
         DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
-        LocalDate localDate = LocalDate.parse(date, formatter);
+        LocalDate localStartDate = LocalDate.parse(startDate, formatter);
+        LocalDate localEndDate = LocalDate.parse(endDate, formatter);
 
         //parse startTime and endTime to LocalTime format (end time will be 1 hour later)
         LocalTime localStartTime = LocalTime.parse(startTime);
         LocalTime localEndTime = LocalTime.parse(endTime);
 
         //create LocalDateTime objects for start time and end time
-        LocalDateTime sTime = LocalDateTime.of(localDate, localStartTime);
-        LocalDateTime eTime = LocalDateTime.of(localDate, localEndTime);
+        LocalDateTime sTime = LocalDateTime.of(localStartDate, localStartTime);
+        LocalDateTime eTime = LocalDateTime.of(localEndDate, localEndTime);
 
         return Arrays.asList(sTime, eTime);
     }
@@ -179,14 +181,28 @@ public class EventManager implements Serializable {
     }
 
 
-    //returns true if this time frame is a valid time frame (start time < endtime)
-    public boolean isTimeValid(String date, String startTime, String endTime){
-        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
-        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
+    /**
+     * Returns if the given time frame is a valid time frame (start time < endtime)
+     * @param startDate the date for the event (YYYYMMDD)
+     * @param endDate the date for the event (YYYYMMDD)
+     * @param startTime the start time for the event (HH:mm:ss)
+     * @param endTime the start time for the event (HH:mm:ss)
+     * @return true if this time frame is a valid time frame (start time < endtime)
+     */
+    public boolean isTimeValid(String startDate, String endDate, String startTime, String endTime){
+        LocalDateTime start = parseStringToLocalDateTime(startDate, endDate, startTime, endTime).get(0);
+        LocalDateTime end = parseStringToLocalDateTime(startDate, endDate, startTime, endTime).get(1);
         return end.isAfter(start);
     }
 
-    //returns true if the two time intervals overlap
+    /**
+     * Returns if the given time intervals overlap.
+     * @param start1 the LocalDateTime object for the start time of the first interval
+     * @param end1 the LocalDateTime object for the end time of the first interval
+     * @param start2 the LocalDateTime object for the start time of the second interval
+     * @param end2 the LocalDateTime object for the end time of the second interval
+     * @return true if the two time intervals overlap
+     */
     public boolean doTimesOverlap(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2){
         return start1.isBefore(end2) && start2.isBefore(end1);
     }
@@ -194,14 +210,15 @@ public class EventManager implements Serializable {
     /**
      * Returns whether or not the given room is booked at the given date and time
      * @param roomNum the room number for the potential event
-     * @param date the date for the potential event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the potential event (HH:mm:ss)
      * @param endTime the start time for the potential event (HH:mm:ss)
      * @return true iff the room given is not booked by another event at the same time
      */
-    public boolean isRoomAvailableAtTime(String roomNum, String date, String startTime, String endTime){
-        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
-        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
+    public boolean isRoomAvailableAtTime(String roomNum, String startDate, String endDate, String startTime, String endTime){
+        LocalDateTime start = parseStringToLocalDateTime(startDate, endDate, startTime, endTime).get(0);
+        LocalDateTime end = parseStringToLocalDateTime(startDate, endDate, startTime, endTime).get(1);
         //check if room is booked at the time
         for(Event e: allEvents){
             //lower and upper limits
@@ -216,15 +233,16 @@ public class EventManager implements Serializable {
 
     /**
      * Returns whether or not the given speaker is already hosting an event at the given date and time
-     * @param date the date for the potential event (YYYYMMDD)
+     * @param startDate the start date for the potential event (YYYYMMDD)
+     * @param endDate the end date for the potential event (YYYYMMDD)
      * @param startTime the start time for the potential event (HH:mm:ss)
      * @param endTime the start time for the potential event (HH:mm:ss)
      * @param speakerUserName the username for the speaker of the event
      * @return true iff the speaker is not booked for any other event at give date and time
      */
-    public boolean isSpeakerAvailableAtTime(String date, String startTime, String endTime, String speakerUserName){
-        LocalDateTime start = parseStringToLocalDateTime(date, startTime, endTime).get(0);
-        LocalDateTime end = parseStringToLocalDateTime(date, startTime, endTime).get(1);
+    public boolean isSpeakerAvailableAtTime(String startDate, String endDate, String startTime, String endTime, String speakerUserName){
+        LocalDateTime start = parseStringToLocalDateTime(startDate, endDate, startTime, endTime).get(0);
+        LocalDateTime end = parseStringToLocalDateTime(startDate, endDate, startTime, endTime).get(1);
         //check if speaker is booked at the time
         for(Event event: allEvents){
             //lower and upper limits
