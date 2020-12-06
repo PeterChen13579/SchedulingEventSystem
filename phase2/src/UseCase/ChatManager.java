@@ -67,8 +67,7 @@ public class ChatManager implements Serializable {
      * @param content The content of the message
      */
     public void sendImageMessageToChat(UUID chatId, String senderUsername, LocalDateTime time, String content, String imageString) {//Added an extra parameter imageString
-        ImageMessage message = new ImageMessage(senderUsername, time, content); //create an ImageMessage
-        setBase64String(message, imageString); //Set the ImageMessage's Base64 String to be imageString
+        ImageMessage message = new ImageMessage(senderUsername, time, content, imageString); //create an ImageMessage
         UUID newMessageId = UUID.randomUUID(); //Add the ID
 
         Chat chosenChat = allChats.get(chatId); //Grab the chat
@@ -397,10 +396,6 @@ public class ChatManager implements Serializable {
             previousMessageId = null;
         }
         return previousMessageId;
-    }
-
-    private void setBase64String(ImageMessage message, String imageString) {
-        message.setImageString(imageString);
     }
 
     private void markChatAsRead(String username, UUID chatId){
