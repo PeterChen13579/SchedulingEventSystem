@@ -527,25 +527,32 @@ public class MessagingDashboard extends JPanel{
     }
 
     private void errorScreenNext() {
-        System.out.println(currentMenu);
         switch (currentMenu) {
             case "SendOneMessage":
                 sendOneMessage();
+                break;
             case "AddFriend":
                 addFriend();
+                break;
             case "ViewChat":
                 chatDisplay();
+                break;
             case "ViewOneChat":
                 String[][] msgInfo = sendsInfo.viewChat(currentChatIndex, currentUsername);
                 displayChatMsg(msgInfo);
+                break;
             case "sendMessage":
                 messagingMenu();
+                break;
             case "MsgAllAttendeeEvent":
                 sendAllAttendeeEvent();
+                break;
             case "MsgAllAttendees":
                 sendAllAttendee();
+                break;
             case "MsgAllSpeakers":
                 sendAllSpeaker();
+                break;
         }
     }
 
