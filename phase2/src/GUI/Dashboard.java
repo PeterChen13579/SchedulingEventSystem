@@ -37,12 +37,12 @@ public class Dashboard{
     private JButton seeRequests, viewAllRequests, tagRequest;
     private JButton addressed, pending;
     private JTextField cancelEventTextfield, whichEvent;
-    private JTextField changeCapacityEventTextfield;
+    private JTextField changeCapacityEventTextfield, endDate;
     private JLabel addRoomLabel;
     private JTextField textInput, roomNumber, roomCapacity, filename, eventName, eventCapacity;
-    private JTextField date, startTime, endTime, speakerUsernameOne, speakerUsernameMulti, VIP;
-    private JLabel dateDisplay, startTimeDisplay, endTimeDisplay, VIPDisplay;
-    private JLabel speakerUsernameDisplayOne, speakerUsernameDisplayMulti;
+    private JTextField startDate, startTime, endTime, speakerUsernameOne, speakerUsernameMulti, VIP;
+    private JLabel startDateDisplay, startTimeDisplay, endTimeDisplay, VIPDisplay;
+    private JLabel speakerUsernameDisplayOne, speakerUsernameDisplayMulti, endDateDisplay;
     private JPasswordField password;
     private String currentMenu, previousMenu;
     private String loginType;
@@ -304,8 +304,10 @@ public class Dashboard{
         buttonPanel.removeAll();
         buttonPanel.add(VIPDisplay);
         buttonPanel.add(VIP);
-        buttonPanel.add(dateDisplay);
-        buttonPanel.add(date);
+        buttonPanel.add(startDateDisplay);
+        buttonPanel.add(startDate);
+        buttonPanel.add(endDateDisplay);
+        buttonPanel.add(endDate);
         buttonPanel.add(startTimeDisplay);
         buttonPanel.add(startTime);
         buttonPanel.add(endTimeDisplay);
@@ -751,20 +753,22 @@ public class Dashboard{
                                 whichEvent.setText("");
                                 createdOrNot = "You must enter the correct number of speakers for your specified event";
                             }else{
-                                createdOrNot = sendsInfo.createParty(vip, date.getText(), startTime.getText(),
-                                        endTime.getText(), roomNumber.getText(), Collections.emptyList(), eventName.getText(),
-                                        checkCapacity);
+                                createdOrNot = sendsInfo.createParty(vip, startDate.getText(), endDate.getText(),
+                                        startTime.getText(), endTime.getText(), roomNumber.getText(),
+                                        Collections.emptyList(), eventName.getText(), checkCapacity);
                             }
                         }else if(speakerUsernameMulti.getText().equals("")){
                             speakerList.add(speakerUsernameOne.getText());
-                            createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
-                                    roomNumber.getText(), speakerList, eventName.getText(),checkCapacity);
+                            createdOrNot = sendsInfo.createSpeakerEvent(vip, startDate.getText(), endDate.getText(),
+                                    startTime.getText(), endTime.getText(), roomNumber.getText(), speakerList,
+                                    eventName.getText(),checkCapacity);
                         }else if(speakerUsernameOne.getText().equals("")) {
                             String addSpeakerUsernames = speakerUsernameMulti.getText();
                             addSpeakerUsernames = addSpeakerUsernames.replaceAll("\\s+", "");
                             speakerList = Arrays.asList(addSpeakerUsernames.split(","));
-                            createdOrNot = sendsInfo.createSpeakerEvent(vip, date.getText(), startTime.getText(), endTime.getText(),
-                                    roomNumber.getText(), speakerList, eventName.getText(), checkCapacity);
+                            createdOrNot = sendsInfo.createSpeakerEvent(vip, startDate.getText(), endDate.getText(),
+                                    startTime.getText(), endTime.getText(), roomNumber.getText(), speakerList,
+                                    eventName.getText(), checkCapacity);
                         }
                         if (createdOrNot.equals("true")){
                             successMenu("You have successfully created an event!");
@@ -841,7 +845,6 @@ public class Dashboard{
         textInput = new JTextField(12);
         password = new JPasswordField(12);
         errorText = new JLabel();
-        JList displayList = new JList();
         filename = new JTextField("File Name", 12);
         roomNumber = new JTextField(12);
         roomCapacity = new JTextField(12);
@@ -855,13 +858,14 @@ public class Dashboard{
         changeCapacityMsg = new JLabel("New Capacity:");
         cancelEventMsg = new JLabel("Event name:");
         eventNameMsg = new JLabel("Event name:");
-        date = new JTextField(10);
-        startTime = new JTextField(10);
-        endTime = new JTextField(10);
-        speakerUsernameOne = new JTextField(10);
-        speakerUsernameMulti = new JTextField(10);
+        startDate = new JTextField(10);
+        endDate = new JTextField(10);
+        startTime = new JTextField(16);
+        endTime = new JTextField(16);
+        speakerUsernameOne = new JTextField(12);
+        speakerUsernameMulti = new JTextField(12);
         VIP = new JTextField(10);
-        dateDisplay = new JLabel("Date('YYYYMMDD'):");
+        startDateDisplay = new JLabel("Start Date('YYYYMMDD'):");
         startTimeDisplay = new JLabel("Start Time-24Hours('HH:MM:SS'):");
         endTimeDisplay = new JLabel("End Time-24Hours('HH:MM:SS'):");
         speakerUsernameDisplayOne = new JLabel("Enter Speaker Username:");
@@ -870,6 +874,7 @@ public class Dashboard{
         eventCapacity = new JTextField(12);
         successText = new JLabel();
         whichEvent = new JTextField(12);
+        endDateDisplay = new JLabel("End Date('YYYYMMDD'):");
     }
 
     /**
@@ -892,12 +897,13 @@ public class Dashboard{
         filename.setText("");
         eventName.setText("");
         eventCapacity.setText("");
-        date.setText("");
+        startDate.setText("");
         startTime.setText("");
         endTime.setText("");
         speakerUsernameOne.setText("");
         speakerUsernameMulti.setText("");
         VIP.setText("");
+        endDate.setText("");
     }
     private void previousMenu() {
         clearTextField();

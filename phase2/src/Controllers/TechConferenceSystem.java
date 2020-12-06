@@ -453,12 +453,19 @@ public class TechConferenceSystem implements Viewable{
 //--------------------------------------------Sign Up Buttons-----------------------------------------
 
 
-    //@TO JOY/AMY
+    /**
+     * Method to send all possible events to display onto GUI
+     * @return   A string list of events
+     */
     public String[] displayAllEvents() {
         return signUpSystem.displayAllEvents();
     }
 
-    //@TO JOY/AMY
+    /**
+     * Method to send all events that this username has signed up for to display onto GUI
+     * @param username   This username's event that has already been signed up for
+     * @return          A string list of events
+     */
     public String[] displaySignedUpEvents(String username) {
         return signUpSystem.displaySignedUpEvents(username);
     }
@@ -534,6 +541,11 @@ public class TechConferenceSystem implements Viewable{
         writer.writeToFile(filename, saveObjects);
     }
 
+    /**
+     * Method to determine if user is VIP or not
+     * @param username    To check if this username is VIp
+     * @return            true if user is vip, false otherwise.
+     */
     public boolean userIsVIP(String username) {
         return signUpSystem.userIsVIP(username);
     }
