@@ -12,9 +12,9 @@ public class ImageMessage extends Message{
      * @param time           the date/time of the message
      * @param content        the content of the message
      */
-    public ImageMessage(String senderUsername, LocalDateTime time, String content) {
+    public ImageMessage(String senderUsername, LocalDateTime time, String content, String imageString) {
         super(senderUsername, time, content);
-        this.imageString = "";
+        this.imageString = imageString;
     }
 
     /**
@@ -24,8 +24,6 @@ public class ImageMessage extends Message{
     public String getImageString(){
         return imageString;
     }
-
-    public void setImageString(String imageString) {this.imageString = imageString;}
 
     public boolean isImageMessage() {
         return true;
