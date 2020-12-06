@@ -32,6 +32,10 @@
 			<color value="#FFB7C3" type="BACKGROUND"/>
 			<color value="BLACK" type="FOREGROUND"/>
 		</state>
+
+		<state value="SELECTED">
+			<color value="#FF99AA" type="TEXT_BACKGROUND"/>
+		</state>
 	</style>
 	<bind style="textfield" type="region" key="TextField"/>
 	<bind style="textfield" type="region" key="PasswordField"/>

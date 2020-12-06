@@ -64,6 +64,20 @@ public class RequestManager implements Serializable {
     }
 
     /**
+     * Return whether or not the given request number exists.
+     *
+     * @param requestNum the request number of the request
+     * @return true iff the request number exists and is a natural number
+     */
+    public boolean isRequestNumValid(Integer requestNum){
+        if (requestNum < 1 || requestNum > allRequests.size()){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
      * Get all request numbers
      *
      * @return a list of request numbers (where all request numbers are unique integers)

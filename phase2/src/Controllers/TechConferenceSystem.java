@@ -2,13 +2,11 @@ package Controllers;
 
 import GUI.Dashboard;
 import GUI.Viewable;
-import Presenters.EventPresenter;
 import UseCase.ChatManager;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-
-import java.lang.reflect.Array;
+import UseCase.RequestManager;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,18 +27,18 @@ public class TechConferenceSystem implements Viewable{
     private MessagingSystem messagingSystem;
     private SchedulingSystem schedulingSystem;
     private SignUpSystem signUpSystem;
+    private RequestSystem requestSystem;
     private UserManager userManager;
     private ChatManager chatManager;
     private EventManager eventManager;
     private RoomManager roomManager;
-    private final Dashboard dashboard;
+    private RequestManager requestManager;
 
 
     /**
      * Constructor for the entire controller, begins the program
      */
     public TechConferenceSystem(final Dashboard dashboard){
-        this.dashboard = dashboard;
         dashboard.setView(this);
         createProgram();
     }
@@ -85,11 +83,12 @@ public class TechConferenceSystem implements Viewable{
     public boolean loadConferenceButton(String filename){
         Reader reader = new Reader();
         if (reader.verifySaves(filename)) {
-            Object loadedObjects[] = reader.loadData(filename);
+            Object[] loadedObjects = reader.loadData(filename);
             chatManager = (ChatManager) loadedObjects[0];
             eventManager = (EventManager) loadedObjects[1];
             roomManager = (RoomManager) loadedObjects[2];
             userManager = (UserManager) loadedObjects[3];
+            requestManager = (RequestManager) loadedObjects[4];
         } else {
             return false;
         }
@@ -287,54 +286,19 @@ public class TechConferenceSystem implements Viewable{
         return messagingSystem.archiveUserChat(currentUsername, chatId);
     }
 
+    /**
+     *
+     * @param currentUsername  The currentusername of someone who wants to send a image message
+     * @param chatIndex
+     * @param messageIndex
+     * @return
+     */
     public boolean includesImage(String currentUsername, int chatIndex, int messageIndex) {
         UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
         UUID messageId = messagingSystem.getMessageByIndex(chatId, messageIndex);
         return messagingSystem.doesMessageHaveImage(chatId, messageId);
     }
 
-
-    /** TO @William Wang and Kailas Moon
-     *
-     * @return   All new Messages (View all new messages option)
-     */
-    /*
-    @Override
-
-    public String getNewMessages(String currentUsername){
-        String output = "New Messages:\n";
-        Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername);
-
-        boolean newMessagesExist = false;
-        for (Map.Entry<UUID, List<UUID>> mapItem : newMessages.entrySet()){  //prints out each chat and associated messages
-
-            UUID chatId = mapItem.getKey();
-            List<UUID> messageIds = mapItem.getValue();
-
-            // Removed if statement for checking messageIds size cause it's checked in messagingsystem now
-            newMessagesExist = true;
-            //printing chat name
-            String chatName = getChatNameByUser(currentUsername, chatId);
-            output += "\n" +chatName + "\n";
-
-            //showing time difference from now and last message
-            LocalDateTime lastMessageTime = messagingSystem.getMessageTimestamp(chatId, messageIds.get(messageIds.size() - 1));
-            Duration timeDifference = Duration.between(lastMessageTime, LocalDateTime.now());
-            output += (timeDifference.toMinutes() + " minutes ago\n");        // might change the format to be more clearer. Also, only prints integers
-
-            //showing last eight messages
-            List<UUID> last8Messages = messageIds.subList(messageIds.size()- Math.min(messageIds.size(), 8), messageIds.size());
-            for (UUID last8Id : last8Messages){   //only prints last 8 Messages
-                output += (messagingSystem.getMessageSender(chatId, last8Id) + "  :  " +
-                        messagingSystem.getMessageContent(chatId, last8Id) + "\n"); //might make this call helper instead
-            }
-        }
-        if (!newMessagesExist) {
-            output += ("\nNo new messages.");
-        }
-        return output;
-    }
-    */
 
     /**
      * Get the chat names of all chats with new messages. Note: list elements correspond to the values of the same index in the lists returned from the other newMessages methods.
@@ -497,29 +461,52 @@ public class TechConferenceSystem implements Viewable{
         return signUpSystem.displaySignedUpEvents(username);
     }
 
-    /**  //@TO JOY/AMY
+    /**  Method for user to sign up for event
      *
-     * @param username
-     * @param eventTitle
-     * @return
+     * @param username     The username of someone signing up for the event
+     * @param eventTitle   The title of the event to sign up for
+     * @return      an integer based on what error occurs.
      */
     public int signUpForEvent(String username, String eventTitle) {
         return signUpSystem.signUpEvent(username, eventTitle);
     }
 
-    //@TO JOY/AMY
+    /**
+     *
+     * @param username  The username that someone wants to cancel their event by
+     * @param eventTitle   The title of event the username wants to cancel for
+     * @return     an integer based on what error occurs(or not) when they try to cancel
+     */
     public int cancelAttendEvent(String username, String eventTitle) {
         return signUpSystem.cancelSpotEvent(username, eventTitle);
     }
 
+    //--------------------------------------------Request Buttons-----------------------------------------
+
+    public void addRequest(String username, String request) {
+        requestSystem.sendRequest(username, request);
+    }
+
+    public boolean markAddressed(int requestNumber) {
+        return requestSystem.markedAsAddressed(requestNumber);
+    }
+
+    public boolean markPending(int requestNumber) {
+        return requestSystem.markedAsPending(requestNumber);
+    }
+
+    public String[] displayRequests() {
+        return requestSystem.displayAllRequests();
+    }
+
     //--------------------------------------------Creating Controller-----------------------------------------
-    public boolean createProgram() {
+    private void createProgram() {
         chatManager = new ChatManager();
         eventManager = new EventManager();
         roomManager = new RoomManager();
         userManager = new UserManager();
+        requestManager = new RequestManager();
         initializeManagers();
-        return true;
     }
 
     private void initializeManagers() {
@@ -527,15 +514,21 @@ public class TechConferenceSystem implements Viewable{
         messagingSystem = new MessagingSystem(chatManager, userManager, eventManager);
         schedulingSystem = new SchedulingSystem(eventManager, roomManager, userManager, messagingSystem);
         signUpSystem = new SignUpSystem(eventManager, userManager, roomManager);
+        requestSystem = new RequestSystem(requestManager);
     }
 
+    /**
+     * A method to save all the information.
+     * @param filename   file name to save the program
+     */
     public void saveProgram(String filename) {
         Writer writer = new Writer();
-        Object saveObjects[] = new Object[4];
+        Object[] saveObjects = new Object[5];
         saveObjects[0] = chatManager;
         saveObjects[1] = eventManager;
         saveObjects[2] = roomManager;
         saveObjects[3] = userManager;
+        saveObjects[4] = requestManager;
         writer.writeToFile(filename, saveObjects);
     }
 

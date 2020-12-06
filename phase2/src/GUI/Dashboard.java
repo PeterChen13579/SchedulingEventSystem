@@ -1,17 +1,7 @@
 package GUI;
 
-import Controllers.TechConferenceSystem;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JFileChooser;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JList;
-import javax.swing.UIManager;
-import javax.swing.SwingUtilities;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -19,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import javax.swing.JLabel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.util.List;
 
@@ -38,11 +27,15 @@ public class Dashboard{
     private JButton changeCapacity, seeListEvents;
     private JButton confirmAttendeeSignUp, confirmAttendeeSignUpMainMenu, confirmOrganizerSignUp ;
     private JButton confirmSpeakerSignUp, confirmLogIn;
-    private JButton nextPanel,confirmFilename,save, confirmSave;
+    private JButton nextPanel;
+    private JButton save;
     private JButton confirmRoomNumber, confirmAddEvent;
     private JButton oneSpeakerEvent, multiSpeakerEvent, noSpeakerEvent;
     private JButton confirmCancelEvent, confirmChangeCapacity;
     private JButton successNextPanel;
+    private JButton sendRequest, confirmSendRequest;
+    private JButton seeRequests, viewAllRequests, tagRequest;
+    private JButton addressed, pending;
     private JTextField cancelEventTextfield, whichEvent;
     private JTextField changeCapacityEventTextfield;
     private JLabel addRoomLabel;
@@ -59,13 +52,11 @@ public class Dashboard{
     private JLabel errorText, successText;
     private JLabel displayUsername, displayPassword;
     private JLabel cancelEventMsg, changeCapacityMsg;
-    private JList displayList;
     private String currentUsername;
     private SignUpDashboard signUpDashboard;
     private MessagingDashboard messagingDashboard;
-    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private SynthLookAndFeel regularTheme, vipTheme;
-    private JFileChooser fileChooser;
+    private final JFileChooser fileChooser;
 
     /**
      * Constructor that creates and starts the program
@@ -76,6 +67,7 @@ public class Dashboard{
         changeTheme("regular");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1280, 720));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(screenSize.width/2 - 640, screenSize.height/2 - 360);
         buttonPanel = new JPanel();
         frame.add(buttonPanel);
@@ -181,26 +173,17 @@ public class Dashboard{
         refresh();
     }
 
-    private void saveMenu() {
-        buttonPanel.removeAll();
-        buttonPanel.add(textInput);
-        buttonPanel.add(confirmSave);
-        refresh();
-        
-    }
-
-
 
 //---------------------------------------LoggedInUsers ---------------------------------------;
 
 
     private void loggedInAttendee() {
-        System.out.println("this happened");
         loginType = "Attendee";
         currentMenu = "LoggedInAttendee";
         buttonPanel.removeAll();
         buttonPanel.add(signUpMenu);
         buttonPanel.add(messageMenu);
+        buttonPanel.add(sendRequest);
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
@@ -215,6 +198,7 @@ public class Dashboard{
         buttonPanel.add(scheduleMenu);
         buttonPanel.add(createSpeaker);
         buttonPanel.add(createAttendee);
+        buttonPanel.add(seeRequests);
         buttonPanel.add(save);
         buttonPanel.add(logout);
         refresh();
@@ -293,7 +277,7 @@ public class Dashboard{
 
     private void cancelEvent(){
         currentMenu = "CancelEvent";
-        buttonPanel.removeAll();;
+        buttonPanel.removeAll();
         buttonPanel.add(cancelEventMsg);
         buttonPanel.add(cancelEventTextfield);
         buttonPanel.add(confirmCancelEvent);
@@ -342,6 +326,47 @@ public class Dashboard{
             whichEvent.setText("multi");
         }
         buttonPanel.add(confirmAddEvent);
+        buttonPanel.add(back);
+        refresh();
+    }
+
+//---------------------------------------Send Request Menu ---------------------------------------;
+
+    private void sendRequestMenu() {
+        currentMenu = "SendRequest";
+        buttonPanel.removeAll();
+        buttonPanel.add(textInput);
+        buttonPanel.add(confirmSendRequest);
+        buttonPanel.add(back);
+        refresh();
+    }
+
+    private void seeRequestsMenu() {
+        currentMenu = "SeeRequests";
+        buttonPanel.removeAll();
+        buttonPanel.add(viewAllRequests);
+        buttonPanel.add(tagRequest);
+        buttonPanel.add(back);
+        refresh();
+    }
+
+    private void viewRequests() {
+        currentMenu = "ViewRequests";
+        buttonPanel.removeAll();
+        JScrollPane requests = new JScrollPane(new JList(sendsInfo.displayRequests()),
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        requests.setPreferredSize(new Dimension(1100, 720));
+        buttonPanel.add(requests);
+        buttonPanel.add(back);
+        refresh();
+    }
+
+    private void tagRequest() {
+        currentMenu = "TagRequest";
+        buttonPanel.removeAll();
+        buttonPanel.add(textInput);
+        buttonPanel.add(addressed);
+        buttonPanel.add(pending);
         buttonPanel.add(back);
         refresh();
     }
@@ -600,9 +625,6 @@ public class Dashboard{
         confirmAttendeeSignUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //fyi password.getText() is deprecated bc java prefers password.getPassword()
-                //which returns a char array instead of a string. idk if anyone wants to change
-                //user/pass verification to use char array for the password but i'm not doing it so
                 if (sendsInfo.createAttendeeButton(textInput.getText(), password.getText())) {
                     loggedInOrganizer();
                 }else{
@@ -656,8 +678,7 @@ public class Dashboard{
                 String status = sendsInfo.LogInButton(currentUsername, password.getText());
                 switch (status) {
                     case "false":
-                        failedMenu("You have entered an invalid username/password or " +
-                                "the username does not exist in the database.");
+                        failedMenu("You have entered an invalid username/password");
                         break;
                     case "Attendee":
                         loginType = "Attendee";
@@ -678,7 +699,7 @@ public class Dashboard{
                 clearTextField();
             }
         });
-        confirmFilename = new JButton("Confirm");
+        JButton confirmFilename = new JButton("Confirm");
         confirmFilename.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -700,7 +721,7 @@ public class Dashboard{
                 saveFile();
             }
         });
-        confirmSave = new JButton("Confirm");
+        JButton confirmSave = new JButton("Confirm");
         confirmSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -747,6 +768,7 @@ public class Dashboard{
                         }
                         if (createdOrNot.equals("true")){
                             successMenu("You have successfully created an event!");
+                            clearEventTextField();
                         }else{
                             failedMenu(createdOrNot);
                         }
@@ -755,10 +777,71 @@ public class Dashboard{
                 }
             }
         });
+        sendRequest = new JButton("Send Request");
+        sendRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "LoggedIn";
+                sendRequestMenu();
+            }
+        });
+        confirmSendRequest = new JButton("Confirm");
+        confirmSendRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sendsInfo.addRequest(currentUsername, textInput.getText());
+                clearTextField();
+                previousMenu();
+            }
+        });
+        seeRequests = new JButton("See Requests");
+        seeRequests.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "LoggedIn";
+                seeRequestsMenu();
+            }
+        });
+        viewAllRequests = new JButton("View All Requests");
+        viewAllRequests.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "SeeRequests";
+                viewRequests();
+            }
+        });
+        tagRequest = new JButton("Tag Request");
+        tagRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                previousMenu = "SeeRequests";
+                tagRequest();
+            }
+        });
+        addressed = new JButton("Addressed");
+        addressed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int input = tryParse(textInput.getText());
+                if (!sendsInfo.markAddressed(input)) {
+                    failedMenu("This request number does not exist.");
+                }
+            }
+        });
+        pending = new JButton("Pending");
+        pending.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int input = tryParse(textInput.getText());
+                if (!sendsInfo.markPending(input)) {
+                    failedMenu("This request number does not exist.");
+                }
+            }
+        });
         textInput = new JTextField(12);
         password = new JPasswordField(12);
         errorText = new JLabel();
-        displayList = new JList();
+        JList displayList = new JList();
         filename = new JTextField("File Name", 12);
         roomNumber = new JTextField(12);
         roomCapacity = new JTextField(12);
@@ -787,7 +870,6 @@ public class Dashboard{
         eventCapacity = new JTextField(12);
         successText = new JLabel();
         whichEvent = new JTextField(12);
-        System.out.println(whichEvent.getText().equals(""));
     }
 
     /**
@@ -803,8 +885,22 @@ public class Dashboard{
         password.setText("");
     }
 
+    private void clearEventTextField() {
+        textInput.setText("");
+        roomNumber.setText("");
+        roomCapacity.setText("");
+        filename.setText("");
+        eventName.setText("");
+        eventCapacity.setText("");
+        date.setText("");
+        startTime.setText("");
+        endTime.setText("");
+        speakerUsernameOne.setText("");
+        speakerUsernameMulti.setText("");
+        VIP.setText("");
+    }
     private void previousMenu() {
-        System.out.println(previousMenu);
+        clearTextField();
         switch (previousMenu) {
             case "LoggedIn":
                 loginType();
@@ -837,7 +933,10 @@ public class Dashboard{
             case "AddRoom":
                 addRoom();
                 break;
-
+            case "SeeRequests":
+                seeRequestsMenu();
+                previousMenu = "LoggedIn";
+                break;
         }
     }
 
@@ -884,6 +983,9 @@ public class Dashboard{
                 break;
             case "changeEventCapacity":
                 schedulingMenu();
+                break;
+            case "TagRequest":
+                tagRequest();
                 break;
         }
     }
@@ -958,13 +1060,13 @@ public class Dashboard{
             vipTheme = new SynthLookAndFeel();
             vipTheme.load(Dashboard.class.getResourceAsStream("vip.xml"), Dashboard.class);
         } catch (Exception e) {
-            System.out.println(e);
+            failedMenu("Failed to create themes. Check if you're missing XML files.");
         }
     }
 
     /**
      * Changes the theme of the GUI depending on if the user is a VIP or not
-     * @param themeName
+     * @param themeName  Either regular or vip theme.
      */
     public void changeTheme(String themeName) {
         try {
