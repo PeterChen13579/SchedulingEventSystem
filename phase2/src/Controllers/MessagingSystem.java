@@ -22,6 +22,9 @@ public class MessagingSystem {
 
     /**
      * Creates the Messaging System
+     * @param chatManager The chat manager
+     * @param userManager The user manager
+     * @param eventManager The event manager
      */
     public MessagingSystem(ChatManager chatManager, UserManager userManager, EventManager eventManager) {
         this.userChatManager = chatManager;
@@ -29,201 +32,13 @@ public class MessagingSystem {
         this.eventManager = eventManager;
     }
 
-    public ChatManager getUserChatManager() {
-        return this.userChatManager;
-    }
-
     /**
-     * Method that runs the Messaging feature
-     * @param userName The username of the current user
-     */
-    /*
-    public void run(String userName){
-        //Precondition: userName is a valid username
-
-        List<String> options = new ArrayList<>(Arrays.asList("(1) View Chats", "(2) Send Message", "(3) View all new Messages ", "(4) Add friend", "(5) Exit"));
-
-        Scanner input = new Scanner(System.in); // used for getting input from keyboard
-        String choice = ""; //get input from keyboard
-        while (!choice.equals("5")){
-            messagingPresenter.displayOptions(options);
-            choice = input.nextLine();
-            if (choice.equals("1")){
-                chatInteraction(userName);
-            } else if (choice.equals("2")) {
-                sendMessage(userName);
-            } else if (choice.equals("3")){
-                viewAllNewMessages(userName);
-            } else if (choice.equals("4")) {
-                addPeopleToMessage(userName);
-            } else if (!choice.equals("5")) {
-                messagingPresenter.error("Please enter a number from 1 to 5.");
-            }
-        }
-    }
-     */
-
-    /**
-     * Calls the appropriate methods for sending messages based on the user type
-     * @param userName The username of the current user
-     */
-    /*
-    private void sendMessage(String userName) {
-        if (userManager.userType(userName).equals("Attendee")) {
-            attendeeSendMessage(userName);
-        } else if (userManager.userType(userName).equals("Organizer")) {
-            organizerSendMessage(userName);
-        } else if (userManager.userType(userName).equals("Speaker")) {
-            speakerSendMessage(userName);
-        }
-    }
-    */
-
-
-    /**
-     * Helper method for viewing chats in run
-     * @param userName The username of the current user
-     */
-    /*
-    private void chatInteraction(String userName) {
-        Scanner input = new Scanner(System.in);
-        viewChatNames(userName);   // show chats
-
-        List<UUID> userChats = userChatManager.getUserChats(userName);
-        String chatChoice;
-        int index = 0;
-        boolean inputError = true;
-        while (inputError){       //shows chat names until valid input is given
-            messagingPresenter.printStatement("Please enter the number of the chat that you would like to view. Press 0 to cancel.");
-            chatChoice = input.nextLine(); //choose a number for which chat to go to
-
-            try{   //checks to see if input is an integer and it corresponds to a chat
-                index = Integer.parseInt(chatChoice) - 1;
-                if (index >= userChats.size()){
-                    messagingPresenter.error("Please enter a number that corresponds to a chat or 0 to cancel.");
-                    inputError = true;
-                }else{
-                    inputError = false;
-                }
-            } catch (NumberFormatException e){
-                messagingPresenter.error("Please enter an integer.");
-            }
-        }
-
-        if (index != -1) {   //retrieves the chat
-            UUID chosenChat = userChats.get(index);
-            viewChat(userName, userChatManager.getChatMemberUsernames(chosenChat));
-            messagingPresenter.printStatement("Press enter to go back.");
-            input.nextLine();
-        }
-    }
-    */
-
-    /**
-     * View all chat names
-     * @param userName The username of the current user
-     */
-    /*
-    public void viewChatNames(String userName){
-        List<UUID> userChats = userChatManager.getUserChats(userName); //might change the method since it might be redundant in the use case
-        messagingPresenter.displayChatNames(userChats);
-    }
-
-     */
-
-    /**
-     * View Messages in the chat
-     * @param username The username of the current user
-     * @param allUsers All the users in the chat
-     */
-    /*
-    public void viewChat(String username, List<String> allUsers) {      //allUsers is a list of usernames
-        UUID userChat = userChatManager.getChatContainingUsers(allUsers);
-        List<UUID> messages = userChatManager.getChatMessages(username, userChat);
-        messagingPresenter.displayChat(username, userChat, messages);
-    }
-     */
-
-    /**
-     * Sending messages for attendees
-     * @param userName The username of the current user
-     */
-    /*
-    private void attendeeSendMessage(String userName) {
-        Scanner input = new Scanner(System.in);
-        String choice = "";
-        List<String> options = new ArrayList<>(Arrays.asList("(1) Message one user", "(2) Cancel"));
-        while (!choice.equals("2")) {
-            messagingPresenter.displayOptions(options);
-            choice = input.nextLine();
-            if (choice.equals("1")) {
-                messageOneUser(userName);
-            } else if (!choice.equals("2")) {
-                messagingPresenter.error("Please enter a number from 1 to 2.");
-            }
-        }
-    }
-    */
-
-    /**
-     * Sending messages for organizers
-     * @param userName The username of the current user
-     */
-    /*
-    private void organizerSendMessage(String userName) {
-        Scanner input = new Scanner(System.in);
-        String choice = "";
-        List<String> options = new ArrayList<>(Arrays.asList("(1) Message one user", "(2) Message all attendees", "(3) Message all speakers", "(4) Cancel"));
-        while (!choice.equals("4")) {
-            messagingPresenter.displayOptions(options);
-            choice = input.nextLine();
-            if (choice.equals("1")) {
-                messageOneUser(userName);
-            } else if (choice.equals("2")) {
-                messagingPresenter.printStatement("Please enter the message you'd like to send.");
-                String content = input.nextLine();
-                organizerMessageAllAttendees(userName, content);
-            } else if (choice.equals("3")) {
-                messagingPresenter.printStatement("Please enter the message you'd like to send.");
-                String content = input.nextLine();
-                organizerMessageAllSpeakers(userName, content);
-            } else if (! choice.equals("4")) {
-                messagingPresenter.error("Please enter a number from 1 to 4.");
-            }
-        }
-    }
-    */
-
-    /**
-     * Sending messages for organizers
-     * @param userName The username of the current user
-     */
-    /*
-    private void speakerSendMessage(String userName) {
-        Scanner input = new Scanner(System.in);
-        String choice = "";
-        List<String> options = new ArrayList<>(Arrays.asList("(1) Message one user", "(2) Message attendees of your events", "(3) Cancel"));
-        while (!choice.equals("3")) {
-            messagingPresenter.displayOptions(options);
-            choice = input.nextLine();
-            if (choice.equals("1")) {
-                messageOneUser(userName);
-            } else if (choice.equals("2")) {
-                messagingPresenter.printStatement("Please enter a list of titles of the events, each title separated by one \"+\" sign.");
-                List<String> titles = Arrays.asList(input.nextLine().split("\\+"));
-                messagingPresenter.printStatement("Please enter the message you'd like to send.");
-                String content = input.nextLine();
-                speakerMessageEventAttendees(userName, titles, content);
-            } else if (! choice.equals("3")) {
-                messagingPresenter.error("Please enter a number from 1 to 3.");
-            }
-        }
-    }
-    */
-
-    /**
-     * Helper method for sending a message to one user. Checks if the recipient is a friend before sending
+     * Send a message to one user. Checks if the recipient is a friend before sending
      * @param senderUsername The username of the user sending the message
+     * @param recipient The recipient of the message
+     * @param content The content of the message
+     * @param imagePath The filepath of the image
+     * @return Null if the message was sent successfully or an Error message otherwise
      */
     public String messageOneUser(String senderUsername, String recipient, String content, String imagePath) {
         List<String> recipients = new ArrayList<>();
@@ -231,7 +46,7 @@ public class MessagingSystem {
         if (!userManager.isUserExists(recipient)) {
             return("The user " + recipient + " does not exist.");
         } else if (userManager.isAddFriend(senderUsername, recipient)) {
-            return this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
+            return sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
         } else {
             return(recipient + " is not your friend.");
         }
@@ -241,6 +56,7 @@ public class MessagingSystem {
      * View all the new chat messages. Note : chat is only added into the map if there are new messages
      * @param userName The username of the current user
      * @param peek Whether the user wants to mark the messages as read or not
+     * @return A map of chat ids to their respective lists of new messages (message ids)
      */
     public Map<UUID, List<UUID>> viewAllNewMessages(String userName, Boolean peek){
         List<UUID> userChats = userChatManager.getUserChats(userName);  //includes archived chats
@@ -261,13 +77,14 @@ public class MessagingSystem {
      * get Messages in the chat
      * @param username The username of the current user
      * @param chatId The id of the chat
+     * @return The list of message ids
      */
-    public List<UUID> getChatMessages(String username, UUID chatId) {      //allUsers is a list of usernames
+    public List<UUID> viewChatMessages(String username, UUID chatId) {
         return userChatManager.getChatMessages(username, chatId);
     }
 
     /**
-     * get Message sender in the chat
+     * get sender of a message
      * @param chatId The id of the chat
      * @param messageId The id of the message
      * @return The message sender's username
@@ -305,6 +122,11 @@ public class MessagingSystem {
         return userChatManager.getChatName(chatId);
     }
 
+    /**
+     * Get the members of a chat
+     * @param chatId The id of the chat
+     * @return The list of chat member usernames
+     */
     public List<String> getChatMembers(UUID chatId){
         return userChatManager.getChatMemberUsernames(chatId);
     }
@@ -318,21 +140,24 @@ public class MessagingSystem {
         List<UUID> allUserChats = userChatManager.getUserChats(userName);
         List<UUID> archivedChats = userChatManager.getArchivedChats(userName);
         for (UUID chatId : archivedChats) {
-            if (userChatManager.areNewMessages(userName, chatId)) { //removes chat from being unarchived if new messages are recieved
+            if (userChatManager.areNewMessages(userName, chatId)) { //removes chat from being unarchived if new messages are received
                 userChatManager.unarchiveChat(userName, chatId);
             }
         }
+
         List<UUID> currentChats = new ArrayList<>(allUserChats);
-        currentChats.removeAll(archivedChats);
+        currentChats.removeAll(userChatManager.getArchivedChats(userName));
         return currentChats;
     }
 
     /**
-     * Helper method to send a message to a list of users
+     * send a message to a list of users. Each message is sent in an individual chat.
      * @param usernames The usernames that the message is being sent to
      * @param senderUsername The username of the sender
      * @param time The time the message was sent
      * @param content The content of the message
+     * @param imagePath The file path of the image
+     * @return Null if message was sent successfully or an error message otherwise.
      */
     public String sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) { // we can make this private right?
         String imageString = "";
@@ -344,14 +169,15 @@ public class MessagingSystem {
             }
             imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
         }
-        if (imageString == "Image does not exist or cannot be found.") {
-            return imageString;
+        if (imageString.equals("FileNotFoundException")) {
+            return "Image does not exist or cannot be found.";
+        } else if(imageString.equals("IOException")){
+            return "IO exception occurred.";
         }
         if (content.length() == 0 && imagePath.length() ==0) {
             return "You cannot send an empty message.";
         }
         for (String username : usernames) {
-
             List<String> thisChatUsernames = new ArrayList<>();
             thisChatUsernames.add(senderUsername);
             thisChatUsernames.add(username);
@@ -361,11 +187,11 @@ public class MessagingSystem {
                 chat = userChatManager.createChat(thisChatUsernames); // If no such chat exists, create it
             }
             if (!imageString.isEmpty()) { //If the Base64 String is not empty, then call sendImageMessageToChat
-                this.userChatManager.sendImageMessageToChat(chat, senderUsername, time, content, imageString); //send an image/message
+                userChatManager.sendImageMessageToChat(chat, senderUsername, time, content, imageString); //send an image/message
             } else {
                 userChatManager.sendMessageToChat(chat, senderUsername, time, content); //else just send a message normally
             }
-            if (userChatManager.getArchivedChats(senderUsername).contains(chat)){  //unarchives chat if it is archived
+            if (userChatManager.getArchivedChats(senderUsername).contains(chat)){  //un-archives chat if it is archived
                 userChatManager.unarchiveChat(senderUsername, chat);
             }
         }
@@ -394,7 +220,7 @@ public class MessagingSystem {
      * @param chatId the id of the chat
      * @return An error message, or null if there are no errors.
      */
-    public String markUserChatAsUnread(String username, UUID chatId){ //might change it to mark as read/unread in the future
+    public String markUserChatAsUnread(String username, UUID chatId){
         if (!userChatManager.isChatEmpty(chatId)){
             userChatManager.markChatAsUnread(username, chatId);
             return null;
@@ -419,9 +245,11 @@ public class MessagingSystem {
     }
 
     /**
-     * Helper method for organizers to send a message to all attendees
+     * method for organizers to send a message to all attendees
      * @param senderUsername Username of the sender
      * @param content Content of message
+     * @param imagePath The file path of the image
+     * @return Null if the message was successfully sent, or an error message otherwise
      */
     public String organizerMessageAllAttendees(String senderUsername, String content, String imagePath) {
         List<String> allAttendees = userManager.getAllAttendee();
@@ -429,9 +257,11 @@ public class MessagingSystem {
     }
 
     /**
-     * Helper method for organizers to send a message to all speakers
+     * method for organizers to send a message to all speakers
      * @param senderUsername Username of the sender
      * @param content Content of message
+     * @param imagePath The file path of the image
+     * @return Null if the message was successfully sent, or an error message otherwise
      */
     public String organizerMessageAllSpeakers(String senderUsername, String content, String imagePath) {
         List<String> allSpeakers = userManager.getAllSpeaker();
@@ -439,9 +269,11 @@ public class MessagingSystem {
     }
 
     /**
-     * Helper method for speakers to send a message to attendees of their events
+     * method for speakers to send a message to attendees of their events
      * @param senderUsername Username of the sender
+     * @param eventTitles The titles of the events
      * @param content Content of message
+     * @param imagePath The file path of the image
      * @return An error message, or null if there are no errors.
      */
     public String speakerMessageEventAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
@@ -472,12 +304,12 @@ public class MessagingSystem {
     }
 
     /**
-     * Helper method for organizers to send a message to speakers and attendees of their events
+     * method for organizers to send a message to speakers and attendees of their events
      * @param senderUsername The username of the sender
      * @param eventTitles The list of event titles
      * @param content The content of the message
      * @param imagePath The image path
-     * @return nul An error message, or null if there are no errors.
+     * @return An error message, or null if there are no errors.
      */
     public String organizerMessageEventSpeakersAndAttendees(String senderUsername, List<String> eventTitles, String content, String imagePath) {
         List<String> allEvents = eventManager.getAllEventTitle();
@@ -504,13 +336,14 @@ public class MessagingSystem {
                 return "No event with title " + title + " found.";
             }
         }
-        this.sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
+        sendMessageToUsers(recipients, senderUsername, LocalDateTime.now(), content, imagePath);
         return null;
     }
 
     /**
      * Add friends to message
      * @param mainUserUsername the current user
+     * @param newFriend the user that the current user is adding
      * @return An error message, or null if there is none.
      */
     public String addPeopleToMessage(String mainUserUsername, String newFriend){
@@ -538,30 +371,6 @@ public class MessagingSystem {
         }
     }
 
-    /**
-     * The encoder takes in a string that represents the file path to the desired image to be encoded in a
-     * Base64 string.
-     * @param imagePath the filepath to the image on the device
-     * @return the encoded Base64 string
-     */
-
-    public static String imageToBase64(String imagePath) {
-
-        String encodedFile = null;
-        File file = new File(imagePath);
-        try {
-            FileInputStream imageFile = new FileInputStream(file);
-            byte[] imageBytes = new byte[(int)file.length()];
-            imageFile.read(imageBytes);
-            encodedFile = Base64.getEncoder().encodeToString(imageBytes);
-        } catch (FileNotFoundException e) {
-            return "Image does not exist or cannot be found.";
-        } catch (IOException f) {
-            f.printStackTrace();
-        }
-        return encodedFile;
-    }
-
     public UUID getMessageByIndex(UUID chatId, int messageIndex) {
         return userChatManager.getMessageUUIDbyIndex(chatId, messageIndex);
     }
@@ -573,5 +382,22 @@ public class MessagingSystem {
     public String getMessageImageString(UUID chatId, UUID messageId) {
         return userChatManager.getImage(chatId, messageId);
     }
+
+    private String imageToBase64(String imagePath) {
+        String encodedFile;
+        File file = new File(imagePath);
+        try {
+            FileInputStream imageFile = new FileInputStream(file);
+            byte[] imageBytes = new byte[(int)file.length()];
+            imageFile.read(imageBytes);
+            encodedFile = Base64.getEncoder().encodeToString(imageBytes);
+        } catch (FileNotFoundException e) {
+            return "FileNotFoundException";
+        } catch (IOException f) {
+            return "IOException";
+        }
+        return encodedFile;
+    }
+
 }
 

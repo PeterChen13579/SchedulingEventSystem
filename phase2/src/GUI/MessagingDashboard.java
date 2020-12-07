@@ -181,7 +181,7 @@ public class MessagingDashboard extends JPanel{
         indexToImage = new HashMap<Integer, byte[]>();
         for (int i=0; i<messages.length; i++) {
             if (sendsInfo.includesImage(currentUsername, currentChatIndex, i)) {
-                formattedMessages[i] = "        " + messages[i][0] + " :    " + messages[i][1] + "*" +
+                formattedMessages[i] = "        " + messages[i][0] + " :    " + messages[i][1] + " [Double click for image]" +
                         String.format("%1$" + (50 + ("["+ messages[i][2]+"]").length()) + "s", "["+messages[i][2]+"]");
                 indexToImage.put(i, Base64.getDecoder().decode(messages[i][3]));
             } else {
