@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  * Presents information given by MessagingSystem by formatting and printing information to screen.
  * @author William wang
  */
-public class MessagePresenter extends StatementPresenter{
+public class MessagePresenter{
     private ChatManager userChatManager;
 
     public MessagePresenter(ChatManager chatManager){

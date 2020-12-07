@@ -393,6 +393,28 @@ public class Dashboard{
         refresh();
     }
 
+    private void displayEvents(boolean allOrNot) {
+        currentMenu = "DisplayEvents";
+        buttonPanel.removeAll();
+        String[] info;
+        if (allOrNot) {
+            info = sendsInfo.displayAllEvents();
+        } else {
+            info = sendsInfo.displaySignedUpEvents(currentUsername);
+        }
+        if (info.length == 0) {
+            errorText.setText("no events :(");
+            buttonPanel.add(errorText);
+        } else {
+            JScrollPane events =new JScrollPane(new JList(info), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            events.setPreferredSize(new Dimension(1100, 720));
+            buttonPanel.add(events);
+        }
+        buttonPanel.add(back);
+        refresh();
+    }
+
+
     private void createButtons() {
         load = new JButton("Load Existing Conference");
         load.addActionListener(new ActionListener() {
@@ -531,6 +553,7 @@ public class Dashboard{
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "ScheduleMenu";
                 cancelEvent();
+
             }
         });
         changeCapacity = new JButton("Change Capacity of Event");
@@ -550,6 +573,7 @@ public class Dashboard{
                 }else{
                     failedMenu("The event you have entered does not exist.");
                 }
+                cancelEventTextfield.setText("");
             }
         });
         confirmChangeCapacity = new JButton("Confirm");
@@ -598,7 +622,7 @@ public class Dashboard{
             @Override
             public void actionPerformed(ActionEvent e) {
                 previousMenu = "LoggedIn";
-                //displayEvents(false);
+                displayEvents(false);
             }
         });
         confirmRoomNumber = new JButton("Confirm");

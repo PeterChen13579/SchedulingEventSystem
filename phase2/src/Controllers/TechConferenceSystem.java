@@ -79,6 +79,8 @@ public class TechConferenceSystem implements Viewable{
 
     /**
      * A method that loads an existing conference; Method runs when the user clicks the "load conference" button
+     * @param filename The file name to load the conference
+     * @return true if successfully loaded the conference, false otherwise
      */
     public boolean loadConferenceButton(String filename){
         Reader reader = new Reader();
@@ -436,7 +438,6 @@ public class TechConferenceSystem implements Viewable{
      */
     public String createSpeakerEvent(boolean VIP, String startDate, String endDate, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
-        System.out.println(speakerUsernames);
         return schedulingSystem.helper_addSpeakerEvent(VIP, startDate, endDate, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
     }
 
@@ -456,9 +457,7 @@ public class TechConferenceSystem implements Viewable{
      */
     public String createParty(boolean VIP, String startDate, String endDate, String startTime, String endTime, String roomNum, List<String>
             speakerUsernames, String eventTitle, int capacity){
-        System.out.println(speakerUsernames);
         return schedulingSystem.helper_addParty(VIP, startDate, endDate, startTime, endTime, roomNum, speakerUsernames, eventTitle, capacity);
-
     }
 
 //--------------------------------------------Sign Up Buttons-----------------------------------------
