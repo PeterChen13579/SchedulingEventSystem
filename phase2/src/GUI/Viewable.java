@@ -1,10 +1,7 @@
 package GUI;
 
-import java.lang.reflect.Array;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Interface containing all methods needed for Dashboard classes to interact with TechConferenceSystem
@@ -22,11 +19,10 @@ public interface Viewable {
     boolean confirmRoom(String roomNumber, int capacity);
     int signUpForEvent(String username, String eventTitle);
     int cancelAttendEvent(String username, String eventTitle);
-    ArrayList<String> sendChatName(String username);
+    ArrayList<String> viewChatNames(String username);
     String sendOneMsg(String sender, String recipient, String content, String imagePath);
     String[][] viewChat(int chatNumber, String username);
     String addFriend(String mainUsername, String newFriendUsername);
-    //ArrayList<JSONObject> getNewMessages(String username);   //commented out for testing purposes
     String msgAllAttendees(String sender, String msg, String imagePath);
     String msgAllSpeakers(String sender, String msg, String imagePath);
     String msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath);

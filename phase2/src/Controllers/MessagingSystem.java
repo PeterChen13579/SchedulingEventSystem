@@ -6,7 +6,6 @@ import UseCase.UserManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -159,28 +158,22 @@ public class MessagingSystem {
      * @param imagePath The file path of the image
      * @return Null if message was sent successfully or an error message otherwise.
      */
-    public String sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) { // we can make this private right?
-        String imageString = "";
-        if (!imagePath.equals("")) { //Checks to see if imageString is not empty
-            String extension = imagePath.substring(imagePath.lastIndexOf(".")+1);
-            String[] validExtensions = new String[] {"jpg", "jpeg", "png", "gif", "bmp", "tiff"};
-            if (!Arrays.asList(validExtensions).contains(extension.toLowerCase())) {
-                return "Invalid file extension.";
-            }
-            imageString = imageToBase64(imagePath); //Runs imageToBase64 to convert the image into a string called image
-        }
-        if (imageString.equals("FileNotFoundException")) {
-            return "Image does not exist or cannot be found.";
-        } else if(imageString.equals("IOException")){
-            return "IO exception occurred.";
-        }
+    public String sendMessageToUsers(List<String> usernames, String senderUsername, LocalDateTime time, String content, String imagePath) {
         if (content.length() == 0 && imagePath.length() ==0) {
             return "You cannot send an empty message.";
         }
+        // Handle images
+        String imageString = imageToBase64(imagePath); //Returns an empty string, error message or base64 string
+        if (imageString.equals("InvalidFileExtensionException!")){
+            return "Invalid file extension.";
+        } else if (imageString.equals("FileNotFoundException!")) {
+            return "Image does not exist or cannot be found.";
+        } else if(imageString.equals("IOException!")){
+            return "IO exception occurred.";
+        }
+
         for (String username : usernames) {
-            List<String> thisChatUsernames = new ArrayList<>();
-            thisChatUsernames.add(senderUsername);
-            thisChatUsernames.add(username);
+            List<String> thisChatUsernames = new ArrayList<>(Arrays.asList(senderUsername, username));
             UUID chat = userChatManager.getChatContainingUsers(thisChatUsernames); // Get the chat between the sender and the recipient
 
             if (chat == null) {
@@ -371,32 +364,63 @@ public class MessagingSystem {
         }
     }
 
+    /**
+     * Get a message id by index
+     * @param chatId The id of the chat
+     * @param messageIndex The index of the chat
+     * @return The message id corresponding to the index or null if index is out of bounds
+     */
     public UUID getMessageByIndex(UUID chatId, int messageIndex) {
         return userChatManager.getMessageUUIDbyIndex(chatId, messageIndex);
     }
 
+    /**
+     * Checks to see if the message includes an image
+     * @param chatId The id of the chat
+     * @param messageId The id of the message
+     * @return A boolean representing whether this message has an image
+     */
     public boolean doesMessageHaveImage(UUID chatId, UUID messageId) {
         return userChatManager.hasImage(chatId, messageId);
     }
 
+    /**
+     * Gets the base64 image string for a message
+     * @param chatId The id of the chat
+     * @param messageId The id of the message
+     * @return The base64 string representing this image
+     */
     public String getMessageImageString(UUID chatId, UUID messageId) {
         return userChatManager.getImage(chatId, messageId);
     }
 
+
+//-----------------------------------------Private Methods-------------------------------------------
+
     private String imageToBase64(String imagePath) {
-        String encodedFile;
-        File file = new File(imagePath);
-        try {
-            FileInputStream imageFile = new FileInputStream(file);
-            byte[] imageBytes = new byte[(int)file.length()];
-            imageFile.read(imageBytes);
-            encodedFile = Base64.getEncoder().encodeToString(imageBytes);
-        } catch (FileNotFoundException e) {
-            return "FileNotFoundException";
-        } catch (IOException f) {
-            return "IOException";
+        if (!imagePath.equals("")) { //Checks to see if imageString is not empty
+            String extension = imagePath.substring(imagePath.lastIndexOf(".")+1);
+            String[] validExtensions = new String[] {"jpg", "jpeg", "png", "gif", "bmp", "tiff"};
+            if (!Arrays.asList(validExtensions).contains(extension.toLowerCase())) {
+                return "InvalidFileExtensionException!";
+            }
+
+            //Read file from file path
+            String encodedFile;
+            File file = new File(imagePath);
+            try {
+                FileInputStream imageFile = new FileInputStream(file);
+                byte[] imageBytes = new byte[(int)file.length()];
+                imageFile.read(imageBytes);
+                encodedFile = Base64.getEncoder().encodeToString(imageBytes);
+            } catch (FileNotFoundException e) {
+                return "FileNotFoundException!";
+            } catch (IOException f) {
+                return "IOException!";
+            }
+            return encodedFile;
         }
-        return encodedFile;
+        return "";  //if image path is empty
     }
 
 }

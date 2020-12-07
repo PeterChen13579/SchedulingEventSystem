@@ -120,11 +120,12 @@ public class TechConferenceSystem implements Viewable{
 //--------------------------------------------Messaging Buttons-----------------------------------------
 
     /**
-     * TO @William Wang and Kailas Moon; This method is for sending the info of ALL chat usernames to
-     * display on GUI; Add in the number AND username for this; ie. [1.kailas, 2.william]
+     * This method is for sending the info of ALL chat usernames to display on GUI. Ex. [1.kailas, 2.william]
+     * @param currentUsername The username of the current user
+     * @return A list of all the chat names
      */
     @Override
-    public ArrayList <String> sendChatName(String currentUsername){ //probably change to viewChatnames
+    public ArrayList <String> viewChatNames(String currentUsername){
         ArrayList<String> output = new ArrayList<>();
 
         List<UUID> chats = messagingSystem.getCurrentChats(currentUsername);
@@ -151,10 +152,10 @@ public class TechConferenceSystem implements Viewable{
         return chatName;
     }
 
-
     /**
-     *
+     * This method sends all the info about the chat messages to display on the GUI. (The chat is determined by recieving an index from 1 to the total number of chats)
      * @param chatNumber The chat number that the user wants to view
+     * @param currentUsername The username of the current user
      * @return           Return String that the User wants to view; IN VIEW CHAT NUMBER: Return null if can not find
      *                   chat number;
      *                   The String Array will be in the form [[senderUsername, content, timestamp],....]
@@ -203,8 +204,10 @@ public class TechConferenceSystem implements Viewable{
 
     /**
      * Message all Attendees
+     * @param sender The username of the sender
      * @param msg message content
      * @param imagePath image path
+     * @return Null if the message was successfully sent, or an error message otherwise
      */
     @Override
     public String msgAllAttendees(String sender, String msg, String imagePath) {
@@ -213,8 +216,10 @@ public class TechConferenceSystem implements Viewable{
 
     /**
      * Message all Speakers
+     * @param sender The username of the sender
      * @param msg message content
      * @param imagePath image path
+     * @return Null if the message was successfully sent, or an error message otherwise
      */
     @Override
     public String msgAllSpeakers(String sender, String msg, String imagePath) {
@@ -223,24 +228,24 @@ public class TechConferenceSystem implements Viewable{
 
     /**
      * Message all attendees
+     * @param sender The username of the sender
      * @param eventTitles the list of event titles
      * @param msg message content
      * @param imagePath image path
+     * @return Null if the message was successfully sent, or an error message otherwise
      */
     @Override
     public String msgAllAttendeeEvent(String sender, List<String> eventTitles, String msg, String imagePath){
         return messagingSystem.speakerMessageEventAttendees(sender, eventTitles, msg, imagePath);
     }
 
-
-    /** TO @William Wang and Kailas Moon
-     *
+    /**
+     * Send a message to one user
      * @param sender The username of the sender
      * @param recipient    The username this user wants to msg
      * @param content     The text this username wants to send
-     * @return   A success or error message based on whether sending the message was successful
+     * @return Null if the message was sent successfully or an Error message otherwise
      */
-
     @Override
     public String sendOneMsg(String sender, String recipient, String content, String imagePath) {
         return messagingSystem.messageOneUser(sender, recipient, content, imagePath);
@@ -252,12 +257,12 @@ public class TechConferenceSystem implements Viewable{
      * @param currentUsername the username of the current user
      * @param chatIndex The index of the chat
      * @param messageIndex the index of the message
-     * @return "true" if the action was successful. An error message otherwise.
+     * @return Null if the message was deleted properly. An error message otherwise.
      */
+    @Override
     public String deleteMsg(String currentUsername, int chatIndex, int messageIndex){
         UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
         UUID messageId = messagingSystem.getMessageByIndex(chatId, messageIndex);
-
         return messagingSystem.deleteUserMessage(currentUsername, chatId, messageId);
     }
 
@@ -265,11 +270,11 @@ public class TechConferenceSystem implements Viewable{
      * Mark chat as unread.
      * @param currentUsername The username of the current user
      * @param chatIndex The index of the chat
-     * @return "true" if the action was successful. An error message otherwise.
+     * @return Null if the chat was marked as unread. An error message otherwise.
      */
+    @Override
     public String markChatAsUnread(String currentUsername, int chatIndex){
         UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
-
         return messagingSystem.markUserChatAsUnread(currentUsername, chatId);
     }
 
@@ -277,34 +282,34 @@ public class TechConferenceSystem implements Viewable{
      * Archive chat.
      * @param currentUsername The username of the current user
      * @param chatIndex The index of the chat
-     * @return "true" if the action was successful. An error message otherwise.
+     * @return Null if the chat was archived. An error message otherwise.
      */
+    @Override
     public String archiveChats(String currentUsername, int chatIndex){
-
         UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
-
         return messagingSystem.archiveUserChat(currentUsername, chatId);
     }
 
     /**
-     *
-     * @param currentUsername  The currentusername of someone who wants to send a image message
-     * @param chatIndex     The index of the chat
-     * @param messageIndex    The index of the message
-     * @return Whether the message has an image
+     * Check if the message includes an image
+     * @param currentUsername The current username of someone who wants to send a image message
+     * @param chatIndex The index of the chat
+     * @param messageIndex The index of the message
+     * @return Boolean representing whether the message includes an image
      */
+    @Override
     public boolean includesImage(String currentUsername, int chatIndex, int messageIndex) {
         UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
         UUID messageId = messagingSystem.getMessageByIndex(chatId, messageIndex);
         return messagingSystem.doesMessageHaveImage(chatId, messageId);
     }
 
-
     /**
      * Get the chat names of all chats with new messages. Note: list elements correspond to the values of the same index in the lists returned from the other newMessages methods.
      * @param currentUsername The username of the current user
      * @return An ordered list of all the chat names with new messages
      */
+    @Override
     public List<String> getNewMessagesChatNames(String currentUsername){
         Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername, true);
         List<String> newMessagesChatNames = new ArrayList<>();
@@ -322,6 +327,7 @@ public class TechConferenceSystem implements Viewable{
      * @param currentUsername The username of the current user
      * @return An ordered list of the chat timestamps
      */
+    @Override
     public List<String> getNewMessagesTimestamp(String currentUsername){
         Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername, true);
         List<String> newMessagesTimestamps = new ArrayList<>();
@@ -343,6 +349,7 @@ public class TechConferenceSystem implements Viewable{
      * @param currentUsername The username of the current user
      * @return A list of 2d string arrays. Each string array is for a different chat. Each string array will be in the form [[senderUsername, content],....].
      */
+    @Override
     public List<String[][]> getNewMessagesLast8Messages(String currentUsername){
         Map<UUID, List<UUID>> newMessages =  messagingSystem.viewAllNewMessages(currentUsername,false);
         List<String[][]> newMessagesLast8 = new ArrayList<>();
@@ -363,12 +370,11 @@ public class TechConferenceSystem implements Viewable{
         return newMessagesLast8;
     }
 
-    /** TO @William Wang and Kailas Moon
-     *
+    /**
+     * Add a user as friend. Friends are allowed to message each other.
      * @param mainUsername The username of the current user
-     * @param newFriendUsername    The username this user wants to add
-     * @return            "true" if successfully added.
-     *                    An error message if adding the friend was unsuccessful.
+     * @param newFriendUsername The username this user wants to add
+     * @return Null if successfully added. An error message if adding the friend was unsuccessful.
      */
     @Override
     public String addFriend(String mainUsername, String newFriendUsername){
@@ -396,14 +402,19 @@ public class TechConferenceSystem implements Viewable{
      * @param capacity    capacity to change to
      * @param username    the username of the organizer that chose to change the capacity of this event
      * @param rmNum       the roomnumber for this event
-     * @return            true if successfully changed, false otherwise.
+     * @return            'true' if successfully changed. Otherwise it will return an error msg
      */
     @Override
     public String changeCapacity(String eventName, int capacity, String username, String rmNum){
         return schedulingSystem.changeCapacity(eventName, capacity, username, rmNum);
     }
 
-    //return true iff added the room, return false otherwise
+    /**
+     * Method to add a room and capacity to the system.
+     * @param roomNumber  String room number the user want it to be
+     * @param capacity    int capacity of event
+     * @return            returns String 'true' if successfully changed. otherwise it will return an error msg.
+     */
     public boolean confirmRoom(String roomNumber, int capacity){
         return schedulingSystem.addRoom(roomNumber, capacity);
     }
