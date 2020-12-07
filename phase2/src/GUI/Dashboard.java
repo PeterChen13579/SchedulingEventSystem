@@ -593,7 +593,6 @@ public class Dashboard{
                 createEvent("none");
             }
         });
-        //TODO: move this somewhere
         seeListEvents = new JButton("See List of Events");
         seeListEvents.addActionListener(new ActionListener() {
             @Override
@@ -751,7 +750,6 @@ public class Dashboard{
                         String createdOrNot = "";
                         if (speakerUsernameOne.getText().equals("") && speakerUsernameMulti.getText().equals("")){
                             if (!whichEvent.getText().equals("")){
-                                whichEvent.setText("");
                                 createdOrNot = "You must enter the correct number of speakers for your specified event";
                             }else{
                                 createdOrNot = sendsInfo.createParty(vip, startDate.getText(), endDate.getText(),
@@ -771,6 +769,7 @@ public class Dashboard{
                                     startTime.getText(), endTime.getText(), roomNumber.getText(), speakerList,
                                     eventName.getText(), checkCapacity);
                         }
+                        whichEvent.setText("");
                         if (createdOrNot.equals("true")){
                             successMenu("You have successfully created an event!");
                             clearEventTextField();
