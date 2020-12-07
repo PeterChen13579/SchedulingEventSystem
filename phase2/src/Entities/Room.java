@@ -11,6 +11,11 @@ public class Room implements Serializable {
     private final Integer capacity;
     private List<String> eventTitles;
 
+    /**
+     * Constructor for Room
+     * @param roomNum the room number of this room
+     * @param capacity the capacity of this room
+     */
     public Room(String roomNum, int capacity){
         this.roomNum = roomNum;
         this.capacity = capacity;

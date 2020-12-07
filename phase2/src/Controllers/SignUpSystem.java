@@ -5,10 +5,6 @@ import Presenters.StatementPresenter;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,45 +29,6 @@ public class SignUpSystem {
         this.rm = rm;
         this.ep = new EventPresenter(em, um);
         this.sp = new StatementPresenter();
-    }
-
-    public void run(String userName){
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String temp = "";
-
-        while (!temp.equals("4")) {
-            sp.printStatement("(1) browse events\n(2) sign up for an event\n(3) cancel spot for an " +
-                    "event\n(4) exit\nPlease type the corresponding number of the options:");
-            try {
-                temp = br.readLine();
-                switch (temp) {
-                    case "2": {
-                        sp.printStatement("Type the event title for the event you want to sign up:");
-                        String eventTitle = br.readLine();
-                        signUpEvent(userName, eventTitle);
-                        break;
-                    }
-                    case "3": {
-                        sp.printStatement("Type the event title for the event you want to cancel spot:");
-                        String eventTitle = br.readLine();
-                        try{cancelSpotEvent(userName, eventTitle);}
-                        catch(IllegalArgumentException e){sp.printStatement("The event title you have entered is invalid.");}
-                        break;
-                    }
-                    case "1":
-                        String temp2 = "";
-                        while(!temp2.equals("3")){
-                            sp.printStatement("(1) browse all the events\n(2) browse the events you have signed up\n(3) exit");
-                            temp2 = br.readLine();
-                            if(temp2.equals("1")){ep.displayEvents();}
-                            else if(temp2.equals("2")){ep.displaySignedUpEvents(userName);}
-                        }
-                        break;
-                }
-            } catch (IOException e) {
-                sp.printStatement("Something went wrong :(");
-            }
-        }
     }
 
     /**

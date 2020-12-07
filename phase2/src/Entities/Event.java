@@ -18,6 +18,16 @@ public class Event implements Serializable {
     private final boolean VIP;
     private int maxNum;
 
+    /**
+     * Constructor for Event
+     * @param eventTitle the title of a event
+     * @param startTime the start time of an event
+     * @param endTime the end time of an event
+     * @param roomNum the room number that the event take place
+     * @param VIP iff this is a vip event or not
+     * @param maxNum the maximum capacity of the event
+     * @param speakerUserNames the username of the speaker(s)
+     */
     public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime,
                  String roomNum, boolean VIP, int maxNum, List<String> speakerUserNames){
         this.title = eventTitle;

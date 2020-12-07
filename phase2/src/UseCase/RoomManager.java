@@ -20,14 +20,6 @@ public class RoomManager implements Serializable {
     }
 
     /**
-     * A constructor for a RoomManager that initializes the list of all rooms as the given list.
-     * @param room a list of room.
-     */
-    public RoomManager(List<Room> room) {
-        allRoom = room;
-    }
-
-    /**
      * Create a new room.
      * @param roomNum the room number of the new room.
      */
