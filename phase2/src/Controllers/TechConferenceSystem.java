@@ -396,14 +396,19 @@ public class TechConferenceSystem implements Viewable{
      * @param capacity    capacity to change to
      * @param username    the username of the organizer that chose to change the capacity of this event
      * @param rmNum       the roomnumber for this event
-     * @return            true if successfully changed, false otherwise.
+     * @return            'true' if successfully changed. Otherwise it will return an error msg
      */
     @Override
     public String changeCapacity(String eventName, int capacity, String username, String rmNum){
         return schedulingSystem.changeCapacity(eventName, capacity, username, rmNum);
     }
 
-    //return true iff added the room, return false otherwise
+    /**
+     * Method to add a room and capacity to the system.
+     * @param roomNumber  String room number the user want it to be
+     * @param capacity    int capacity of event
+     * @return            returns String 'true' if successfully changed. otherwise it will return an error msg.
+     */
     public boolean confirmRoom(String roomNumber, int capacity){
         return schedulingSystem.addRoom(roomNumber, capacity);
     }
