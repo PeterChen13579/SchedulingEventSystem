@@ -50,10 +50,18 @@ public class Message implements Serializable {
         return content;
     }
 
+    /**
+     * Check message type
+     * @return true iff message is an image message, false otherwise.
+     */
     public boolean isImageMessage() {
         return false;
     }
 
+    /**
+     * Get the image string for this class, if it has one.
+     * @return The image string if it exists. Null otherwise
+     */
     public String getImageString() {
         return null;
     }

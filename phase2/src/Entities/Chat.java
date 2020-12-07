@@ -95,7 +95,7 @@ public class Chat implements Serializable {
      * @param newMessageId The message id being added to the chat
      */
     public void removeMessage(UUID newMessageId){
-        chatMessages.remove(newMessageId); // the use case needs to update the last viewed message before running this
+        chatMessages.remove(newMessageId);
     }
 
     /**
@@ -117,12 +117,12 @@ public class Chat implements Serializable {
 //        memberUsernames.add(username);  //make sure to set the last viewed message after adding
 //    }
 
-    /**
-     * Change the name of the chat
-     * @param newName The new name for the chat
-     */
-    public void setChatName(String newName){
-        chatName = newName;
-    }
+//    /**
+//     * Change the name of the chat
+//     * @param newName The new name for the chat
+//     */
+//    public void setChatName(String newName){
+//        chatName = newName;
+//    }
 
 }
