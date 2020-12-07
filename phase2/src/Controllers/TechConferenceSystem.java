@@ -37,6 +37,7 @@ public class TechConferenceSystem implements Viewable{
 
     /**
      * Constructor for the entire controller, begins the program
+     * @param dashboard The GUI to set Techconference as an instance
      */
     public TechConferenceSystem(final Dashboard dashboard){
         dashboard.setView(this);
@@ -502,18 +503,37 @@ public class TechConferenceSystem implements Viewable{
 
     //--------------------------------------------Request Buttons-----------------------------------------
 
+    /**
+     * A method to add user request into the system
+     * @param username  The username that wants to create the request
+     * @param request   A string containing what request the user wants
+     */
     public void addRequest(String username, String request) {
         requestSystem.sendRequest(username, request);
     }
 
+    /**
+     * A method that marks the request if it has been addressed or not
+     * @param requestNumber    The requestNumber integer to see if the request has been addressed or not
+     * @return                 true if addressed, false O.W
+     */
     public boolean markAddressed(int requestNumber) {
         return requestSystem.markedAsAddressed(requestNumber);
     }
 
+    /**
+     * A method that marks if the request is pending or not
+     * @param requestNumber    The requestNumber integer to see if the request is pending or not
+     * @return              true if it is marked as pending, false otherwise
+     */
     public boolean markPending(int requestNumber) {
         return requestSystem.markedAsPending(requestNumber);
     }
 
+    /**
+     * A method that displays all requests (sends the information neccessary to GUI)
+     * @return  A list of string to be displayed onto GUI.
+     */
     public String[] displayRequests() {
         return requestSystem.displayAllRequests();
     }

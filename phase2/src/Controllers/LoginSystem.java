@@ -1,10 +1,6 @@
 package Controllers;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import UseCase.UserManager;
 
 /**
@@ -15,6 +11,10 @@ import UseCase.UserManager;
 public class LoginSystem implements Serializable {
     UserManager manager;
 
+    /**
+     * Constructor for loginSystem
+     * @param manager The usermanager to execute the class
+     */
     public LoginSystem(UserManager manager) {
         this.manager = manager;
     }

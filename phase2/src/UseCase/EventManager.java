@@ -2,7 +2,6 @@ package UseCase;
 
 import Entities.Event;
 
-
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
