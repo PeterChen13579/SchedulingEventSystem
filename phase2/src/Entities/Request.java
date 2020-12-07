@@ -1,9 +1,6 @@
 package Entities;
 
-//import com.sun.xml.internal.ws.addressing.WsaTubeHelper;
-
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 public class Request implements Serializable {
     public Integer requestNum;
@@ -16,10 +13,9 @@ public class Request implements Serializable {
      *
      * @param requestNum the request number
      * @param senderUsername the username of the sender
-     * @param time           the date/time of the request
      * @param content        the literal string representing the request
      */
-    public Request(int requestNum, String senderUsername, LocalDateTime time, String content) {
+    public Request(int requestNum, String senderUsername, String content) {
         this.content = content;
         this.requestNum = requestNum;
         this.senderUsername = senderUsername;

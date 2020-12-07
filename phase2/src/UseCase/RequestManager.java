@@ -3,7 +3,6 @@ package UseCase;
 import Entities.Request;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +29,7 @@ public class RequestManager implements Serializable {
     public void createRequest(String senderUserName, String content){
         List<Integer> allRequestNum= allRequestNum();
         int newRequestNum = allRequestNum.size() + 1;
-        LocalDateTime sendTime =LocalDateTime.now();
-        Request request = new Request(newRequestNum, senderUserName, sendTime, content);
+        Request request = new Request(newRequestNum, senderUserName, content);
         allRequests.add(request);
     }
 
