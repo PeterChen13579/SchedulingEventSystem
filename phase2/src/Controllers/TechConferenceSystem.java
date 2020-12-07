@@ -166,7 +166,7 @@ public class TechConferenceSystem implements Viewable{
 
         if (chatNumber >= 0 && chatNumber < userChats.size()){
             UUID chatId = userChats.get(chatNumber);
-            List<UUID> chatMessages = messagingSystem.getChatMessages(currentUsername, chatId);
+            List<UUID> chatMessages = messagingSystem.viewChatMessages(currentUsername, chatId);
             for (UUID messageId: chatMessages){
                 List<String> currentMessageInfo = new ArrayList<>(getMessageInfo(chatId, messageId));
                 messageInfoList.add(currentMessageInfo); //add a list of message info for this message
@@ -289,9 +289,9 @@ public class TechConferenceSystem implements Viewable{
     /**
      *
      * @param currentUsername  The currentusername of someone who wants to send a image message
-     * @param chatIndex
-     * @param messageIndex
-     * @return
+     * @param chatIndex     The index of the chat
+     * @param messageIndex    The index of the message
+     * @return Whether the message has an image
      */
     public boolean includesImage(String currentUsername, int chatIndex, int messageIndex) {
         UUID chatId = messagingSystem.getCurrentChats(currentUsername).get(chatIndex);
