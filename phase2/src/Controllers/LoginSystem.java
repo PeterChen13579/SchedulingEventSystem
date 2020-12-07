@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import Presenters.StatementPresenter;
 import UseCase.UserManager;
 
 /**
@@ -18,37 +17,6 @@ public class LoginSystem implements Serializable {
 
     public LoginSystem(UserManager manager) {
         this.manager = manager;
-    }
-
-    public boolean run() {
-        InputStreamReader r = new InputStreamReader(System.in);
-        BufferedReader br = new BufferedReader(r);
-        StatementPresenter menu = new StatementPresenter();
-        boolean verified = false;
-        while (true) {
-            menu.printStatement("Type 'cancel' to return to the main menu; otherwise hit enter to login:");
-            try {
-                String input = br.readLine();
-                if (input.equals("cancel")){
-                    break;
-                }
-                else {
-                    menu.printStatement("Please enter your username: ");
-                    String enteredUsername = br.readLine();
-                    menu.printStatement("Please enter your password: ");
-                    String enteredPassword = br.readLine();
-                    if (verifyLogin(enteredUsername, enteredPassword)) {
-                        verified = true;
-                        break;
-                    } else {
-                        menu.printStatement("You have entered an incorrect username or password.\n Please try again.");
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return verified;
     }
 
     /**

@@ -1,7 +1,5 @@
 package Controllers;
 
-import Presenters.EventPresenter;
-import Presenters.StatementPresenter;
 import UseCase.EventManager;
 import UseCase.RoomManager;
 import UseCase.UserManager;
@@ -15,8 +13,6 @@ public class SignUpSystem {
     EventManager em;
     UserManager um;
     RoomManager rm;
-    EventPresenter ep;
-    StatementPresenter sp;
 
     /**
      * Constructor for SignUpSystem
@@ -27,8 +23,6 @@ public class SignUpSystem {
         this.em = em;
         this.um = um;
         this.rm = rm;
-        this.ep = new EventPresenter(em, um);
-        this.sp = new StatementPresenter();
     }
 
     /**
