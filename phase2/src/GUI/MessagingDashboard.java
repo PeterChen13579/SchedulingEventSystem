@@ -59,15 +59,6 @@ public class MessagingDashboard extends JPanel{
         this.dashboard = dashboard;
         this.attachedImagePath = "";
         this.fileChooser = new JFileChooser(System.getProperty("user.dir"));
-//        @Peter commenting this out shouldn't change anything since style is set in Dashboard
-//        But I haven't tested it yet so I haven't fully deleted it just in case
-//        try {
-//            SynthLookAndFeel style = new SynthLookAndFeel();
-//            style.load(Dashboard.class.getResourceAsStream("sadness.xml"), Dashboard.class);
-//            UIManager.setLookAndFeel(style);
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
         createButtons();
         messagingMenu();
     }
