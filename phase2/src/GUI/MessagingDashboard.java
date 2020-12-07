@@ -165,7 +165,7 @@ public class MessagingDashboard extends JPanel{
         this.add(archiveChat);
         this.add(markChatUnread);
         this.add(back);
-        List<String> userToDisplay = sendsInfo.sendChatName(currentUsername);
+        List<String> userToDisplay = sendsInfo.viewChatNames(currentUsername);
 
         chatNames.setListData(userToDisplay.toArray(new String[0]));
         JScrollPane listScroller = new JScrollPane(chatNames);
@@ -178,7 +178,7 @@ public class MessagingDashboard extends JPanel{
         currentMenu = "ViewOneChat";
         this.removeAll();
         String[] formattedMessages = new String[messages.length];
-        indexToImage = new HashMap<Integer, byte[]>();
+        indexToImage = new HashMap<>();
         for (int i=0; i<messages.length; i++) {
             if (sendsInfo.includesImage(currentUsername, currentChatIndex, i)) {
                 formattedMessages[i] = "        " + messages[i][0] + " :    " + messages[i][1] + " [Double click for image]" +
@@ -202,7 +202,7 @@ public class MessagingDashboard extends JPanel{
     private void displayNewMessages(List<String[][]> messages, List<String> chatNames, List<String> timestamps) {
         currentMenu="ViewNewMessage";
         this.removeAll();
-        List<String> displayItems = new ArrayList<String>();
+        List<String> displayItems = new ArrayList<>();
         if (messages.size() == 0) {
             displayItems.add("No new messages");
         } else {
@@ -481,15 +481,15 @@ public class MessagingDashboard extends JPanel{
         msgContentLabel = new JLabel("Msg");
         displayUsername = new JLabel("Username:");
         errorText = new JLabel();
-        chatNames = new JList<String>();
+        chatNames = new JList<>();
         chatNames.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         chatNames.setLayoutOrientation(JList.VERTICAL);
         chatNames.setVisibleRowCount(-1);
-        newChatMsg = new JList<String>();
+        newChatMsg = new JList<>();
         newChatMsg.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         newChatMsg.setLayoutOrientation(JList.VERTICAL);
         newChatMsg.setVisibleRowCount(-1);
-        chatMsg = new JList<String>();
+        chatMsg = new JList<>();
         chatMsg.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         chatMsg.setLayoutOrientation(JList.VERTICAL);
         chatMsg.setVisibleRowCount(-1);
@@ -504,7 +504,7 @@ public class MessagingDashboard extends JPanel{
                 }
             }
         });
-        indexToImage = new HashMap<Integer, byte[]>();
+        indexToImage = new HashMap<>();
         eventListText = new JLabel("Enter event titles separated by a '/'");
         currentChatIndex = -1;
     }
