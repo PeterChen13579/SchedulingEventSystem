@@ -305,7 +305,7 @@ public class SchedulingSystem {
         if (!em.isEventExist(title)){
             return "Uh-oh! The event you have entered does not exist!";
         }else if (capacity > rm.getCapacity(rmNum)){
-            return "Uh-oh! The new capacity you entered exceeds the room capacity for this event!";
+            return "Uh-oh! Either the new capacity you entered exceeds the room capacity for this event, or the room does not exist!";
         }else if (capacity < em.attendeeNum(title)){
             return "Uh-oh! The number of attendees already signed up for this event exceeds the new capacity entered! It's not nice to kick people out :))";
         }else{

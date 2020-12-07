@@ -353,15 +353,18 @@ public class ChatManager implements Serializable {
 
     /**
      * Get Message UUID by index
-     * PRECONDITION : messageIndex is 1 less than the number of messages in the chat
      * @param chatId The id of the chat
      * @param messageIndex The index of the message
-     * @return The message id corresponding to the index
+     * @return The message id corresponding to the index or null if index is out of bounds
      */
-    public UUID getMessageUUIDbyIndex(UUID chatId, int messageIndex) { // probably doesn't belong here
+    public UUID getMessageUUIDbyIndex(UUID chatId, int messageIndex) {
         Chat chosenChat = allChats.get(chatId);
         List<UUID> chatMessagesList = chosenChat.getAllMessages();
-        return chatMessagesList.get(messageIndex);
+        if (messageIndex < chatMessagesList.size() && messageIndex >= 0){
+            return chatMessagesList.get(messageIndex);
+        } else {
+            return null;
+        }
     }
 
     /**
